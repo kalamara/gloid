@@ -1,0 +1,35 @@
+CXX  = g++ -ggdb
+CC   = gcc -ggdb
+INCS  = -I/usr/include/SDL
+LIBS  = -L/usr/lib64/GL -L/usr/lib64/SDL -lSDL -lSDL_ttf -lGL -lGLU
+OBJS  = src/gloid_base.o src/gloid_functions.o src/gloid_main.o src/gloid_world.o src/gloid_loading.o
+TARGET = gloid
+WORKPATH = /usr/local/share/gloid
+all: $(OBJS)
+	$(CXX) $(LIBS) $(OBJS) -o $(TARGET)
+
+%.o: %.cpp
+	$(CXX) $(INCS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(TARGET)
+install:
+	cp gloid /usr/bin/; 
+	mkdir -p $(WORKPATH)/textures;
+	mkdir -p $(WORKPATH)/levels;
+	mkdir -p $(WORKPATH)/sounds;
+	cp -uf textures/* $(WORKPATH)/textures;
+	cp -uf levels/* $(WORKPATH)/levels;
+	cp -uf sounds/* $(WORKPATH)/sounds;
+	touch $(WORKPATH)/log.txt;
+	cp -uf hallofame.txt $(WORKPATH);
+	cp -uf arkanoid.txt $(WORKPATH);
+	cp -uf DejaVuSans.ttf $(WORKPATH);
+	chmod 777 $(WORKPATH)/log.txt;
+	chmod 777 $(WORKPATH)/hallofame.txt;
+
+uninstall: 
+	rm /usr/bin/gloid;
+	rm -rf $(WORKPATH)/*
+	rmdir $(WORKPATH)
+

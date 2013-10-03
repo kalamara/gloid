@@ -1,0 +1,25 @@
+CXX = g++
+
+CXXFLAGS = -Wall -O0 -ggdb -arch i386 -D__MACOSX__
+
+CXXFLAGS += -I/System/Library/Frameworks/OpenGL.framework/Headers \
+            -I/System/Library/Frameworks/GLUT.framework/Headers \
+            -I/Library/Frameworks/SDL.framework/Headers \
+            -I/Library/Frameworks/SDL_ttf.framework/Headers
+
+LDFLAGS = -framework Cocoa -framework OpenGL -framework GLUT \
+          -framework SDL -framework SDL_ttf
+
+OBJS = src/gloid_base.o src/gloid_functions.o src/gloid_main.o \
+       src/gloid_world.o src/gloid_loading.o
+
+TARGET = gloid_app
+
+all: $(OBJS) src/SDLmain.m
+	$(CXX) $(CXXFLAGS) src/SDLmain.m $(OBJS) $(LDFLAGS) -o $(TARGET)
+
+%.o: %.cpp src/gloid.h Makefile.osx
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(TARGET)
