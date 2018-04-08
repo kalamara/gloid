@@ -1,11 +1,15 @@
 /* MAIN APPLICATION HEADER: defines application specific types, classes, variables, constants, includes headers.*/
 
-#ifndef _MAIN_H
-#define _MAIN_H
+#ifndef _GLOID_H
+#define _GLOID_H
 
 // Constants
 
-#define PI 3.1415259265
+#define PI 3.141525
+#define FLOAT_PRECISION 0.000001
+#define EYE 1.0f
+#define ZERO 0.0f
+#define FULL_CIRCLE 360.0f;
 
 #define ALIENHOME  3  // Where aliens spawn
 #define BALLNUM    4  // Maximum number of balls in play
@@ -31,7 +35,7 @@
 #define LOG_FILE  "log.txt"
 
 #define APP_NAME     "GLoid II is SDL/OpenGL Arkanoid " // The App Name And Caption
-#define APP_VERSION  "2.4"
+#define APP_VERSION  "2.5"
 
 #define TEXTLINES  16  // Maximum number of lines of text
 
@@ -109,9 +113,9 @@
 #include <OpenGL/glu.h>
 #endif
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_audio.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
+#include <SDL/SDL_audio.h>
 
 /****** CHANGELOG IN GLOID 2: **********************************************
  1. Loading textures via SDL                                              OK
@@ -135,8 +139,7 @@
 // ENUMERATIONS
 
 // Bonus pills
-enum
-{
+enum{
    P,       // Grey:    Player life (kanonaki) 
    B,       // Pink:    Boost to next level
    E,       // Blue:    Enlarge
@@ -148,8 +151,7 @@ enum
 };
 
 // Colors
-enum
-{
+enum{
    RGB_GREY,
    RGB_PINK,
    RGB_BLUE,
@@ -164,8 +166,7 @@ enum
 };
 
 // Bitmaps
-enum 
-{
+enum{
    BMP_BG_1,
    BMP_BG_2,
    BMP_BG_3,
@@ -179,8 +180,7 @@ enum
 };
 
 // Sounds
-enum
-{
+enum{
    WAV_ALIEN,
    WAV_BOUNCE0,
    WAV_BOUNCE1,
@@ -196,8 +196,7 @@ enum
 };
 
 // Game states
-enum
-{
+enum{
    LOADING,
    WAITING,
    INTRO,
@@ -207,16 +206,14 @@ enum
 };
 
 // Parser tokens
-enum
-{
+enum{
    PARSE_BRIK,
    PARSE_POS,
    PARSE_COL
 };
 
 // Messages
-enum
-{
+enum{
    HUD_1UP,
    HUD_SCORE,
    HUD_HILABEL,
@@ -230,116 +227,77 @@ enum
 
 // Datatype definitions
 
-typedef struct
-{
+typedef struct point3f{
    float x;
    float y;
    float z;
-}
-point3f;
+   point3f(float a, float b, float c){
+       x = a;
+       y = b;
+       z = c;
+   }
+   point3f(){
+       x = ZERO;
+       y = ZERO;
+       z = ZERO;
+   }
+   point3f(const point3f* other){
+       x = other->x;
+       y = other->y;
+       z = other->z;
+   }
+} * point3f_t;
 
-typedef struct
-{
+typedef struct point3i{
    int X;
    int Y;
    int Z;
-}
-point3i;
+   point3i(int a, int b, int c){
+       X = a;
+       Y = b;
+       Z = c;
+   }
+   point3i(){
+       X = 0;
+       Y = 0;
+       Z = 0;
+   }
+   point3i(const point3i* other){
+       X = other->X;
+       Y = other->Y;
+       Z = other->Z;
+   }
+} * point3i_t;
 
 // Mouse struct
-typedef struct 
-{
+typedef struct mousecntl{
    int x;
    int y;
    BOOL leftclick;
-}
-mousecntl;
+} * mousecntl_t;
 
 // Application runtime data
-typedef struct
-{
+typedef struct appstatus{
    BOOL visible;         // Is the application visible or iconified?
    BOOL mouse_focus;     // Is the mouse cursor inside the window?
    BOOL keyboard_focus;  // Does our application have keyboard focus?
-}
-S_AppStatus;
+} * appstatus_t;
 
-typedef struct 
-{
+typedef struct text2d{
    SDL_Surface *T;
    SDL_Rect src;//obsolete 
    char msg[MAXLINE];
    Uint32 timestamp;  // If timestamp is zero, the message is always on.
    Uint32 lifetime;   // If (ticks - timestamp) > lifetime, the popup dies.
-}
-text2d;
+} * text2d_t;
 
-typedef struct
+typedef struct hallentry
 {
    char* initials;
    int score;
-}
-hallentry; 
+} * hallentry_t;
 
-#endif  // _MAIN_H
-
-// Global classes
-
-// Object base class
-class WhatUC
-{
-public:
-   BOOL active;
-   point3f place, size;
-
-   WhatUC()
-   {
-      active = TRUE;
-
-      memset(&place, 0, sizeof(point3f));
-      memset(&size, 0, sizeof(point3f));
-   }
-
-   ~WhatUC()
-   {
-   }
-
-   void setplace(float X, float Y, float Z)
-   {
-      place.x = X;
-      place.y = Y;
-      place.z = Z;
-   }
-
-   void setsize(float X, float Y, float Z)
-   {
-      size.x = X;
-      size.y = Y;
-      size.z = Z;
-   }
-};
-
-class particles: public WhatUC
-{
-   point3f speed, rotation, rotspeed, rgb;
-   float life_fraction;  // From 0 to 1
-   int life_total;       // In milliseconds
-
-public:
-   void display(float);
-   void animate(void);
-   void explode(point3f, point3f*, int, float);
-
-   particles()
-   {
-      active = FALSE;
-   }
-
-   ~particles()
-   {
-   }
-};
-
+#else
 class balls: public WhatUC
 {
 public:
@@ -691,3 +649,4 @@ void null_display(SDL_Surface * );
 void mySolidCube(float);
 void mySolidTetrahedron(float);
 void mySolidRhombik(float);
+#endif  // _GLOID_H
