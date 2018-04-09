@@ -26,7 +26,21 @@ Particle::~Particle(){
 }
 
 void Particle::display(){
+    glPushMatrix();
+    glTranslatef(place.x, place.y, place.z);
+    glRotatef(rotation->x, 1.0f, 0.0f, 0.0f);
+    glRotatef(rotation->y, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotation->z, 0.0f, 0.0f, 1.0f);
 
+    glColor4f(rgb->x, rgb->y, rgb->z, life_fraction * life_fraction);
+
+    glBegin(GL_TRIANGLE_STRIP);
+    glVertex3f(0.0f, side, 0.0f);
+    glVertex3f(0.0f,-side, 0.0f);
+    glVertex3f(side, 0.0f, 0.0f);
+    glEnd();
+
+    glPopMatrix();
 }
 
 

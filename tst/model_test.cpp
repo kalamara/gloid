@@ -29,6 +29,38 @@ point3f_t Functions::rand3f(float base) {
                             .returnPointerValue();
 }
 
+void glPushMatrix(){
+    mock().actualCall("glPushMatrix");
+}
+
+void glPopMatrix(){
+    mock().actualCall("glPopMatrix");
+}
+
+void glBegin(unsigned int mode){
+    mock().actualCall("glBegin");
+}
+
+void glEnd(){
+    mock().actualCall("glEnd");
+}
+
+void glTranslatef(float x, float y, float z){
+    mock().actualCall("glTranslatef");
+}
+
+void glRotatef(float a, float x, float y, float z){
+    mock().actualCall("glRotatef");
+}
+
+void glVertex3f(float x, float y, float z){
+    mock().actualCall("glVertex3f");
+}
+
+void glColor4f( float x, float y, float z, float a){
+    mock().actualCall("glColor4f");
+}
+
 TEST(ModelTestGroup, ParticleIsWhatUC){
     point3f_t start_pos = new point3f(ONE, ONE, ONE);
     point3f_t start_rot = new point3f(2*ONE, 2*ONE, 2*ONE);
@@ -91,7 +123,18 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     DOUBLES_EQUAL(-3.0f, p->place.z, FLOAT_PRECISION);
 
     //should have animate and mock display in place
+    mock().expectOneCall("glPushMatrix");
+    mock().expectOneCall("glTranslatef");
+    mock().expectNCalls(3,"glRotatef");
+    mock().expectOneCall("glColor4f");
+    mock().expectOneCall("glBegin");
+    mock().expectNCalls(3,"glVertex3f");
+    mock().expectOneCall("glEnd");
+    mock().expectOneCall("glPopMatrix");
+
     p->animate(0.01f).display();
+    mock().checkExpectations();
+
     //x, y should increment, z should decrement by speed
     DOUBLES_EQUAL(-0.97f, p->place.x, FLOAT_PRECISION);
     DOUBLES_EQUAL(-1.97f, p->place.y, FLOAT_PRECISION);
