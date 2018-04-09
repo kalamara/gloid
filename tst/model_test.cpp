@@ -3,6 +3,7 @@
 #include "GLoid.h"
 #include "model/WhatUC.h"
 #include "model/Particle.h"
+#include "model/Ball.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -151,6 +152,32 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     delete p;
 }
 
+TEST(ModelTestGroup, BallIsWhatUC){
+    Ball *b = new Ball();
+    CHECK_FALSE(b->active);
+    CHECK_FALSE(b->launched);
+
+    DOUBLES_EQUAL(1.25f, b->size.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.25f, b->size.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.25f, b->size.z, FLOAT_PRECISION);
+
+    DOUBLES_EQUAL(0.0f, b->speed->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->speed->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->speed->z, FLOAT_PRECISION);
+
+    DOUBLES_EQUAL(0.0f, b->nextbounce->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->nextbounce->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->nextbounce->z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(10.0f, b->launchspeed->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(10.0f, b->launchspeed->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(20.0f, b->launchspeed->z, FLOAT_PRECISION);
+
+    //should have animate and mock display in place
+    b->animate(0.01f).display();
+
+
+    delete b;
+}
 
 int main(int ac, char** av)
 {
