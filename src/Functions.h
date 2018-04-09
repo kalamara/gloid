@@ -23,7 +23,6 @@ point3f_t chase(point3f a, point3f b, float U);
 // Generate a random vector
 point3f_t rand3f(float base);
 
-
 // Compute the next power of two: 2^i < x <= 2^(i+1) = y
 int nextpoweroftwo(int x);
 

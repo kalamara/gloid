@@ -16,6 +16,8 @@ add_executable(model_test
     ${SUT}/model/WhatUC.h
     ${SUT}/model/Particle.h
     ${SUT}/model/Particle.cpp
+    ${SUT}/model/Ball.h
+    ${SUT}/model/Ball.cpp
 
     #model_test.h
     model_test.cpp)
