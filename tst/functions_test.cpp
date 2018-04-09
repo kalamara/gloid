@@ -21,20 +21,8 @@ int rand() {
                  .returnIntValue();
 }
 
-TEST(FunctionsTestGroup, RandomListMember){
-    std::list<point3f> li ;
-    //empty list should not crash
-    std::list<point3f>::iterator r = randItem<point3f>(li.begin(), li.end());
-    CHECK(li.end() == r);
+TEST(FunctionsTestGroup, lol){
 
-    //otherwise return random value
-    mock().expectOneCall("rand")
-          .andReturnValue(1500001);
-
-    li = {RED, GREEN, BLUE};
-    r = randItem<point3f>(li.begin(), li.end());
-    point3f green = GREEN;
-    CHECK(green.eq(*r));
 }
 
 int main(int ac, char** av)

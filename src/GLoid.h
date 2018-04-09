@@ -7,7 +7,7 @@
 
 #define PI 3.141525
 #define FLOAT_PRECISION 0.000001
-#define EYE 1.0f
+#define ONE 1.0f
 #define ZERO 0.0f
 #define FULL_CIRCLE 360.0f;
 

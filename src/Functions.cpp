@@ -3,9 +3,9 @@
 #include "GLoid.h"
 #include "Functions.h"
 // SEVERAL FUNCTIONS
-
+namespace Functions{
 // Check to see if two rectangles A, B have collided
-BOOL Functions::collision (float aLeft,
+BOOL collision (float aLeft,
                 float aRight,
                 float aUp,
                 float aDown,
@@ -31,12 +31,12 @@ BOOL Functions::collision (float aLeft,
 }
 
 // Calculate the norm of a 3-vector
-float Functions::res3f(float x, float y, float z){
+float res3f(float x, float y, float z){
    return sqrt(x*x + y*y + z*z);
 }
 
 // Calculate the speed components of object A chasing object B at speed U
-point3f_t Functions::chase(point3f a, point3f b, float U){
+point3f_t chase(point3f a, point3f b, float U){
    float M;
    point3f_t finalspeed = new point3f(ZERO, ZERO, ZERO);
 
@@ -52,7 +52,7 @@ point3f_t Functions::chase(point3f a, point3f b, float U){
 }
 
 // Generate a random vector
-point3f_t Functions::rand3f(float base){
+point3f_t rand3f(float base){
 
    float tempx = rand() - RAND_MAX / 2;
    float tempy = rand() - RAND_MAX / 2;
@@ -67,14 +67,11 @@ point3f_t Functions::rand3f(float base){
    return final;
 }
 
-/**<3<3<3<3<3<3<3******<3<3<3<3<3<3<3<*
-//template <typename T>
-T *Functions::randItem(std::list<T> l){
-    return &*l.end();
-}
-*/
+/**<3<3<3<3<3<3<3******<3<3<3<3<3<3<3<*/
+
+
 // Compute the next power of two: 2^i < x <= 2^(i+1) = y
-int Functions::nextpoweroftwo(int x){
+int nextpoweroftwo(int x){
    double y;
 
    y = pow(2, ceil(log(x) / log(2)));
@@ -82,7 +79,7 @@ int Functions::nextpoweroftwo(int x){
 }
 
 // Calculate the moving average of <size> samples
-double Functions::moving_average(double x, double* a, int size){
+double moving_average(double x, double* a, int size){
    int i;
    double sum = x;
 
@@ -96,7 +93,7 @@ double Functions::moving_average(double x, double* a, int size){
    return sum / size;
 }
 
-point3i Functions::coords(point3f place){
+point3i coords(point3f place){
 	point3i axis;
 	div_t relative_x; //position in brick coords 
 	div_t relative_y;
@@ -122,4 +119,4 @@ point3i Functions::coords(point3f place){
 		axis.Z = INTZ;
 	return axis;
 }
-
+}//namespace Functions;

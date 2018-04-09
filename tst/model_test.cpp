@@ -30,30 +30,30 @@ point3f_t Functions::rand3f(float base) {
 }
 
 TEST(ModelTestGroup, ParticleIsWhatUC){
-    point3f_t start_pos = new point3f(EYE, EYE, EYE);
-    point3f_t start_rot = new point3f(2*EYE, 2*EYE, 2*EYE);
-    point3f_t start_speed = new point3f(3*EYE, 3*EYE, 3*EYE);
+    point3f_t start_pos = new point3f(ONE, ONE, ONE);
+    point3f_t start_rot = new point3f(2*ONE, 2*ONE, 2*ONE);
+    point3f_t start_speed = new point3f(3*ONE, 3*ONE, 3*ONE);
 
     point3f red = RED;
 
     mock().expectOneCall("rand")
-          .andReturnValue(1500001);
+          .andReturnValue(15000499);
 
     mock().expectOneCall("Functions::rand3f")
           .withParameter("base", 10.0f)
-          .andReturnValue(start_pos);
+          .andReturnValue(start_speed);
     mock().expectOneCall("Functions::rand3f")
           .withParameter("base", 10.0f)
           .andReturnValue(start_rot);
     mock().expectOneCall("Functions::rand3f")
           .withParameter("base", 10.0f)
-          .andReturnValue(start_speed);
+          .andReturnValue(start_pos);
 
-    Particle *p = new Particle(start_pos, &red, EYE);
+    Particle *p = new Particle(start_pos, &red, ONE);
 
     mock().checkExpectations();
 
-    CHECK_EQUAL(1, p->life_total);
+    CHECK_EQUAL(500, p->life_total);
     DOUBLES_EQUAL(1.0f, p->life_fraction, FLOAT_PRECISION);
 
     //should explode randomly
@@ -61,19 +61,20 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     DOUBLES_EQUAL(1.0f, p->place.y, FLOAT_PRECISION);
     DOUBLES_EQUAL(1.0f, p->place.z, FLOAT_PRECISION);
 
-    DOUBLES_EQUAL(1.0f, p->speed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.0f, p->speed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.0f, p->speed->z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(3.0f, p->speed->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(3.0f, p->speed->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(3.0f, p->speed->z, FLOAT_PRECISION);
 
     DOUBLES_EQUAL(2.0f, p->rotspeed->x, FLOAT_PRECISION);
     DOUBLES_EQUAL(2.0f, p->rotspeed->y, FLOAT_PRECISION);
     DOUBLES_EQUAL(2.0f, p->rotspeed->z, FLOAT_PRECISION);
 
-    DOUBLES_EQUAL(3.0f, p->rotation->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(3.0f, p->rotation->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(3.0f, p->rotation->z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.0f, p->rotation->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.0f, p->rotation->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.0f, p->rotation->z, FLOAT_PRECISION);
 
     DOUBLES_EQUAL(1.0f, p->side, FLOAT_PRECISION);
+
     DOUBLES_EQUAL(1.0f, p->rgb->x, FLOAT_PRECISION);
     DOUBLES_EQUAL(0.0f, p->rgb->y, FLOAT_PRECISION);
     DOUBLES_EQUAL(0.0f, p->rgb->z, FLOAT_PRECISION);
@@ -90,9 +91,20 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     DOUBLES_EQUAL(-3.0f, p->place.z, FLOAT_PRECISION);
 
     //should have animate and mock display in place
-    p->animate(40.0f).display();
+    p->animate(0.01f).display();
+    //x, y should increment, z should decrement by speed
+    DOUBLES_EQUAL(-0.97f, p->place.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(-1.97f, p->place.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(-3.03f, p->place.z, FLOAT_PRECISION);
 
-
+    DOUBLES_EQUAL(1.02f, p->rotation->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.02f, p->rotation->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.98f, p->rotation->z, FLOAT_PRECISION);
+    //remaining life should decrease by x seconds
+    DOUBLES_EQUAL(0.98f, p->life_fraction, FLOAT_PRECISION);
+    //when time expires particle is deactivated
+    *p = p->animate(0.49f);
+    CHECK_FALSE(p->active)
     delete p;
 }
 
