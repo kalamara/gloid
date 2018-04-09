@@ -23,6 +23,23 @@ point3f_t chase(point3f a, point3f b, float U);
 // Generate a random vector
 point3f_t rand3f(float base);
 
+// Select a random item from a list
+template <class T>
+#define ITEM_T typename std::list<T>::iterator
+ITEM_T randItem(ITEM_T start, ITEM_T end){
+    if(start == end){
+
+        return end;
+    } else {
+        int size = distance(start, end);
+        int index = rand() % size;
+        ITEM_T r = start;
+        advance(r, index);
+
+        return r;
+    }
+}
+
 // Compute the next power of two: 2^i < x <= 2^(i+1) = y
 int nextpoweroftwo(int x);
 

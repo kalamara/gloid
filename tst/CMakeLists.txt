@@ -26,7 +26,6 @@ add_executable(functions_test
     ${SUT}/Functions.cpp
     functions_test.cpp)
 
-
 target_link_libraries(model_test
     ${CPPUTEST}
     ${CPPUTEST_EXT})

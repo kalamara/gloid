@@ -11,6 +11,18 @@
 #define ZERO 0.0f
 #define FULL_CIRCLE 360.0f;
 
+#define RED     {1.0f, 0.0f, 0.0f}
+#define GREEN   {0.0f, 1.0f, 0.0f}
+#define BLUE    {0.0f, 0.0f, 1.0f}
+#define GRAY    {0.3f, 0.3f, 0.3f}
+#define WHITE   {1.0f, 1.0f, 1.0f}
+#define YELLOW  {1.0f, 1.0f, 0.0f}
+#define CYAN    {0.5f, 0.5f, 0.1f}
+#define MAGENTA {1.0f, 0.0f, 1.0f}
+#define BLACK   {0.0f, 0.0f, 0.0f}
+#define PALE_GRAY    {0.5f, 0.5f, 0.5f}
+
+
 #define ALIENHOME  3  // Where aliens spawn
 #define BALLNUM    4  // Maximum number of balls in play
 #define ALIENNUM  10  // Maximum number of aliens
@@ -245,6 +257,11 @@ typedef struct point3f{
        x = other->x;
        y = other->y;
        z = other->z;
+   }
+   bool eq(const point3f other){
+    return x - other.x <= FLOAT_PRECISION
+        && y - other.y <= FLOAT_PRECISION
+        && z - other.z <= FLOAT_PRECISION;
    }
 } * point3f_t;
 

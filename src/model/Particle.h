@@ -6,6 +6,7 @@ class Particle: public WhatUC<Particle>{
     static constexpr float speed_max = 10.0f;
     static constexpr float rot_max = 10.0f * FULL_CIRCLE;
 public:
+    float side;
     point3f_t speed;
     point3f_t rotation;
     point3f_t rotspeed;
@@ -15,9 +16,8 @@ public:
     int life_total;       // In milliseconds
 
     Particle(const point3f_t where,
-            const point3f_t pal,
-            int palette_size,
-            float side);
+            const point3f_t color,
+            float len);
     ~Particle();
     void display();
     Particle& animate(double secPerFrame);

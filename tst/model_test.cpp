@@ -1,3 +1,5 @@
+#include <list>
+
 #include "GLoid.h"
 #include "model/WhatUC.h"
 #include "model/Particle.h"
@@ -7,6 +9,8 @@
 #include "CppUTest/CommandLineTestRunner.h"
 
 #include "Functions.h"
+
+using namespace std;
 
 TEST_GROUP(ModelTestGroup){
     void teardown(){
@@ -30,6 +34,8 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     point3f_t start_rot = new point3f(2*EYE, 2*EYE, 2*EYE);
     point3f_t start_speed = new point3f(3*EYE, 3*EYE, 3*EYE);
 
+    point3f red = RED;
+
     mock().expectOneCall("rand")
           .andReturnValue(1500001);
 
@@ -43,7 +49,7 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
           .withParameter("base", 10.0f)
           .andReturnValue(start_speed);
 
-    Particle *p = new Particle(start_pos, start_pos, 256, EYE);
+    Particle *p = new Particle(start_pos, &red, EYE);
 
     mock().checkExpectations();
 
@@ -66,6 +72,11 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     DOUBLES_EQUAL(3.0f, p->rotation->x, FLOAT_PRECISION);
     DOUBLES_EQUAL(3.0f, p->rotation->y, FLOAT_PRECISION);
     DOUBLES_EQUAL(3.0f, p->rotation->z, FLOAT_PRECISION);
+
+    DOUBLES_EQUAL(1.0f, p->side, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.0f, p->rgb->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, p->rgb->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, p->rgb->z, FLOAT_PRECISION);
 
     //should have setters implemented
     *p = p->setSize(1.0f, 2.0f, 3.0f)
