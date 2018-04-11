@@ -10,6 +10,7 @@
 #include "CppUTest/CommandLineTestRunner.h"
 
 #include "Functions.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -28,6 +29,11 @@ point3f_t Functions::rand3f(float base) {
     return (point3f_t)mock().actualCall("Functions::rand3f")
                             .withParameter("base", 10.0f)
                             .returnPointerValue();
+}
+
+void Game::playSound(int sound) {
+    mock().actualCall("Game::playSound")
+            .withParameter("sound", WAV_LAUNCH);
 }
 
 void glPushMatrix(){
@@ -62,6 +68,21 @@ void glColor4f( float x, float y, float z, float a){
     mock().actualCall("glColor4f");
 }
 
+GLUquadric * gluNewQuadric(){
+    mock().actualCall("gluNewQuadric");
+}
+
+void gluSphere( float b, float r, float z, float a){
+    mock().actualCall("gluSphere");
+}
+
+void gluDeleteQuadric(void * base){
+    mock().actualCall("gluDeleteQuadric");
+}
+
+
+//gluDeleteQuadric(base);
+
 TEST(ModelTestGroup, ParticleIsWhatUC){
     point3f_t start_pos = new point3f(ONE, ONE, ONE);
     point3f_t start_rot = new point3f(2*ONE, 2*ONE, 2*ONE);
@@ -90,6 +111,7 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     DOUBLES_EQUAL(1.0f, p->life_fraction, FLOAT_PRECISION);
 
     //should explode randomly
+    CHECK(p->active);
     DOUBLES_EQUAL(1.0f, p->place.x, FLOAT_PRECISION);
     DOUBLES_EQUAL(1.0f, p->place.y, FLOAT_PRECISION);
     DOUBLES_EQUAL(1.0f, p->place.z, FLOAT_PRECISION);
@@ -168,16 +190,56 @@ TEST(ModelTestGroup, BallIsWhatUC){
     DOUBLES_EQUAL(0.0f, b->nextbounce->x, FLOAT_PRECISION);
     DOUBLES_EQUAL(0.0f, b->nextbounce->y, FLOAT_PRECISION);
     DOUBLES_EQUAL(0.0f, b->nextbounce->z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->nextspeed->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->nextspeed->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->nextspeed->z, FLOAT_PRECISION);
     DOUBLES_EQUAL(10.0f, b->launchspeed->x, FLOAT_PRECISION);
     DOUBLES_EQUAL(10.0f, b->launchspeed->y, FLOAT_PRECISION);
     DOUBLES_EQUAL(20.0f, b->launchspeed->z, FLOAT_PRECISION);
 
-    //should have animate and mock display in place
-    b->animate(0.01f).display();
 
+    //should have animate and mock display in place
+    //inactive, do nothing
+    b->animate(0.01f).display();
 
     delete b;
 }
+
+TEST(ModelTestGroup, BallAnimation){
+    Ball *b = new Ball();
+    //reinit inits
+    point3f init = {ONE, 2*ONE, 3*ONE};
+    *b = b->reinit(&init);
+
+    CHECK(b->active);
+    CHECK_FALSE(b->launched);
+    DOUBLES_EQUAL(0.0f, b->speed->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->speed->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->speed->z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->nextbounce->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->nextbounce->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, b->nextbounce->z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.0f, b->launchspeed->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(2.0f, b->launchspeed->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(3.0f, b->launchspeed->z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.0f, b->nextspeed->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(2.0f, b->nextspeed->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(3.0f, b->nextspeed->z, FLOAT_PRECISION);
+    //launch launches
+    mock().expectOneCall("Game::playSound")
+            .withParameter("sound", WAV_LAUNCH);
+    *b = b->launch();
+
+    CHECK(b->launched);
+    DOUBLES_EQUAL(1.0f, b->speed->x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(2.0f, b->speed->y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(3.0f, b->speed->z, FLOAT_PRECISION);
+    mock().checkExpectations();
+
+    delete b;
+}
+
+
 
 int main(int ac, char** av)
 {

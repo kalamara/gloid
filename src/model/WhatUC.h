@@ -1,5 +1,8 @@
 #ifndef _WHATUC_H_
 #define _WHATUC_H_
+
+//base class for any visible models.
+//it's a Curiously Recurring Template Pattern:
 template<class T>
 
 class WhatUC{
@@ -27,7 +30,9 @@ public:
         size.z = Z;
         return *dynamic_cast<T*>(this);
    }
-
+   //pure virtual but also we want to be able to have each sublasses'
+   //implementation of animate to return self so we can implement
+   //Builder patterns with animate and display
    virtual void display()=0;
    virtual T& animate(double secPerFrame)=0;
 };

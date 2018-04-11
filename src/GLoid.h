@@ -6,6 +6,8 @@
 // Constants
 
 #define PI 3.141525
+#define ROOT2 1.414213
+
 #define FLOAT_PRECISION 0.000001
 #define ONE 1.0f
 #define ZERO 0.0f
@@ -258,10 +260,18 @@ typedef struct point3f{
        y = other->y;
        z = other->z;
    }
+
    bool eq(const point3f other){
     return x - other.x <= FLOAT_PRECISION
         && y - other.y <= FLOAT_PRECISION
         && z - other.z <= FLOAT_PRECISION;
+   }
+   point3f * deepcopy(const point3f* other){
+       x = other->x;
+       y = other->y;
+       z = other->z;
+
+       return this;
    }
 } * point3f_t;
 
