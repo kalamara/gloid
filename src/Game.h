@@ -5,14 +5,20 @@
 // it's a Meyer's Singleton.
 
 class Game {
-private:
+
+    static Game * _instance;
     Game(){
 
     }
 public:
-    ~Game(){
 
+    static Game * instance(){
+        if(!_instance){
+            _instance = new Game;
+        }
+        return _instance;
     }
+
     static void playSound(int sound);
 };
 #endif //_GAME_H

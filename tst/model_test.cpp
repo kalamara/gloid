@@ -31,6 +31,12 @@ point3f_t Functions::rand3f(float base) {
                             .returnPointerValue();
 }
 
+//class GameMock : public Game{
+//    static void playSound(int sound){
+//         mock().actualCall("playSound");
+//    }
+//};
+
 void Game::playSound(int sound) {
     mock().actualCall("Game::playSound")
             .withParameter("sound", WAV_LAUNCH);
@@ -68,15 +74,19 @@ void glColor4f( float x, float y, float z, float a){
     mock().actualCall("glColor4f");
 }
 
+void glColor3f( float x, float y, float z){
+    mock().actualCall("glColor3f");
+}
+
 GLUquadric * gluNewQuadric(){
     mock().actualCall("gluNewQuadric");
 }
 
-void gluSphere( float b, float r, float z, float a){
+void gluSphere( GLUquadric * b, double r, int sl, int st){
     mock().actualCall("gluSphere");
 }
 
-void gluDeleteQuadric(void * base){
+void gluDeleteQuadric(GLUquadric * base){
     mock().actualCall("gluDeleteQuadric");
 }
 
@@ -225,7 +235,23 @@ TEST(ModelTestGroup, BallAnimation){
     DOUBLES_EQUAL(1.0f, b->nextspeed->x, FLOAT_PRECISION);
     DOUBLES_EQUAL(2.0f, b->nextspeed->y, FLOAT_PRECISION);
     DOUBLES_EQUAL(3.0f, b->nextspeed->z, FLOAT_PRECISION);
+
+    //now it is displayable, but only animates following the vaus
+
+    mock().expectOneCall("gluNewQuadric");
+    mock().expectNCalls(2,"glPushMatrix");
+    mock().expectOneCall("glTranslatef");
+    mock().expectOneCall("glColor3f");
+    mock().expectOneCall("gluSphere");
+    mock().expectNCalls(2,"glPopMatrix");
+    mock().expectOneCall("gluDeleteQuadric");
+
+    b->animate(0.01f).display();
+    mock().checkExpectations();
+
+
     //launch launches
+
     mock().expectOneCall("Game::playSound")
             .withParameter("sound", WAV_LAUNCH);
     *b = b->launch();
@@ -235,6 +261,7 @@ TEST(ModelTestGroup, BallAnimation){
     DOUBLES_EQUAL(2.0f, b->speed->y, FLOAT_PRECISION);
     DOUBLES_EQUAL(3.0f, b->speed->z, FLOAT_PRECISION);
     mock().checkExpectations();
+
 
     delete b;
 }

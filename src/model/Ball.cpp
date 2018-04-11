@@ -29,7 +29,22 @@ Ball::~Ball(){
 }
 
 void Ball::display(){
+    GLUquadricObj* base = NULL;
 
+    if(active)
+    {
+       base = gluNewQuadric();
+
+       glPushMatrix();
+        glTranslatef(place.x, place.y, place.z);
+        glPushMatrix();
+         glColor3f(0.2f, 0.2f, 0.2f);
+         gluSphere(base, rad, 12, 12); ;
+        glPopMatrix();
+       glPopMatrix();
+
+       gluDeleteQuadric(base);
+    }
 }
 
 Ball& Ball::animate(double secPerFrame){
@@ -61,4 +76,6 @@ Ball& Ball::launch()
       speed = speed->deepcopy(launchspeed);
       Game::playSound(WAV_LAUNCH);
    }
+
+   return * this;
 }
