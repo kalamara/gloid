@@ -10,7 +10,7 @@ Particle::Particle(const point3f_t where,
                    float len){
     setPlace(where->x, where->y, where->z);
     life_total = rand() % life_max + 1;
-    life_fraction = 1.0f;
+    life_fraction = ONE;
     speed = rand3f(speed_max);
     rotspeed = rand3f(rot_max);
     rotation = rand3f(rot_max);
@@ -27,22 +27,18 @@ Particle::~Particle(){
 
 void Particle::display(){
     glPushMatrix();
-    glTranslatef(place.x, place.y, place.z);
-    glRotatef(rotation->x, 1.0f, 0.0f, 0.0f);
-    glRotatef(rotation->y, 0.0f, 1.0f, 0.0f);
-    glRotatef(rotation->z, 0.0f, 0.0f, 1.0f);
-
-    glColor4f(rgb->x, rgb->y, rgb->z, life_fraction * life_fraction);
-
-    glBegin(GL_TRIANGLE_STRIP);
-    glVertex3f(0.0f, side, 0.0f);
-    glVertex3f(0.0f,-side, 0.0f);
-    glVertex3f(side, 0.0f, 0.0f);
-    glEnd();
-
+        glTranslatef(place.x, place.y, place.z);
+        glRotatef(rotation->x, ONE, ZERO, ZERO);
+        glRotatef(rotation->y, ZERO, ONE, ZERO);
+        glRotatef(rotation->z, ZERO, ZERO, ONE);
+        glColor4f(rgb->x, rgb->y, rgb->z, life_fraction * life_fraction);
+        glBegin(GL_TRIANGLE_STRIP);
+            glVertex3f(ZERO, side, ZERO);
+            glVertex3f(ZERO,-side, ZERO);
+            glVertex3f(side, ZERO, ZERO);
+        glEnd();
     glPopMatrix();
 }
-
 
 Particle& Particle::animate(double secPerFrame){
     place.x += speed->x * secPerFrame;

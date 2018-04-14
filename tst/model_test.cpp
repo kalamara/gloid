@@ -1,16 +1,19 @@
-#include <list>
+//#include <list>
 
 #include "GLoid.h"
+#include "Functions.h"
+#include "Game.h"
 #include "model/WhatUC.h"
 #include "model/Particle.h"
 #include "model/Ball.h"
+#include "model/Vaus.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
 
-#include "Functions.h"
-#include "Game.h"
+#include "GameMock.h"
+
 
 using namespace std;
 
@@ -31,15 +34,9 @@ point3f_t Functions::rand3f(float base) {
                             .returnPointerValue();
 }
 
-//class GameMock : public Game{
-//    static void playSound(int sound){
-//         mock().actualCall("playSound");
-//    }
-//};
-
 void Game::playSound(int sound) {
-    mock().actualCall("Game::playSound")
-            .withParameter("sound", WAV_LAUNCH);
+    mock().actualCall("Game::playSound");
+          //  .withParameter("sound", WAV_LAUNCH);
 }
 
 void glPushMatrix(){
@@ -56,6 +53,18 @@ void glBegin(unsigned int mode){
 
 void glEnd(){
     mock().actualCall("glEnd");
+}
+
+void glEnable( GLenum cap ){
+    mock().actualCall("glEnable");
+}
+
+void glDisable( GLenum cap ){
+    mock().actualCall("glDisable");
+}
+
+void glScalef( GLfloat x, float y, float z ){
+    mock().actualCall("glScalef");
 }
 
 void glTranslatef(float x, float y, float z){
@@ -82,16 +91,22 @@ GLUquadric * gluNewQuadric(){
     mock().actualCall("gluNewQuadric");
 }
 
-void gluSphere( GLUquadric * b, double r, int sl, int st){
-    mock().actualCall("gluSphere");
-}
-
 void gluDeleteQuadric(GLUquadric * base){
     mock().actualCall("gluDeleteQuadric");
 }
 
+void gluQuadricDrawStyle (GLUquadric* quad, GLenum draw){
+    mock().actualCall("gluQuadricDrawStyle");
+}
 
-//gluDeleteQuadric(base);
+void gluSphere( GLUquadric * b, double r, int sl, int st){
+    mock().actualCall("gluSphere");
+}
+
+void gluCylinder (GLUquadric* quad, double base, double top, double height, int slices, int stacks){
+    mock().actualCall("gluCylinder");
+}
+
 
 TEST(ModelTestGroup, ParticleIsWhatUC){
     point3f_t start_pos = new point3f(ONE, ONE, ONE);
@@ -106,9 +121,11 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     mock().expectOneCall("Functions::rand3f")
           .withParameter("base", 10.0f)
           .andReturnValue(start_speed);
+
     mock().expectOneCall("Functions::rand3f")
           .withParameter("base", 10.0f)
           .andReturnValue(start_rot);
+
     mock().expectOneCall("Functions::rand3f")
           .withParameter("base", 10.0f)
           .andReturnValue(start_pos);
@@ -248,12 +265,13 @@ TEST(ModelTestGroup, BallAnimation){
 
     b->animate(0.01f).display();
     mock().checkExpectations();
-
+    //calculate projection (raycast) axis, speed and position
+    //move following the vaus
 
     //launch launches
 
-    mock().expectOneCall("Game::playSound")
-            .withParameter("sound", WAV_LAUNCH);
+    mock().expectOneCall("Game::playSound");
+           // .withParameter("sound", WAV_LAUNCH);
     *b = b->launch();
 
     CHECK(b->launched);
@@ -262,10 +280,86 @@ TEST(ModelTestGroup, BallAnimation){
     DOUBLES_EQUAL(3.0f, b->speed->z, FLOAT_PRECISION);
     mock().checkExpectations();
 
+    //if it is trapped outside level, bring it back
+    //if it is trapped inside a brick, bring it back
+    //if  z < 0, lose
+    //if on a brick, bounce
+    //if on an alien, ricochet
+    //if on vaus, bounce
+    //if on wall, bounce
 
     delete b;
 }
 
+TEST(ModelTestGroup, VausIsWhatUC){
+    GameMock * gm = new GameMock();//GameMock::instance();
+    mousecntl_t mou = new mousecntl(400,300, FALSE);
+    screen_t scr = new screen(800, 600, 32);
+    Vaus *v = new Vaus(gm);
+    //
+    gm->mouse = mou;
+    gm->scr = scr;
+
+    CHECK(v->active);
+    CHECK_FALSE(v->armed);
+    CHECK_FALSE(v->large);
+    CHECK_FALSE(v->warping);
+
+    DOUBLES_EQUAL(5.0f, v->size.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(5.0f, v->size.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.25f, v->size.z, FLOAT_PRECISION);
+
+    mock().expectOneCall("gluNewQuadric");
+    mock().expectOneCall("gluQuadricDrawStyle");
+    mock().expectNCalls(10,"glPushMatrix");
+    mock().expectNCalls(10,"glTranslatef");
+    mock().expectNCalls(5,"glRotatef");
+    mock().expectOneCall("glScalef");
+    mock().expectOneCall("glColor4f");
+    mock().expectNCalls(5,"gluSphere");
+    mock().expectOneCall("glEnable");
+    mock().expectOneCall("glDisable");
+    mock().expectNCalls(10,"glPopMatrix");
+    mock().expectNCalls(8,"glColor3f");
+    mock().expectNCalls(4,"gluCylinder");
+    mock().expectOneCall("gluDeleteQuadric");
+    v->animate(0.01f).display();
+
+    DOUBLES_EQUAL(0.0f, v->place.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(30.0f, v->place.y, FLOAT_PRECISION);
+    mock().checkExpectations();
+    //enlarge should enlarge and play enlarge
+    gm->bonusMode = E;
+    mock().expectOneCall("Game::playSound");
+           //.withParameter("sound", WAV_ENLARGE);
+
+    *v = v->animate(0.01f);
+    CHECK(v->large);
+    mock().checkExpectations();
+
+    gm->bonusMode = L;
+    *v = v->animate(0.01f);
+    CHECK(v->armed);
+    mock().checkExpectations();
+
+    gm->mouse->X = 800;
+    gm->mouse->Y = -600;
+
+    gm->bonusMode = B;
+    mock().expectOneCall("Game::playSound");
+
+    *v = v->animate(0.01f);
+
+    DOUBLES_EQUAL(15.0f, v->place.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(-15.0f, v->place.y, FLOAT_PRECISION);
+    CHECK(v->warping);
+    mock().checkExpectations();
+
+    delete mou;
+    delete scr;
+    delete v;
+    delete gm;
+}
 
 
 int main(int ac, char** av)

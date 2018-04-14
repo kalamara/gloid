@@ -295,12 +295,29 @@ typedef struct point3i{
        Z = other->Z;
    }
 } * point3i_t;
+// Screen struct
+typedef struct screen{
+    int W;
+    int H;
+    int BPP;
+    SDL_Surface * S;
+    screen(int w, int h, int bpp){
+        W = w;
+        H = h;
+        BPP = bpp;
+    }
+}* screen_t;
 
 // Mouse struct
 typedef struct mousecntl{
-   int x;
-   int y;
+   int X;
+   int Y;
    BOOL leftclick;
+   mousecntl(int x, int y, int l){
+       X = x;
+       Y = y;
+       leftclick = l;
+   }
 } * mousecntl_t;
 
 // Application runtime data
@@ -325,42 +342,6 @@ typedef struct hallentry
 } * hallentry_t;
 
 #else
-class balls: public WhatUC
-{
-public:
-   float rad;
-   BOOL	launched;
-   int nextaxis;
-   point3f speed, nextbounce, nextspeed, initspeed, launchspeed;
-
-   void	display(void);
-   int animate(unsigned int*);
-   void launch();
-   void reinit(point3f);
-   int bounce(point3f);
-
-   balls()
-   {
-      launched = FALSE;
-      rad = 0.625f;
-
-      setsize(2*rad, 2*rad, 2*rad);
-      memset(&speed, 0, sizeof(point3f));
-      memset(&nextbounce, 0, sizeof(point3f));
-
-      initspeed.x = 10.0f;
-      initspeed.y = 10.0f;
-      initspeed.z = 20.0f;
-      launchspeed.x = initspeed.x; 
-      launchspeed.y = initspeed.y; 
-      launchspeed.z = initspeed.z;
-      active = FALSE;
-   }
-
-   ~balls()
-   {
-   }
-};
 
 class vauses: public WhatUC
 {

@@ -18,8 +18,10 @@ add_executable(model_test
     ${SUT}/model/Particle.cpp
     ${SUT}/model/Ball.h
     ${SUT}/model/Ball.cpp
+    ${SUT}/model/Vaus.h
+    ${SUT}/model/Vaus.cpp
 
-    #model_test.h
+    GameMock.h
     model_test.cpp)
 
 add_executable(functions_test
