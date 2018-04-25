@@ -7,6 +7,7 @@
 #include "model/Particle.h"
 #include "model/Ball.h"
 #include "model/Vaus.h"
+#include "model/Brick.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -34,9 +35,20 @@ point3f_t Functions::rand3f(float base) {
                             .returnPointerValue();
 }
 
+point3f_t Functions::fromcoords(point3i_t coords){
+    //point3i p = {1,2,3};
+    return (point3f_t)mock().actualCall("Functions::fromcoords")
+            .withParameter("coords", (void *)coords)
+            .returnPointerValue();
+}
+
 void Game::playSound(int sound) {
     mock().actualCall("Game::playSound");
           //  .withParameter("sound", WAV_LAUNCH);
+}
+
+int Game::now() {
+    mock().actualCall("Game::now");
 }
 
 void glPushMatrix(){
@@ -85,6 +97,10 @@ void glColor4f( float x, float y, float z, float a){
 
 void glColor3f( float x, float y, float z){
     mock().actualCall("glColor3f");
+}
+
+void glNormal3f( float x, float y, float z){
+    mock().actualCall("glNormal3f");
 }
 
 GLUquadric * gluNewQuadric(){
@@ -361,6 +377,40 @@ TEST(ModelTestGroup, VausIsWhatUC){
     delete gm;
 }
 
+TEST(ModelTestGroup, BrickIsWhatUC){
+    point3f red = RED;
+    point3i coords = {1,2,3};
+    point3f_t where = new point3f();
+    int t = BRIK_NORMAL;
+    mock().expectOneCall("Functions::fromcoords")
+            .withParameter("coords", &coords)
+            .andReturnValue((void *)where);
+
+    Brick * b = new Brick(&red, &coords, t);
+
+    mock().checkExpectations();
+    CHECK(b->active);
+    CHECK(b->type == BRIK_NORMAL);
+    CHECK(b->hit_counter == 1);
+    DOUBLES_EQUAL(b->rgb->x, 1.0f, FLOAT_PRECISION);
+    CHECK(b->hit_effect == 0);
+
+    mock().expectOneCall("glEnable");
+    mock().expectNCalls(2,"glDisable");
+    mock().expectOneCall("glScalef");
+    mock().expectNCalls(2,"glRotatef");
+    mock().expectOneCall("glColor3f");
+    mock().expectNCalls(62,"glNormal3f");
+    mock().expectNCalls(1,"glPushMatrix");
+    mock().expectNCalls(1,"glPopMatrix");
+    mock().expectNCalls(5, "glBegin");
+    mock().expectNCalls(92,"glVertex3f");
+    mock().expectNCalls(5,"glEnd");
+    b->animate(0.01f).display();
+    mock().checkExpectations();
+
+    delete b;
+}
 
 int main(int ac, char** av)
 {

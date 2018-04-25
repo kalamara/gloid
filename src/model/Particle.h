@@ -4,7 +4,7 @@
 class Particle: public WhatUC<Particle>{
     static const int life_max = 1500; //milliseconds
     static constexpr float speed_max = 10.0f; //per frame
-    static constexpr float rot_max = 0.1f * FULL_CIRCLE; //per frame
+    static constexpr float rot_max = 0.2f * HALF_CIRCLE; //per frame
 public:
     float side;
     point3f_t speed;

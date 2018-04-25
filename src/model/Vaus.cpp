@@ -7,6 +7,7 @@
 Vaus::Vaus(Game*g){
    game = g;
    armed = FALSE;
+   large = FALSE;
    warping = FALSE;
    rad = base_rad;
    setSize(2*base_rad, 2*base_rad, base_rad/2);

@@ -27,6 +27,29 @@ BOOL Functions::collision (float aLeft,
    }
 }
 
+// Compute the next power of two: 2^i < x <= 2^(i+1) = y
+int Functions::nextpoweroftwo(int x){
+   double y;
+
+   y = pow(2, ceil(log(x) / log(2)));
+   return (int)y;
+}
+
+// Calculate the moving average of <size> samples
+double Functions::moving_average(double x, double* a, int size){
+   int i;
+   double sum = x;
+
+   for(i = size - 1; i > 0; i--){
+      a[i] = a[i-1];
+      sum += a[i];
+   }
+   a[0] = x;
+
+   return sum / size;
+}
+/**<3<3<3<3<3<3<3******<3<3<3<3<3<3<3<*/
+
 // Calculate the norm of a 3-vector
 float Functions::res3f(float x, float y, float z){
    return sqrt(x*x + y*y + z*z);
@@ -64,39 +87,14 @@ point3f_t Functions::rand3f(float base){
    return final;
 }
 
-/**<3<3<3<3<3<3<3******<3<3<3<3<3<3<3<*/
-
-
-// Compute the next power of two: 2^i < x <= 2^(i+1) = y
-int Functions::nextpoweroftwo(int x){
-   double y;
-
-   y = pow(2, ceil(log(x) / log(2)));
-   return (int)y;
-}
-
-// Calculate the moving average of <size> samples
-double Functions::moving_average(double x, double* a, int size){
-   int i;
-   double sum = x;
-
-   for(i = size - 1; i > 0; i--){
-      a[i] = a[i-1];
-      sum += a[i];
-   }
-   a[0] = x;
-
-   return sum / size;
-}
-
-point3i Functions::coords(point3f place){
+point3i_t Functions::coords(const point3f_t place){
 	point3i axis;
 	div_t relative_x; //position in brick coords 
 	div_t relative_y;
 	div_t relative_z;
-	relative_x = div((int)(place.x + SCENE_MAX), INTX-1); //ball position in brick coords
-	relative_y = div((int)(place.y + SCENE_MAX), INTY-1); 
-	relative_z = div(2*(int)(abs(place.z)), (INTZ-1)/2); 
+    relative_x = div((int)(place->x + SCENE_MAX), INTX-1); //ball position in brick coords
+    relative_y = div((int)(place->y + SCENE_MAX), INTY-1);
+    relative_z = div(2*(int)(abs(place->z)), (INTZ-1)/2);
 	axis.X = relative_x.quot;
 	axis.Y = relative_y.quot;
 	axis.Z = relative_z.quot;
@@ -113,6 +111,15 @@ point3i Functions::coords(point3f place){
 		axis.Y = INTY;
 	if(axis.Z > INTZ)
 		axis.Z = INTZ;
-	return axis;
+    return new point3i(axis);
 }
 
+point3f_t Functions::fromcoords(const point3i_t coords){
+    point3f r = {
+        5.0f*coords->X + SCENE_MIN + 2.5f,
+        5.0f*coords->Y + SCENE_MIN + 2.5f,
+        - 2.5f*coords->Z - 1.25f
+    };
+
+    return new point3f(r);
+}

@@ -20,6 +20,8 @@ add_executable(model_test
     ${SUT}/model/Ball.cpp
     ${SUT}/model/Vaus.h
     ${SUT}/model/Vaus.cpp
+    ${SUT}/model/Brick.h
+    ${SUT}/model/Brick.cpp
 
     GameMock.h
     model_test.cpp)

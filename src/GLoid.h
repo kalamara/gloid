@@ -11,19 +11,20 @@
 #define FLOAT_PRECISION 0.000001
 #define ONE 1.0f
 #define ZERO 0.0f
-#define FULL_CIRCLE 360.0f;
+#define HALF_CIRCLE 180.0f
 
-#define RED     {1.0f, 0.0f, 0.0f}
-#define GREEN   {0.0f, 1.0f, 0.0f}
-#define BLUE    {0.0f, 0.0f, 1.0f}
-#define GRAY    {0.3f, 0.3f, 0.3f}
-#define WHITE   {1.0f, 1.0f, 1.0f}
-#define YELLOW  {1.0f, 1.0f, 0.0f}
-#define CYAN    {0.5f, 0.5f, 0.1f}
-#define MAGENTA {1.0f, 0.0f, 1.0f}
-#define BLACK   {0.0f, 0.0f, 0.0f}
-#define PALE_GRAY    {0.5f, 0.5f, 0.5f}
-
+#define RED         {1.0f, 0.0f, 0.0f}
+#define GREEN       {0.0f, 1.0f, 0.0f}
+#define BLUE        {0.0f, 0.0f, 1.0f}
+#define GRAY        {0.3f, 0.3f, 0.3f}
+#define WHITE       {1.0f, 1.0f, 1.0f}
+#define YELLOW      {1.0f, 1.0f, 0.0f}
+#define CYAN        {0.5f, 0.5f, 0.1f}
+#define MAGENTA     {1.0f, 0.0f, 1.0f}
+#define BLACK       {0.0f, 0.0f, 0.0f}
+#define PALE_GRAY   {0.5f, 0.5f, 0.5f}
+#define SILVER      {0.31f, 0.31f, 0.31f}
+#define GOLD        {0.37f, 0.41f, 0.0f}
 
 #define ALIENHOME  3  // Where aliens spawn
 #define BALLNUM    4  // Maximum number of balls in play
@@ -148,6 +149,10 @@
  17. Linux and Mac source packages thx. Thomas Kircher <tkircher@gnu.org> OK
  18. Thomas also fixed some other bugs                                    OK
  19. Transparent and 3d fonts (for pills)                                 OK
+ **********GLOID 2.1: *****************************************************
+ 1. refactoring and unit tests                                            OK
+ 2. cmake build system                                                    OK
+ 3. bugs and glitches fixed
 ****************************************************************************/
 
 // ENUMERATIONS
@@ -343,67 +348,6 @@ typedef struct hallentry
 
 #else
 
-class vauses: public WhatUC
-{
-public:
-   //BOOL explosion;      // explosion occurs ?
-   //int  explosion_life; // explosion duration
-   BOOL armed;  // type; on lazer mode left click fires
-   BOOL large;
-   BOOL warping;
-   BOOL fire;
-	
-   float speedx, speedy;
-   float base_rad, prevx, prevy, particle_rad;
-   point3f pal[VAUS_COLORS];
-   particles explosion[VAUS_PARTICLES]; 
-
-   void display(void);
-   void animate(int, int);
-   void enlarge(void);
-   void reset(void);
-
-   vauses()
-   {
-      int i;
-
-      // Grey
-      pal[0].x = 0.3f;
-      pal[0].y = 0.3f;
-      pal[0].z = 0.3f;
-
-      // Red
-      pal[1].x = 1.0f;
-      pal[1].y = 0.0f;
-      pal[1].z = 0.0f;
-
-      // Blue
-      pal[2].x = 0.0f;
-      pal[2].y = 0.0f;
-      pal[2].z = 1.0f;
-
-      // Light blue
-      pal[3].x = 0.5f;
-      pal[3].y = 0.5f;
-      pal[3].z = 1.0f;
-
-      armed = FALSE;
-      warping = FALSE;
-      base_rad = 2.5f;
-      particle_rad = 0.5f;
-
-      setsize(2*base_rad, 2*base_rad, base_rad/2);
-
-      speedx = speedy = 0;
-
-      for(i = 0; i < VAUS_PARTICLES; i++)
-         explosion[i] = particles();
-   }
-
-   ~vauses()
-   {
-   }
-};
 
 // Bonus pills
 class pills: public WhatUC
@@ -441,29 +385,6 @@ public:
    {
       SDL_FreeSurface(surf);
       SDL_FreeSurface(text.T);
-   }
-};
-
-class bricks: public WhatUC
-{
-public:
-   Uint32  hit_effect;   // What happens when the brick is hit
-   int     hit_counter;  // How many times has the brick been hit?
-   int     type;         // Type of brick: normal, silver, gold: 0, 1, 2
-   float   r, g, b;      // Colors imported from 3DSMax
-   point3f rgb;
-
-   int  init(float, float, float, int, int, int, int);
-   int  hit();
-   void display(Uint32);
-
-   bricks()
-   {
-      active = FALSE;
-   }
-
-   ~bricks()
-   {
    }
 };
 
