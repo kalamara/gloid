@@ -7,13 +7,11 @@ template<class T>
 
 class WhatUC{
 public:
-   BOOL active;
+   bool active = true;
    point3f place;
    point3f size;
 
    WhatUC(){
-      active = TRUE;
-
       memset(&place, 0, sizeof(point3f));
       memset(&size, 0, sizeof(point3f));
    }
@@ -35,5 +33,13 @@ public:
    //Builder patterns with animate and display
    virtual void display()=0;
    virtual T& animate(double secPerFrame)=0;
+   //if object collides with a rectangle
+   virtual bool collides(float left,
+                         float right,
+                         float up,
+                         float down){
+       return false;
+   }
+
 };
 #endif //_WHATUC_H_

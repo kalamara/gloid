@@ -13,18 +13,16 @@
 #define ZERO 0.0f
 #define HALF_CIRCLE 180.0f
 
-#define RED         {1.0f, 0.0f, 0.0f}
-#define GREEN       {0.0f, 1.0f, 0.0f}
-#define BLUE        {0.0f, 0.0f, 1.0f}
-#define GRAY        {0.3f, 0.3f, 0.3f}
-#define WHITE       {1.0f, 1.0f, 1.0f}
-#define YELLOW      {1.0f, 1.0f, 0.0f}
-#define CYAN        {0.5f, 0.5f, 0.1f}
-#define MAGENTA     {1.0f, 0.0f, 1.0f}
-#define BLACK       {0.0f, 0.0f, 0.0f}
-#define PALE_GRAY   {0.5f, 0.5f, 0.5f}
-#define SILVER      {0.31f, 0.31f, 0.31f}
-#define GOLD        {0.37f, 0.41f, 0.0f}
+//#define GREEN       {0.0f, 1.0f, 0.0f}
+//#define BLUE        {0.0f, 0.0f, 1.0f}
+//#define GRAY        {0.3f, 0.3f, 0.3f}
+//#define WHITE       {1.0f, 1.0f, 1.0f}
+//#define YELLOW      {1.0f, 1.0f, 0.0f}
+//#define CYAN        {0.5f, 0.5f, 0.1f}
+//#define MAGENTA     {1.0f, 0.0f, 1.0f}
+//#define BLACK       {0.0f, 0.0f, 0.0f}
+//#define PALE_GRAY   {0.5f, 0.5f, 0.5f}
+
 
 #define ALIENHOME  3  // Where aliens spawn
 #define BALLNUM    4  // Maximum number of balls in play
@@ -157,20 +155,8 @@
 
 // ENUMERATIONS
 
-// Bonus pills
-enum{
-   P,       // Grey:    Player life (kanonaki) 
-   B,       // Pink:    Boost to next level
-   E,       // Blue:    Enlarge
-   L,       // Red:     Lazer cannon
-   G,       // Green:   Glue
-   D,       // Magenta: Divide balls
-   S,       // Orange:  Slow
-   N_PILLS  // Number of pills
-};
-
 // Colors
-enum{
+typedef enum{
    RGB_GREY,
    RGB_PINK,
    RGB_BLUE,
@@ -182,7 +168,7 @@ enum{
    RGB_WHITE,
    RGB_BLACK,
    N_RGB_COLORS
-};
+}RGB_COLORS;
 
 // Bitmaps
 enum{

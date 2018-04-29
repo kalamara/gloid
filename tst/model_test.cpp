@@ -3,11 +3,13 @@
 #include "GLoid.h"
 #include "Functions.h"
 #include "Game.h"
+
 #include "model/WhatUC.h"
 #include "model/Particle.h"
 #include "model/Ball.h"
 #include "model/Vaus.h"
 #include "model/Brick.h"
+#include "model/Pill.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -15,24 +17,25 @@
 
 #include "GameMock.h"
 
+#define RED         {1.0f, 0.0f, 0.0f}
 
 using namespace std;
 
 TEST_GROUP(ModelTestGroup){
     void teardown(){
-            mock().clear();
+        mock().clear();
     }
 };
-
+//C++ libraries
 int rand() {
     return mock().actualCall("rand")
-                 .returnIntValue();
+            .returnIntValue();
 }
-
+//Functions
 point3f_t Functions::rand3f(float base) {
     return (point3f_t)mock().actualCall("Functions::rand3f")
-                            .withParameter("base", 10.0f)
-                            .returnPointerValue();
+            .withParameter("base", 10.0f)
+            .returnPointerValue();
 }
 
 point3f_t Functions::fromcoords(point3i_t coords){
@@ -41,16 +44,81 @@ point3f_t Functions::fromcoords(point3i_t coords){
             .withParameter("coords", (void *)coords)
             .returnPointerValue();
 }
-
+//Game
 void Game::playSound(int sound) {
     mock().actualCall("Game::playSound");
-          //  .withParameter("sound", WAV_LAUNCH);
+    //  .withParameter("sound", WAV_LAUNCH);
 }
 
 int Game::now() {
     mock().actualCall("Game::now");
 }
 
+bool Game::isHiScoring() {
+    mock().actualCall("Game::isHiScoring")
+            .returnBoolValue();
+}
+
+void Game::printText(bool option,
+                     text2d* text,
+                     SDL_Color fg,
+                     SDL_Color bg,
+                     int x,
+                     int y,
+                     const char* buf, ...){
+    mock().actualCall("Game::printText");
+}
+
+void Game::setBonusMode(int type){
+    mock().actualCall("Game::setBonusMode");
+}
+
+void Game::incLives(){
+    mock().actualCall("Game::setBonusMode");
+}
+
+void Game::divideBalls(){
+    mock().actualCall("Game::divideBalls");
+}
+
+//SDL
+struct SDL_Surface Surf;
+
+SDL_Surface * SDL_CreateRGBSurface
+(Uint32 flags, int width, int height, int depth,
+ Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask){
+    memset(&Surf, 0, sizeof(struct SDL_Surface));
+    mock().actualCall("SDL_CreateRGBSurface")
+            .returnPointerValueOrDefault(&Surf);
+    return &Surf;
+}
+
+int SDL_SetColorKey
+(SDL_Surface *surface, Uint32 flag, Uint32 key){
+    mock().actualCall("SDL_SetColorKey");
+}
+
+int SDL_FillRect
+(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color){
+    mock().actualCall("SDL_FillRect");
+}
+
+int SDL_UpperBlit
+(SDL_Surface *src, SDL_Rect *srcrect,
+ SDL_Surface *dst, SDL_Rect *dstrect){
+    mock().actualCall("SDL_UpperBlit");
+}
+
+void SDL_FreeSurface(SDL_Surface *surface){
+    mock().actualCall("SDL_FreeSurface");
+}
+Uint32 SDL_MapRGBA
+(const SDL_PixelFormat * const format,
+ const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a){
+    mock().actualCall("SDL_MapRGBA");
+}
+
+//OpenGL
 void glPushMatrix(){
     mock().actualCall("glPushMatrix");
 }
@@ -103,6 +171,27 @@ void glNormal3f( float x, float y, float z){
     mock().actualCall("glNormal3f");
 }
 
+void glTexEnvf( GLenum target, GLenum pname, GLfloat param ){
+    mock().actualCall("glTexEnvf");
+}
+
+void glTexParameteri( GLenum target, GLenum pname, GLint param ){
+    mock().actualCall("glTexParameteri");
+}
+
+void glTexImage2D( GLenum target, GLint level,
+                   GLint internalFormat,
+                   GLsizei width, GLsizei height,
+                   GLint border, GLenum format, GLenum type,
+                   const GLvoid *pixels ){
+    mock().actualCall("glTexImage2D");
+}
+
+void glMatrixMode( GLenum mode ){
+    mock().actualCall("glMatrixMode");
+}
+
+//OpenGL extensions
 GLUquadric * gluNewQuadric(){
     mock().actualCall("gluNewQuadric");
 }
@@ -113,6 +202,10 @@ void gluDeleteQuadric(GLUquadric * base){
 
 void gluQuadricDrawStyle (GLUquadric* quad, GLenum draw){
     mock().actualCall("gluQuadricDrawStyle");
+}
+
+void gluQuadricTexture (GLUquadric* quad, GLboolean texture){
+    mock().actualCall("gluQuadricTexture");
 }
 
 void gluSphere( GLUquadric * b, double r, int sl, int st){
@@ -132,19 +225,19 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     point3f red = RED;
 
     mock().expectOneCall("rand")
-          .andReturnValue(15000499);
+            .andReturnValue(15000499);
 
     mock().expectOneCall("Functions::rand3f")
-          .withParameter("base", 10.0f)
-          .andReturnValue(start_speed);
+            .withParameter("base", 10.0f)
+            .andReturnValue(start_speed);
 
     mock().expectOneCall("Functions::rand3f")
-          .withParameter("base", 10.0f)
-          .andReturnValue(start_rot);
+            .withParameter("base", 10.0f)
+            .andReturnValue(start_rot);
 
     mock().expectOneCall("Functions::rand3f")
-          .withParameter("base", 10.0f)
-          .andReturnValue(start_pos);
+            .withParameter("base", 10.0f)
+            .andReturnValue(start_pos);
 
     Particle *p = new Particle(start_pos, &red, ONE);
 
@@ -179,7 +272,7 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
 
     //should have setters implemented
     *p = p->setSize(1.0f, 2.0f, 3.0f)
-           .setPlace(-1.0f, -2.0f, -3.0f);
+            .setPlace(-1.0f, -2.0f, -3.0f);
 
     DOUBLES_EQUAL(1.0f, p->size.x, FLOAT_PRECISION);
     DOUBLES_EQUAL(2.0f, p->size.y, FLOAT_PRECISION);
@@ -215,9 +308,11 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     *p = p->animate(0.49f);
     CHECK_FALSE(p->active)
     delete p;
+    mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, BallIsWhatUC){
+    mock().expectOneCall("gluNewQuadric");
     Ball *b = new Ball();
     CHECK_FALSE(b->active);
     CHECK_FALSE(b->launched);
@@ -244,11 +339,13 @@ TEST(ModelTestGroup, BallIsWhatUC){
     //should have animate and mock display in place
     //inactive, do nothing
     b->animate(0.01f).display();
-
+    mock().expectOneCall("gluDeleteQuadric");
     delete b;
+    mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, BallAnimation){
+    mock().expectOneCall("gluNewQuadric");
     Ball *b = new Ball();
     //reinit inits
     point3f init = {ONE, 2*ONE, 3*ONE};
@@ -271,13 +368,11 @@ TEST(ModelTestGroup, BallAnimation){
 
     //now it is displayable, but only animates following the vaus
 
-    mock().expectOneCall("gluNewQuadric");
     mock().expectNCalls(2,"glPushMatrix");
     mock().expectOneCall("glTranslatef");
     mock().expectOneCall("glColor3f");
     mock().expectOneCall("gluSphere");
     mock().expectNCalls(2,"glPopMatrix");
-    mock().expectOneCall("gluDeleteQuadric");
 
     b->animate(0.01f).display();
     mock().checkExpectations();
@@ -287,7 +382,7 @@ TEST(ModelTestGroup, BallAnimation){
     //launch launches
 
     mock().expectOneCall("Game::playSound");
-           // .withParameter("sound", WAV_LAUNCH);
+    // .withParameter("sound", WAV_LAUNCH);
     *b = b->launch();
 
     CHECK(b->launched);
@@ -303,14 +398,16 @@ TEST(ModelTestGroup, BallAnimation){
     //if on an alien, ricochet
     //if on vaus, bounce
     //if on wall, bounce
-
+    mock().expectOneCall("gluDeleteQuadric");
     delete b;
+    mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, VausIsWhatUC){
     GameMock * gm = new GameMock();//GameMock::instance();
     mousecntl_t mou = new mousecntl(400,300, FALSE);
     screen_t scr = new screen(800, 600, 32);
+    mock().expectOneCall("gluNewQuadric");
     Vaus *v = new Vaus(gm);
     //
     gm->mouse = mou;
@@ -325,7 +422,7 @@ TEST(ModelTestGroup, VausIsWhatUC){
     DOUBLES_EQUAL(5.0f, v->size.y, FLOAT_PRECISION);
     DOUBLES_EQUAL(1.25f, v->size.z, FLOAT_PRECISION);
 
-    mock().expectOneCall("gluNewQuadric");
+
     mock().expectOneCall("gluQuadricDrawStyle");
     mock().expectNCalls(10,"glPushMatrix");
     mock().expectNCalls(10,"glTranslatef");
@@ -338,7 +435,7 @@ TEST(ModelTestGroup, VausIsWhatUC){
     mock().expectNCalls(10,"glPopMatrix");
     mock().expectNCalls(8,"glColor3f");
     mock().expectNCalls(4,"gluCylinder");
-    mock().expectOneCall("gluDeleteQuadric");
+
     v->animate(0.01f).display();
 
     DOUBLES_EQUAL(0.0f, v->place.x, FLOAT_PRECISION);
@@ -347,7 +444,7 @@ TEST(ModelTestGroup, VausIsWhatUC){
     //enlarge should enlarge and play enlarge
     gm->bonusMode = E;
     mock().expectOneCall("Game::playSound");
-           //.withParameter("sound", WAV_ENLARGE);
+    //.withParameter("sound", WAV_ENLARGE);
 
     *v = v->animate(0.01f);
     CHECK(v->large);
@@ -373,8 +470,10 @@ TEST(ModelTestGroup, VausIsWhatUC){
 
     delete mou;
     delete scr;
+    mock().expectOneCall("gluDeleteQuadric");
     delete v;
     delete gm;
+    mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, BrickIsWhatUC){
@@ -410,6 +509,76 @@ TEST(ModelTestGroup, BrickIsWhatUC){
     mock().checkExpectations();
 
     delete b;
+}
+
+TEST(ModelTestGroup, PillIsWhatUC){
+    GameMock * gm = new GameMock();
+    mock().expectOneCall("gluNewQuadric");
+    Vaus *v = new Vaus(gm);
+    point3f_t start_pos = new point3f(ONE, ONE, -20.0f);
+    gm->vaus = v;
+
+    mock().expectOneCall("Game::isHiScoring")
+            .andReturnValue(false);
+    mock().expectOneCall("rand")
+            .andReturnValue(1500);
+    mock().expectNCalls(2, "SDL_CreateRGBSurface")
+            .andReturnValue(&Surf);
+
+    mock().expectNCalls(2, "SDL_MapRGBA");
+    mock().expectOneCall("SDL_SetColorKey");
+    mock().expectOneCall("SDL_FillRect");
+    mock().expectOneCall("Game::printText");
+    mock().expectOneCall("SDL_UpperBlit");
+    mock().expectOneCall("gluNewQuadric");
+    Pill *p = new Pill(start_pos, gm);
+    //rand returned 1500 < RAND_MAX/20
+    //and low scoring game => type should be L
+    CHECK(p->active)
+    CHECK(p->type==L);
+    mock().checkExpectations();
+
+    mock().expectOneCall("glEnable");
+    mock().expectOneCall("glTexEnvf");
+    mock().expectOneCall("glDisable");
+    mock().expectNCalls(2,"glMatrixMode");
+    mock().expectOneCall("glTexImage2D");
+    mock().expectOneCall("glTexParameteri");
+    mock().expectNCalls(6,"glPushMatrix");
+    mock().expectNCalls(4,"glRotatef");
+    mock().expectNCalls(4,"glTranslatef");
+    mock().expectNCalls(2,"glColor3f");
+    mock().expectOneCall("gluCylinder");
+    mock().expectNCalls(2,"gluSphere");
+    mock().expectNCalls(6,"glPopMatrix");
+    mock().expectOneCall("gluQuadricTexture");
+
+    p->animate(0.01f).display();
+    mock().checkExpectations();
+
+    //should approach player at speed 10.0 * 0.01
+    //started at 20.0f
+    DOUBLES_EQUAL(p->place.z, -19.9f, FLOAT_PRECISION);
+    //should rotate at speed 360.0 * 0.01
+    DOUBLES_EQUAL(p->rotx, 3.6f, FLOAT_PRECISION);
+
+    p->setPlace(ONE, ONE, ZERO);
+    //pill has reached vaus
+    mock().expectOneCall("Game::setBonusMode");
+    *p = p->animate(0.01f);
+    CHECK(!p->active);
+
+
+    mock().expectNCalls(2, "SDL_FreeSurface");
+    mock().expectOneCall("gluDeleteQuadric");
+    delete p;
+    mock().checkExpectations();
+
+    mock().expectOneCall("gluDeleteQuadric");
+    delete v;
+    delete gm;
+    delete start_pos;
+    mock().checkExpectations();
 }
 
 int main(int ac, char** av)

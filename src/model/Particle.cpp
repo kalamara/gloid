@@ -10,7 +10,7 @@ Particle::Particle(const point3f_t where,
                    float len){
     setPlace(where->x, where->y, where->z);
     life_total = rand() % life_max + 1;
-    life_fraction = ONE;
+
     speed = rand3f(speed_max);
     rotspeed = rand3f(rot_max);
     rotation = rand3f(rot_max);

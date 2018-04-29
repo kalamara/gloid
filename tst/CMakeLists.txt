@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(gloid_test)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_library(CPPUTEST CppUTest)
@@ -22,7 +22,8 @@ add_executable(model_test
     ${SUT}/model/Vaus.cpp
     ${SUT}/model/Brick.h
     ${SUT}/model/Brick.cpp
-
+    ${SUT}/model/Pill.h
+    ${SUT}/model/Pill.cpp
     GameMock.h
     model_test.cpp)
 

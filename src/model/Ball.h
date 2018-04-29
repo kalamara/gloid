@@ -9,8 +9,7 @@ class Ball: public WhatUC<Ball>{
     static const int stacks = 12;
 
 public:
-    float rad;
-    BOOL launched;
+    bool launched = false;
     int nextaxis;
     point3f_t speed;
     point3f_t nextbounce;
@@ -26,6 +25,9 @@ public:
     Ball& launch();
     Ball& reinit(const point3f_t init);
     Ball& bounce(point3f_t x);
+private:
+     float rad;
+     GLUquadricObj* base;
 };
 
 #endif //_BALL_H_

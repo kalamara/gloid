@@ -7,7 +7,7 @@
 Brick::Brick(const point3f_t color,
              const point3i_t coords,
              int t){
-            active = TRUE; //FALSE;
+            active = true; //FALSE;
             type = t;
             struct point3f gold = GOLD;
             struct point3f silver = SILVER;
@@ -27,8 +27,6 @@ Brick::Brick(const point3f_t color,
                     rgb = new point3f(color);
                     break;
             }
-
-            hit_effect = 0;
             setSize(side, side, depth);
             point3f_t where = Functions::fromcoords(coords);
             setPlace(where->x, where->y, where->z);
@@ -86,8 +84,7 @@ int Brick::hit(){
 
 // Display bricks
 void Brick::display(){
-   if(active)
-   {
+   if(active){
       glEnable(GL_BLEND);
       glPushMatrix();
       glRotatef(HALF_CIRCLE, ZERO, ZERO, ONE);
@@ -95,13 +92,10 @@ void Brick::display(){
       glScalef(size.x, size.y, size.z);
 
       // Normal brick
-      if(type == 0 || Game::now() - hit_effect < duration)
-      {
+      if(type == 0 || Game::now() - hit_effect < duration){
          glDisable(GL_BLEND);
          glColor3f(rgb->x, rgb->y, rgb->z);
-      }
-      else
-      {
+      }else{
          hit_effect = 0;
          glColor4f(rgb->x, rgb->y, rgb->z, opacity);
       }
@@ -115,10 +109,51 @@ Brick& Brick::animate(double secPerFrame){
     return *this;
 }
 
-void Brick::solidRhombik(float side){
+point3f_t Brick::computeVertex(int tog,
+                          int dir,
+                          int dim,
+                          int neg,
+                          point3f_t vertex)
+{
     float unary = side/2.0f;	//unit
-    //big	 = (1.0f+sqrt(2.0f))*unary;//unit * (1+v2)
     float big = unary*1.5f;
+    switch(dim){
+    case 0:
+        vertex->z = (1-2*dir)*big;
+        if(dir==0){
+            vertex->y = (2*neg-1)*unary;
+            vertex->x = -vertex->y*(2*tog-1);
+        }else{
+            vertex->x = (2*neg-1)*unary;
+            vertex->y = -vertex->x*(2*tog-1);
+        }
+        break;
+    case 1:
+        vertex->y = (1-2*dir)*big;
+        if(dir==0){
+            vertex->x = (2*neg-1)*unary;
+            vertex->z = -vertex->x*(2*tog-1);
+        }else{
+            vertex->z = (2*neg-1)*unary;
+            vertex->x = -vertex->z*(2*tog-1);
+        }
+        break;
+    case 2:
+        vertex->x =(1-2*dir)*big;
+        if(dir==0){
+            vertex->z = (2*neg-1)*unary;
+            vertex->y = -vertex->z*(2*tog-1);
+        }else{
+            vertex->y = (2*neg-1)*unary;
+            vertex->z = -vertex->y*(2*tog-1);
+        }
+        break;
+    }
+    return vertex;
+}
+
+void Brick::solidRhombik(float side){
+
     point3f vertice[24], face[6];
     int path[18]  = {3,0,2,1,18,19,17,16,6,7,5,4,23,20,22,21,3,0};
     int toppath[19] = {17,11,18,10, 2,10,3,9,22, 8,23, 5,6, 8,17,11,10, 8, 9};
@@ -167,51 +202,18 @@ void Brick::solidRhombik(float side){
         for(int dir = 0; dir<2;dir++){
             int i = 2*dim+dir;
             switch(dim){
-            case 0:	face[i].z = 1.0f-2*dir;
+            case 0:	face[i].z = ONE-2*dir;
                 break;
-            case 1: face[i].y = 1.0f-2*dir;
+            case 1: face[i].y = ONE-2*dir;
                 break;
-            case 2: face[i].x = 1.0f-2*dir;
+            case 2: face[i].x = ONE-2*dir;
                 break;
             }
             glNormal3f( face[i].x, face[i].y, face[i].z);		// Normal Facing
             for(int neg = 0; neg <2; neg ++){
                 for(int tog = 0; tog <2; tog++){
                     int j = 4*i+2*neg+tog;
-                    switch(dim){
-                    case 0:
-                        vertice[j].z = (1-2*dir)*big;
-                        if(dir==0){
-                            vertice[j].y = (2*neg-1)*unary;
-                            vertice[j].x = -vertice[j].y*(2*tog-1);
-                        }else{
-                            vertice[j].x = (2*neg-1)*unary;
-                            vertice[j].y = -vertice[j].x*(2*tog-1);
-                        }
-                        break;
-                    case 1:
-                        vertice[j].y = (1-2*dir)*big;
-                        if(dir==0){
-                            vertice[j].x = (2*neg-1)*unary;
-                            vertice[j].z = -vertice[j].x*(2*tog-1);
-                        }else{
-                            vertice[j].z = (2*neg-1)*unary;
-                            vertice[j].x = -vertice[j].z*(2*tog-1);
-                        }
-                        break;
-                    case 2:
-                        vertice[j].x =(1-2*dir)*big;
-                        if(dir==0){
-                            vertice[j].z = (2*neg-1)*unary;
-                            vertice[j].y = -vertice[j].z*(2*tog-1);
-                        }else{
-                            vertice[j].y = (2*neg-1)*unary;
-                            vertice[j].z = -vertice[j].y*(2*tog-1);
-                        }
-                        break;
-                    }
-                    //glVertex3f(vertice[j].x, vertice[j].y,  vertice[j].z);
-                    //Log(" E[%d] = (%g,%g,%g) V[%d] = (%g,%g,%g)\n", i, face[i].x, face[i].y, face[i].z, j, vertice[j].x, vertice[j].y, vertice[j].z );
+                    vertice[j] = computeVertex(tog, dir, dim, neg, &(vertice[j]));
                 }
             }
         }

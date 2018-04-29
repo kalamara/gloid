@@ -12,10 +12,10 @@ Ball::Ball(){
     nextspeed = new point3f(ZERO, ZERO, ZERO);
     initspeed = new point3f(initX, initX, 2*initX);
     launchspeed = new point3f(initspeed);
-    active = FALSE;
-    launched = FALSE;
+    active = false;
     rad = base_rad;
     setSize(2*rad, 2*rad, 2*rad);
+    base = gluNewQuadric();
 }
 
 Ball::~Ball(){
@@ -24,12 +24,13 @@ Ball::~Ball(){
     delete nextspeed;
     delete initspeed;
     delete nextbounce;
+    gluDeleteQuadric(base);
 }
 
 void Ball::display(){
-    GLUquadricObj* base = NULL;
+
     if(active){
-        base = gluNewQuadric();
+
         glPushMatrix();
             glTranslatef(place.x, place.y, place.z);
             glPushMatrix();
@@ -37,7 +38,7 @@ void Ball::display(){
                 gluSphere(base, rad, slices, stacks);
             glPopMatrix();
         glPopMatrix();
-        gluDeleteQuadric(base);
+
     }
 }
 
@@ -47,9 +48,9 @@ Ball& Ball::animate(double secPerFrame){
 
 Ball& Ball::reinit(const point3f_t init){
     if(!active){
-          active = TRUE;
+          active = true;
     }
-    launched = FALSE;
+    launched = false;
     memset(speed, 0, sizeof(point3f));
     memset(nextbounce, 0, sizeof(point3f));
     launchspeed = launchspeed->deepcopy(init);
@@ -61,7 +62,7 @@ Ball& Ball::reinit(const point3f_t init){
 // Launch ball
 Ball& Ball::launch(){
    if(!launched){
-      launched = TRUE;
+      launched = true;
       speed = speed->deepcopy(launchspeed);
       Game::playSound(WAV_LAUNCH);
    }

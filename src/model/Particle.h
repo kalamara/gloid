@@ -12,7 +12,7 @@ public:
     point3f_t rotspeed;
     point3f_t rgb;
 
-    float life_fraction;  // From 0 to 1
+    float life_fraction = ONE;  // From 0 to 1
     int life_total;       // In milliseconds
 
     Particle(const point3f_t where,

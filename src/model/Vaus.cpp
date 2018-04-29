@@ -3,36 +3,35 @@
 #include "Vaus.h"
 #include "Game.h"
 #include "Functions.h"
+#include "Pill.h"
 
-Vaus::Vaus(Game*g){
+Vaus::Vaus(Game* g){
    game = g;
-   armed = FALSE;
-   large = FALSE;
-   warping = FALSE;
    rad = base_rad;
    setSize(2*base_rad, 2*base_rad, base_rad/2);
+   base = gluNewQuadric();
    //speedx = speedy = ZERO;
 }
 Vaus::~Vaus(){
-
+    gluDeleteQuadric(base);
 }
 
 // Make Vaus larger
 Vaus& Vaus::enlarge(){
-   if(large == FALSE){
-      large = TRUE;
+   if(large == false){
+      large = true;
       Game::playSound(WAV_ENLARGE);
    }
    return *this;
 }
 
 Vaus& Vaus::reset(){
-   active = TRUE;
-   large = FALSE;
-   armed = FALSE;
-   warping = FALSE;
-   place.x = 0.0f;
-   place.y = 0.0f;
+   active = true;
+   large = false;
+   armed = false;
+   warping = false;
+   place.x = ZERO;
+   place.y = ZERO;
 
    return *this;
 }
@@ -40,9 +39,7 @@ Vaus& Vaus::reset(){
 void Vaus::display(){
     int rot, dir;
     point3f paparia;
-    GLUquadricObj* base = NULL;
 
-    base = gluNewQuadric();
     gluQuadricDrawStyle(base, GLU_FILL);
     glPushMatrix();
     glTranslatef(place.x,place.y,0.0f);
@@ -96,7 +93,6 @@ void Vaus::display(){
         }
     }
     glPopMatrix();
-    gluDeleteQuadric(base);
 }
 
 // Make Vaus follow the mouse
@@ -131,7 +127,7 @@ Vaus& Vaus::animate(double secPerFrame){
          break;
 
       case L:
-         armed = TRUE;
+         armed = true;
          break;
 
       default:
