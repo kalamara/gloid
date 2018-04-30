@@ -1,17 +1,18 @@
 #include "GLoid.h"
+#include "Point.h"
 #include "Game.h"
 #include "WhatUC.h"
 #include "Vaus.h"
-#include "Functions.h"
+
 #include "Pill.h"
 
-Pill::Pill(const point3f_t where, Game* g){
+Pill::Pill(const Point3f &where, Game* g){
     game = g;
     vaus = g->vaus;//getVaus();
     setSize(5.0f, 2*rad, 2*rad);
-    setPlace(where->x,
-             where->y,
-             where->z);
+    setPlace(where.x,
+             where.y,
+             where.z);
     SDL_Color b;
     SDL_Color f;
     base = gluNewQuadric();

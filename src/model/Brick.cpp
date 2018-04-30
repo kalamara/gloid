@@ -1,41 +1,41 @@
 #include "GLoid.h"
+#include "Point.h"
 #include "WhatUC.h"
-#include "Brick.h"
-#include "Functions.h"
 #include "Game.h"
 
-Brick::Brick(const point3f_t color,
-             const point3i_t coords,
+#include "Brick.h"
+
+
+
+Brick::Brick(const Point3f &color,
+             const Point3i &coords,
              int t){
             active = true; //FALSE;
             type = t;
-            struct point3f gold = GOLD;
-            struct point3f silver = SILVER;
+            Point3f gold = GOLD;
+            Point3f silver = SILVER;
             switch(type){
                 case BRIK_GOLDEN:
                     hit_counter = 0;
-                    rgb = new point3f(&gold);
+                    rgb =  Point3f(gold);
                     break;
 
                 case BRIK_SILVER:
                     hit_counter = 2;
-                    rgb = new point3f(&silver);
+                    rgb =  Point3f(silver);
                     break;
 
                 default:
                     hit_counter = 1;
-                    rgb = new point3f(color);
+                    rgb = Point3f(color);
                     break;
             }
             setSize(side, side, depth);
-            point3f_t where = Functions::fromcoords(coords);
-            setPlace(where->x, where->y, where->z);
-
-            delete where;
+            Point3f where = Point3f(coords);
+            setPlace(where.x, where.y, where.z);
 }
 
 Brick::~Brick(){
-    delete rgb;
 }
 
 // Brick was hit by ball or shot
@@ -94,10 +94,10 @@ void Brick::display(){
       // Normal brick
       if(type == 0 || Game::now() - hit_effect < duration){
          glDisable(GL_BLEND);
-         glColor3f(rgb->x, rgb->y, rgb->z);
+         glColor3f(rgb.x, rgb.y, rgb.z);
       }else{
          hit_effect = 0;
-         glColor4f(rgb->x, rgb->y, rgb->z, opacity);
+         glColor4f(rgb.x, rgb.y, rgb.z, opacity);
       }
       solidRhombik(ONE);
       glPopMatrix();
@@ -109,43 +109,43 @@ Brick& Brick::animate(double secPerFrame){
     return *this;
 }
 
-point3f_t Brick::computeVertex(int tog,
+Point3f Brick::computeVertex(int tog,
                           int dir,
                           int dim,
                           int neg,
-                          point3f_t vertex)
+                          Point3f& vertex)
 {
     float unary = side/2.0f;	//unit
     float big = unary*1.5f;
     switch(dim){
     case 0:
-        vertex->z = (1-2*dir)*big;
+        vertex.z = (1-2*dir)*big;
         if(dir==0){
-            vertex->y = (2*neg-1)*unary;
-            vertex->x = -vertex->y*(2*tog-1);
+            vertex.y = (2*neg-1)*unary;
+            vertex.x = -vertex.y*(2*tog-1);
         }else{
-            vertex->x = (2*neg-1)*unary;
-            vertex->y = -vertex->x*(2*tog-1);
+            vertex.x = (2*neg-1)*unary;
+            vertex.y = -vertex.x*(2*tog-1);
         }
         break;
     case 1:
-        vertex->y = (1-2*dir)*big;
+        vertex.y = (1-2*dir)*big;
         if(dir==0){
-            vertex->x = (2*neg-1)*unary;
-            vertex->z = -vertex->x*(2*tog-1);
+            vertex.x = (2*neg-1)*unary;
+            vertex.z = -vertex.x*(2*tog-1);
         }else{
-            vertex->z = (2*neg-1)*unary;
-            vertex->x = -vertex->z*(2*tog-1);
+            vertex.z = (2*neg-1)*unary;
+            vertex.x = -vertex.z*(2*tog-1);
         }
         break;
     case 2:
-        vertex->x =(1-2*dir)*big;
+        vertex.x =(1-2*dir)*big;
         if(dir==0){
-            vertex->z = (2*neg-1)*unary;
-            vertex->y = -vertex->z*(2*tog-1);
+            vertex.z = (2*neg-1)*unary;
+            vertex.y = -vertex.z*(2*tog-1);
         }else{
-            vertex->y = (2*neg-1)*unary;
-            vertex->z = -vertex->y*(2*tog-1);
+            vertex.y = (2*neg-1)*unary;
+            vertex.z = -vertex.y*(2*tog-1);
         }
         break;
     }
@@ -154,7 +154,7 @@ point3f_t Brick::computeVertex(int tog,
 
 void Brick::solidRhombik(float side){
 
-    point3f vertice[24], face[6];
+    Point3f vertice[24], face[6];
     int path[18]  = {3,0,2,1,18,19,17,16,6,7,5,4,23,20,22,21,3,0};
     int toppath[19] = {17,11,18,10, 2,10,3,9,22, 8,23, 5,6, 8,17,11,10, 8, 9};
     int botpath[19] = {15,12,14,13,16,12,7,4,20,12,21,15,0,14,1 ,14,19,13,16};
@@ -213,7 +213,7 @@ void Brick::solidRhombik(float side){
             for(int neg = 0; neg <2; neg ++){
                 for(int tog = 0; tog <2; tog++){
                     int j = 4*i+2*neg+tog;
-                    vertice[j] = computeVertex(tog, dir, dim, neg, &(vertice[j]));
+                    vertice[j] = computeVertex(tog, dir, dim, neg, vertice[j]);
                 }
             }
         }

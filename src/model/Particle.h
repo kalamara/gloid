@@ -1,5 +1,6 @@
 #ifndef _PARTICLE_H_
 #define _PARTICLE_H_
+class Point3f;
 
 class Particle: public WhatUC<Particle>{
     static const int life_max = 1500; //milliseconds
@@ -7,16 +8,16 @@ class Particle: public WhatUC<Particle>{
     static constexpr float rot_max = 0.2f * HALF_CIRCLE; //per frame
 public:
     float side;
-    point3f_t speed;
-    point3f_t rotation;
-    point3f_t rotspeed;
-    point3f_t rgb;
+    Point3f speed;
+    Point3f rotation;
+    Point3f rotspeed;
+    Point3f rgb;
 
     float life_fraction = ONE;  // From 0 to 1
     int life_total;       // In milliseconds
 
-    Particle(const point3f_t where,
-            const point3f_t color,
+    Particle(const Point3f & where,
+            const Point3f & color,
             float len);
     ~Particle();
     void display();

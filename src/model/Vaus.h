@@ -2,8 +2,8 @@
 #define _VAUS_H
 
 class Vaus: public WhatUC<Vaus>{
-   static constexpr float  base_rad = 2.5f;
-   static constexpr float  particle_rad = 0.5f;
+   static constexpr float  baseRad = 2.5f;
+   static constexpr float  particleRad = 0.5f;
    class Game * game;
 public:
    // type; on lazer mode left click fires

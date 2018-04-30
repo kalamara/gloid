@@ -1,7 +1,7 @@
 //#include <list>
 
 #include "GLoid.h"
-#include "Functions.h"
+#include "Point.h"
 #include "Game.h"
 
 #include "model/WhatUC.h"
@@ -32,18 +32,24 @@ int rand() {
             .returnIntValue();
 }
 //Functions
-point3f_t Functions::rand3f(float base) {
-    return (point3f_t)mock().actualCall("Functions::rand3f")
-            .withParameter("base", 10.0f)
-            .returnPointerValue();
+/*
+Point3f::Point3f(float base){
+    mock().actualCall("Point3f::Point3f");
+}
+*/
+Point3f::Point3f(const Point3i& other){
+    mock().actualCall("Point3f::Point3f");
+}
+/*
+float Point3f::res3f(){
+    return mock().actualCall("Point3f::res3f")
+            .returnDoubleValue();
+}
+*/
+Point3f Point3f::chase(const Point3f& other, float U){
+    mock().actualCall("Point3f::chase");
 }
 
-point3f_t Functions::fromcoords(point3i_t coords){
-    //point3i p = {1,2,3};
-    return (point3f_t)mock().actualCall("Functions::fromcoords")
-            .withParameter("coords", (void *)coords)
-            .returnPointerValue();
-}
 //Game
 void Game::playSound(int sound) {
     mock().actualCall("Game::playSound");
@@ -57,6 +63,30 @@ int Game::now() {
 bool Game::isHiScoring() {
     mock().actualCall("Game::isHiScoring")
             .returnBoolValue();
+}
+
+unsigned int Game::levelType(){
+    mock().actualCall("Game::levelType")
+            .returnIntValue();
+    return 0;
+}
+
+Ball * Game::getActiveBall(){
+    mock().actualCall("Game::getActiveBall");
+    return NULL;
+}
+
+Brick * Game::getBrickAt(Point3f &where){
+    mock().actualCall("Game::getBrickAt");
+    return NULL;
+}
+
+void gluQuadricOrientation(GLUquadric* quad, GLenum orientation){
+    mock().actualCall("gluQuadricOrientation");
+}
+
+void gluDisk(GLUquadric* quad, GLdouble inner, GLdouble outer, GLint slices, GLint loops){
+    mock().actualCall("gluDisk");
 }
 
 void Game::printText(bool option,
@@ -218,28 +248,16 @@ void gluCylinder (GLUquadric* quad, double base, double top, double height, int 
 
 
 TEST(ModelTestGroup, ParticleIsWhatUC){
-    point3f_t start_pos = new point3f(ONE, ONE, ONE);
-    point3f_t start_rot = new point3f(2*ONE, 2*ONE, 2*ONE);
-    point3f_t start_speed = new point3f(3*ONE, 3*ONE, 3*ONE);
+    Point3f start_pos = Point3f(ONE, ONE, ONE);
+    Point3f start_rot = Point3f(2*ONE, 2*ONE, 2*ONE);
+    Point3f start_speed = Point3f(3*ONE, 3*ONE, 3*ONE);
 
-    point3f red = RED;
+    Point3f red = RED;
 
-    mock().expectOneCall("rand")
+    mock().expectNCalls(10,"rand")
             .andReturnValue(15000499);
-
-    mock().expectOneCall("Functions::rand3f")
-            .withParameter("base", 10.0f)
-            .andReturnValue(start_speed);
-
-    mock().expectOneCall("Functions::rand3f")
-            .withParameter("base", 10.0f)
-            .andReturnValue(start_rot);
-
-    mock().expectOneCall("Functions::rand3f")
-            .withParameter("base", 10.0f)
-            .andReturnValue(start_pos);
-
-    Particle *p = new Particle(start_pos, &red, ONE);
+    //mock().expectNCalls(3,"Point3f::Point3f");
+    Particle *p = new Particle(start_pos, red, ONE);
 
     mock().checkExpectations();
 
@@ -248,38 +266,20 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
 
     //should explode randomly
     CHECK(p->active);
-    DOUBLES_EQUAL(1.0f, p->place.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.0f, p->place.y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.0f, p->place.z, FLOAT_PRECISION);
+    CHECK(p->place.eq(Point3f(ONE, ONE, ONE)));
 
-    DOUBLES_EQUAL(3.0f, p->speed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(3.0f, p->speed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(3.0f, p->speed->z, FLOAT_PRECISION);
-
-    DOUBLES_EQUAL(2.0f, p->rotspeed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(2.0f, p->rotspeed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(2.0f, p->rotspeed->z, FLOAT_PRECISION);
-
-    DOUBLES_EQUAL(1.0f, p->rotation->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.0f, p->rotation->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.0f, p->rotation->z, FLOAT_PRECISION);
+//    CHECK(p->speed.eq(Point3f(3.0f, 3.0f, 3.0f)));
+//    CHECK(p->rotspeed.eq(Point3f(2.0f, 2.0f, 2.0f)));
+//    CHECK(p->rotation.eq(Point3f(ONE, ONE, ONE)));
 
     DOUBLES_EQUAL(1.0f, p->side, FLOAT_PRECISION);
-
-    DOUBLES_EQUAL(1.0f, p->rgb->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, p->rgb->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, p->rgb->z, FLOAT_PRECISION);
+    CHECK(p->rgb.eq(Point3f(ONE, ZERO, ZERO)));
 
     //should have setters implemented
     *p = p->setSize(1.0f, 2.0f, 3.0f)
             .setPlace(-1.0f, -2.0f, -3.0f);
-
-    DOUBLES_EQUAL(1.0f, p->size.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(2.0f, p->size.y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(3.0f, p->size.z, FLOAT_PRECISION);
-    DOUBLES_EQUAL(-1.0f, p->place.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(-2.0f, p->place.y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(-3.0f, p->place.z, FLOAT_PRECISION);
+    CHECK(p->size.eq(Point3f(ONE, 2.0f, 3.0f)));
+    CHECK(p->place.eq(Point3f(-ONE, -2.0f, -3.0f)));
 
     //should have animate and mock display in place
     mock().expectOneCall("glPushMatrix");
@@ -295,14 +295,15 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     mock().checkExpectations();
 
     //x, y should increment, z should decrement by speed
-    DOUBLES_EQUAL(-0.97f, p->place.x, FLOAT_PRECISION);
+    /*DOUBLES_EQUAL(-0.97f, p->place.x, FLOAT_PRECISION);
     DOUBLES_EQUAL(-1.97f, p->place.y, FLOAT_PRECISION);
     DOUBLES_EQUAL(-3.03f, p->place.z, FLOAT_PRECISION);
 
-    DOUBLES_EQUAL(1.02f, p->rotation->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.02f, p->rotation->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.98f, p->rotation->z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.02f, p->rotation.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.02f, p->rotation.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.98f, p->rotation.z, FLOAT_PRECISION);
     //remaining life should decrease by x seconds
+    */
     DOUBLES_EQUAL(0.98f, p->life_fraction, FLOAT_PRECISION);
     //when time expires particle is deactivated
     *p = p->animate(0.49f);
@@ -317,24 +318,11 @@ TEST(ModelTestGroup, BallIsWhatUC){
     CHECK_FALSE(b->active);
     CHECK_FALSE(b->launched);
 
-    DOUBLES_EQUAL(1.25f, b->size.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.25f, b->size.y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.25f, b->size.z, FLOAT_PRECISION);
-
-    DOUBLES_EQUAL(0.0f, b->speed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->speed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->speed->z, FLOAT_PRECISION);
-
-    DOUBLES_EQUAL(0.0f, b->nextbounce->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->nextbounce->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->nextbounce->z, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->nextspeed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->nextspeed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->nextspeed->z, FLOAT_PRECISION);
-    DOUBLES_EQUAL(10.0f, b->launchspeed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(10.0f, b->launchspeed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(20.0f, b->launchspeed->z, FLOAT_PRECISION);
-
+    CHECK(b->size.eq(Point3f(1.25f, 1.25f, 1.25f)));
+    CHECK(b->speed.eq(Point3f()));
+    CHECK(b->nextbounce.eq(Point3f()));
+    CHECK(b->nextspeed.eq(Point3f()));
+    CHECK(b->launchspeed.eq(Point3f(10.0f, 10.0f, 20.0f)));
 
     //should have animate and mock display in place
     //inactive, do nothing
@@ -348,24 +336,15 @@ TEST(ModelTestGroup, BallAnimation){
     mock().expectOneCall("gluNewQuadric");
     Ball *b = new Ball();
     //reinit inits
-    point3f init = {ONE, 2*ONE, 3*ONE};
-    *b = b->reinit(&init);
+    Point3f init = {ONE, 2*ONE, 3*ONE};
+    *b = b->reinit(init);
 
     CHECK(b->active);
     CHECK_FALSE(b->launched);
-    DOUBLES_EQUAL(0.0f, b->speed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->speed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->speed->z, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->nextbounce->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->nextbounce->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(0.0f, b->nextbounce->z, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.0f, b->launchspeed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(2.0f, b->launchspeed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(3.0f, b->launchspeed->z, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.0f, b->nextspeed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(2.0f, b->nextspeed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(3.0f, b->nextspeed->z, FLOAT_PRECISION);
-
+    CHECK(b->speed.eq(Point3f()));
+    CHECK(b->nextbounce.eq(Point3f()));
+    CHECK(b->launchspeed.eq(Point3f(1.0f, 2.0f, 3.0f)));
+    CHECK(b->nextspeed.eq(Point3f(1.0f, 2.0f, 3.0f)));
     //now it is displayable, but only animates following the vaus
 
     mock().expectNCalls(2,"glPushMatrix");
@@ -386,9 +365,7 @@ TEST(ModelTestGroup, BallAnimation){
     *b = b->launch();
 
     CHECK(b->launched);
-    DOUBLES_EQUAL(1.0f, b->speed->x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(2.0f, b->speed->y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(3.0f, b->speed->z, FLOAT_PRECISION);
+    CHECK(b->speed.eq(Point3f(1.0f, 2.0f, 3.0f)));
     mock().checkExpectations();
 
     //if it is trapped outside level, bring it back
@@ -477,21 +454,17 @@ TEST(ModelTestGroup, VausIsWhatUC){
 }
 
 TEST(ModelTestGroup, BrickIsWhatUC){
-    point3f red = RED;
-    point3i coords = {1,2,3};
-    point3f_t where = new point3f();
+    Point3f red = RED;
+    Point3i coords = {1,2,3};
     int t = BRIK_NORMAL;
-    mock().expectOneCall("Functions::fromcoords")
-            .withParameter("coords", &coords)
-            .andReturnValue((void *)where);
 
-    Brick * b = new Brick(&red, &coords, t);
-
+    mock().expectOneCall("Point3f::Point3f");
+    Brick * b = new Brick(red, coords, t);
     mock().checkExpectations();
     CHECK(b->active);
     CHECK(b->type == BRIK_NORMAL);
     CHECK(b->hit_counter == 1);
-    DOUBLES_EQUAL(b->rgb->x, 1.0f, FLOAT_PRECISION);
+    DOUBLES_EQUAL(b->rgb.x, ONE, FLOAT_PRECISION);
     CHECK(b->hit_effect == 0);
 
     mock().expectOneCall("glEnable");
@@ -515,7 +488,7 @@ TEST(ModelTestGroup, PillIsWhatUC){
     GameMock * gm = new GameMock();
     mock().expectOneCall("gluNewQuadric");
     Vaus *v = new Vaus(gm);
-    point3f_t start_pos = new point3f(ONE, ONE, -20.0f);
+    Point3f start_pos = Point3f(ONE, ONE, -20.0f);
     gm->vaus = v;
 
     mock().expectOneCall("Game::isHiScoring")
@@ -577,7 +550,6 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().expectOneCall("gluDeleteQuadric");
     delete v;
     delete gm;
-    delete start_pos;
     mock().checkExpectations();
 }
 

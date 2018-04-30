@@ -1,14 +1,14 @@
 #include "GLoid.h"
+#include "Point.h"
 #include "WhatUC.h"
 #include "Vaus.h"
 #include "Game.h"
-#include "Functions.h"
 #include "Pill.h"
 
 Vaus::Vaus(Game* g){
    game = g;
-   rad = base_rad;
-   setSize(2*base_rad, 2*base_rad, base_rad/2);
+   rad = baseRad;
+   setSize(2*baseRad, 2*baseRad, baseRad/2);
    base = gluNewQuadric();
    //speedx = speedy = ZERO;
 }
@@ -38,7 +38,7 @@ Vaus& Vaus::reset(){
 
 void Vaus::display(){
     int rot, dir;
-    point3f paparia;
+    Point3f paparia;
 
     gluQuadricDrawStyle(base, GLU_FILL);
     glPushMatrix();
@@ -46,9 +46,9 @@ void Vaus::display(){
     glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
 
     if(large){
-        rad =  2*base_rad;
+        rad =  2*baseRad;
     }else{
-        rad = base_rad;
+        rad = baseRad;
     }
     paparia.x = rad - 0.5f;
     paparia.y = 0.625f;
@@ -59,7 +59,7 @@ void Vaus::display(){
     glColor4f(0.3f, 0.3f, 0.3f, 0.3f);//black
     glTranslatef(0.0f, 0.0f, 0.0f);
     glScalef(1.0f, 1.0f, 0.25f);
-    gluSphere(base, base_rad, 48, 12);
+    gluSphere(base, baseRad, 48, 12);
     glDisable(GL_BLEND);
     glPopMatrix();
 
@@ -80,7 +80,7 @@ void Vaus::display(){
             glPopMatrix();
 
             glPushMatrix();
-            glTranslatef((1 - dir) * base_rad * (1 - 2 * rot), dir * base_rad * (1 - 2 * rot), 0.0f);
+            glTranslatef((1 - dir) * baseRad * (1 - 2 * rot), dir * baseRad * (1 - 2 * rot), 0.0f);
 
             // If the fire button is down, light up the laser canons
             if(fire){

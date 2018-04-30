@@ -1,8 +1,12 @@
 #include "GLoid.h"
+#include "Point.h"
 #include "Game.h"
+#include "model/WhatUC.h"
+#include "model/Ball.h"
+#include "model/Brick.h"
 
 // Render text to an SDL_Surface
-void Game::printText(bool option,
+void  Game::printText(bool option,
                      text2d* text,
                      SDL_Color fg,
                      SDL_Color bg,

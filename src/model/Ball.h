@@ -1,5 +1,6 @@
 #ifndef _BALL_H_
 #define _BALL_H_
+class Point3f;
 
 class Ball: public WhatUC<Ball>{
     static constexpr float base_rad = 0.625f;
@@ -11,11 +12,11 @@ class Ball: public WhatUC<Ball>{
 public:
     bool launched = false;
     int nextaxis;
-    point3f_t speed;
-    point3f_t nextbounce;
-    point3f_t nextspeed;
-    point3f_t launchspeed;
-    point3f_t initspeed;
+    Point3f speed;
+    Point3f nextbounce;
+    Point3f nextspeed;
+    Point3f launchspeed;
+    Point3f initspeed;
 
     Ball();
     ~Ball();
@@ -23,8 +24,8 @@ public:
     void display();
     Ball& animate(double secPerFrame);
     Ball& launch();
-    Ball& reinit(const point3f_t init);
-    Ball& bounce(point3f_t x);
+    Ball& reinit(const Point3f& init);
+    Ball& bounce(const Point3f& x);
 private:
      float rad;
      GLUquadricObj* base;

@@ -12,7 +12,8 @@ typedef enum{
     S,       // Orange:  Slow
     N_PILLS  // Number of pills
 } PILLS;
-
+class Game;
+class Vaus;
 // Bonus pills
 class Pill: public WhatUC<Pill>{
     static constexpr float speedz = -10.0f;
@@ -39,7 +40,7 @@ public:
     float rotx = ZERO;
     int type;  // Enumerated pill type
     int score = 0;
-    point3f col;     // Pill color
+    Point3f col;     // Pill color
     char label;
     SDL_Surface* surf;
     class Game * game;
@@ -49,7 +50,7 @@ public:
     void display();
     Pill& animate(double secPerFrame);
 
-    Pill(const point3f_t where, class Game* g);
+    Pill(const Point3f& where, class Game* g);
     ~Pill();
 private:
     GLUquadricObj * base;

@@ -21,11 +21,11 @@ public:
     int     hit_counter;  // How many times has the brick been hit?
     int     type;         // Type of brick: normal, silver, gold: 0, 1, 2
     // Colors imported from 3DSMax
-    point3f_t rgb;
+    Point3f rgb;
 
     int  hit();
-    Brick(const point3f_t color,
-          const point3i_t coords,
+    Brick(const Point3f& color,
+          const Point3i& coords,
           int t);
 
    ~Brick();
@@ -35,11 +35,11 @@ public:
 
 private:
     static void solidRhombik(float side);
-    static point3f_t computeVertex(int tog,
+    static Point3f computeVertex(int tog,
                        int dir,
                        int dim,
                        int neg,
-                       point3f_t vertex);
+                       Point3f &vertex);
 };
 
 #endif// _BRICK_H

@@ -5,14 +5,20 @@
 // TODO: make it Meyer's Singleton and use composition for mocking
 typedef struct mousecntl * mousecntl_t;
 typedef struct screen * screen_t;
-
+/*
 class Vaus;
+class Ball;
+class Brick;
+class Pill;
+*/
+
+//template<class BRIK>
 
 class Game {
 public:
     //protected:
     // Global display engine parameters
-    point3f camera;      // Camera coordinates
+    Point3f camera;      // Camera coordinates
     float theta = ZERO;
     float phi = ZERO;
 
@@ -44,12 +50,15 @@ public:
     Game(){
     }
 //public:
-    int bonusMode;
+
     screen_t scr;
     mousecntl_t mouse;
-    class Vaus *vaus;
+
     //audio
     //keyboard
+    class Vaus *vaus;
+    int bonusMode;
+    int level;
     static Game * instance(){
         if(!_instance){
             _instance = new Game;
@@ -57,6 +66,7 @@ public:
         return _instance;
     }
     bool isHiScoring();
+    unsigned int levelType();
     //int getBonusMode();
     void setBonusMode(int type);
     //int getLives();
@@ -66,6 +76,10 @@ public:
    // unsigned int getBpp();
 
     //class Vaus * getVaus();
+    //get first active ball, or empty
+    class Ball * getActiveBall();
+    class Brick * getBrickAt(Point3f& where);
+
     static void playSound(int sound);
     static int now();
     static void printText(bool option,

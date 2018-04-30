@@ -13,6 +13,8 @@ include_directories(
 
 add_executable(model_test
     ${SUT}/GLoid.h
+    ${SUT}/Game.h
+    ${SUT}/Point.h
     ${SUT}/model/WhatUC.h
     ${SUT}/model/Particle.h
     ${SUT}/model/Particle.cpp
@@ -24,13 +26,16 @@ add_executable(model_test
     ${SUT}/model/Brick.cpp
     ${SUT}/model/Pill.h
     ${SUT}/model/Pill.cpp
+    ${SUT}/model/Alien.h
+    ${SUT}/model/Alien.cpp
+
     GameMock.h
     model_test.cpp)
 
 add_executable(functions_test
     ${SUT}/GLoid.h
-    ${SUT}/Functions.h
-    ${SUT}/Functions.cpp
+    ${SUT}/Point.h
+    ${SUT}/Point.cpp
     functions_test.cpp)
 
 add_executable(game_test

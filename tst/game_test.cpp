@@ -1,9 +1,11 @@
 #include "GLoid.h"
+//#include <functional>
+//#include <optional>
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
-
+#include "Point.h"
 #include "Game.h"
 
 

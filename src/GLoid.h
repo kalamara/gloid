@@ -7,6 +7,7 @@
 
 #define PI 3.141525
 #define ROOT2 1.414213
+#define ROOT3 1.732051
 
 #define FLOAT_PRECISION 0.000001
 #define ONE 1.0f
@@ -94,7 +95,7 @@
 #endif
 
 // Includes
-
+//#include <optional>
 #ifdef WIN32
  #include <windows.h>
 #else
@@ -231,7 +232,7 @@ enum{
 };
 
 // Datatype definitions
-
+/*
 typedef struct point3f{
    float x;
    float y;
@@ -286,7 +287,7 @@ typedef struct point3i{
        Z = other->Z;
    }
 } * point3i_t;
-// Screen struct
+*/// Screen struct
 typedef struct screen{
     int W;
     int H;
