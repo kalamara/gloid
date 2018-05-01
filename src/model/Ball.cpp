@@ -18,11 +18,6 @@ Ball::Ball(){
 }
 
 Ball::~Ball(){
-//    delete speed;
-//    delete launchspeed;
-//    delete nextspeed;
-//    delete initspeed;
-//    delete nextbounce;
     gluDeleteQuadric(base);
 }
 

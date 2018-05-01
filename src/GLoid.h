@@ -5,11 +5,11 @@
 
 // Constants
 
-#define PI 3.141525
-#define ROOT2 1.414213
-#define ROOT3 1.732051
+#define PI 3.141525f
+#define ROOT2 1.414213f
+#define ROOT3 1.732051f
 
-#define FLOAT_PRECISION 0.000001
+#define FLOAT_PRECISION 0.000001f
 #define ONE 1.0f
 #define ZERO 0.0f
 #define HALF_CIRCLE 180.0f

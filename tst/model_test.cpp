@@ -10,6 +10,7 @@
 #include "model/Vaus.h"
 #include "model/Brick.h"
 #include "model/Pill.h"
+#include "model/Alien.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -117,10 +118,8 @@ struct SDL_Surface Surf;
 SDL_Surface * SDL_CreateRGBSurface
 (Uint32 flags, int width, int height, int depth,
  Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask){
-    memset(&Surf, 0, sizeof(struct SDL_Surface));
-    mock().actualCall("SDL_CreateRGBSurface")
+    return (SDL_Surface *)mock().actualCall("SDL_CreateRGBSurface")
             .returnPointerValueOrDefault(&Surf);
-    return &Surf;
 }
 
 int SDL_SetColorKey
@@ -495,6 +494,8 @@ TEST(ModelTestGroup, PillIsWhatUC){
             .andReturnValue(false);
     mock().expectOneCall("rand")
             .andReturnValue(1500);
+
+    memset(&Surf, 0, sizeof(struct SDL_Surface));
     mock().expectNCalls(2, "SDL_CreateRGBSurface")
             .andReturnValue(&Surf);
 
@@ -553,6 +554,43 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().checkExpectations();
 }
 
+TEST(ModelTestGroup, AlienIsWhatUC){
+    GameMock * gm = new GameMock();
+    mock().expectNCalls(2,"gluNewQuadric");
+    Vaus *v = new Vaus(gm);
+    gm->vaus = v;
+    Alien *a = new Alien(gm);
+    CHECK(a->place.eq(Point3f(ZERO, ZERO, SCENE_MIN - SCENE_MAX + ALIENHOME)));
+    CHECK(a->size.eq(Point3f(4.0f, 4.0f, 4.0f)));
+    CHECK(a->active);
+    mock().expectOneCall("Game::getActiveBall");
+    mock().expectOneCall("Game::getBrickAt");
+    mock().expectOneCall("Game::levelType");
+    //leveltype is 0, alien type 1 (blue double cone)
+    mock().expectNCalls(4,"glPushMatrix");
+    mock().expectNCalls(4,"glPopMatrix");
+    mock().expectOneCall("glColor3f");
+    mock().expectNCalls(4,"glTranslatef");
+    mock().expectNCalls(3,"glRotatef");
+    mock().expectNCalls(2,"gluQuadricDrawStyle");
+    mock().expectNCalls(2,"gluCylinder");
+    mock().expectNCalls(4,"gluQuadricOrientation");
+    mock().expectNCalls(3,"gluDisk");
+    a->animate(0.01f).display();
+    //no ball, speed is 0 on x, y, just rotate and approach player
+    CHECK(a->place.eq(Point3f(ZERO, ZERO,
+                              SCENE_MIN - SCENE_MAX + ALIENHOME + 0.05f)));
+    DOUBLES_EQUAL(3.6f, a->roty,FLOAT_PRECISION);
+
+    mock().expectNCalls(2,"gluDeleteQuadric");
+    delete v;
+    delete gm;
+    delete a;
+    mock().checkExpectations();
+}
+
+//TODO: more alien display and animation tests
+//TODO: explozans
 int main(int ac, char** av)
 {
     return CommandLineTestRunner::RunAllTests(ac, av);
