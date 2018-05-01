@@ -28,6 +28,8 @@ add_executable(model_test
     ${SUT}/model/Pill.cpp
     ${SUT}/model/Alien.h
     ${SUT}/model/Alien.cpp
+    ${SUT}/model/Shot.h
+    ${SUT}/model/Shot.cpp
 
     GameMock.h
     model_test.cpp)
