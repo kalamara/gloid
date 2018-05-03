@@ -11,6 +11,7 @@
 #include "model/Brick.h"
 #include "model/Pill.h"
 #include "model/Alien.h"
+#include "model/Shot.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -576,6 +577,7 @@ TEST(ModelTestGroup, AlienIsWhatUC){
     mock().expectNCalls(2,"gluCylinder");
     mock().expectNCalls(4,"gluQuadricOrientation");
     mock().expectNCalls(3,"gluDisk");
+
     a->animate(0.01f).display();
     //no ball, speed is 0 on x, y, just rotate and approach player
     CHECK(a->place.eq(Point3f(ZERO, ZERO,
@@ -591,6 +593,28 @@ TEST(ModelTestGroup, AlienIsWhatUC){
 
 //TODO: more alien display and animation tests
 //TODO: explozans
+
+TEST(ModelTestGroup, ShotIsWhatUC){
+    mock().expectNCalls(1,"gluNewQuadric");
+    GameMock * gm = new GameMock();//GameMock::instance();
+    Shot * s = new Shot(gm, Point3f(ONE, ONE, ONE));
+
+    mock().expectNCalls(2,"glPushMatrix");
+    mock().expectNCalls(2,"glPopMatrix");
+    mock().expectNCalls(1,"glTranslatef");
+    mock().expectOneCall("glScalef");
+    mock().expectOneCall("glColor3f");
+    mock().expectNCalls(1,"gluSphere");
+
+    mock().expectOneCall("Game::getBrickAt");
+    s->animate(0.01f).display();
+    DOUBLES_EQUAL( 0.6, s->place.z, FLOAT_PRECISION);
+
+    mock().expectNCalls(1,"gluDeleteQuadric");
+    delete gm;
+    delete s;
+    mock().checkExpectations();
+}
 int main(int ac, char** av)
 {
     return CommandLineTestRunner::RunAllTests(ac, av);
