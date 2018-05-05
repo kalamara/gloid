@@ -3,9 +3,7 @@
 class Point3f;
 //base class for any visible models.
 //it's a Curiously Recurring Template Pattern:
-template<class T>
-
-class WhatUC{
+template<class T> class WhatUC{
 public:
    bool active = true;
    Point3f place;

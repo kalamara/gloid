@@ -4,7 +4,8 @@
 class Vaus: public WhatUC<Vaus>{
    static constexpr float  baseRad = 2.5f;
    static constexpr float  particleRad = 0.5f;
-   class Game * game;
+
+   Game * game;
 public:
    // type; on lazer mode left click fires
    bool armed = false;
@@ -17,7 +18,7 @@ public:
    float prevx;
    float prevy;
 //   particles explosion[VAUS_PARTICLES];
-   Vaus(class Game *g);
+   Vaus(Game *g);
    ~Vaus();
 
    void display();

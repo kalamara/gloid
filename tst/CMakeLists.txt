@@ -15,6 +15,8 @@ add_executable(model_test
     ${SUT}/GLoid.h
     ${SUT}/Game.h
     ${SUT}/Point.h
+    ${SUT}/Engine.h
+    ${SUT}/World.h
     ${SUT}/model/WhatUC.h
     ${SUT}/model/Particle.h
     ${SUT}/model/Particle.cpp
@@ -30,7 +32,6 @@ add_executable(model_test
     ${SUT}/model/Alien.cpp
     ${SUT}/model/Shot.h
     ${SUT}/model/Shot.cpp
-
     GameMock.h
     model_test.cpp)
 
@@ -44,6 +45,9 @@ add_executable(game_test
     ${SUT}/GLoid.h
     ${SUT}/Game.h
     ${SUT}/Game.cpp
+    ${SUT}/Engine.h
+    ${SUT}/Engine.cpp
+    ${SUT}/World.h
     game_test.cpp)
 
 target_link_libraries(model_test

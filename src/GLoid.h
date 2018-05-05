@@ -60,6 +60,7 @@
 #ifndef WIN32	
  #define USHORT unsigned short
  #define MAX_PATH 256
+//TODO: can we use C++17 <filesystem> here?
  #define WORKPATH "/usr/local/share/gloid"
 #else 
  #define WORKPATH "."
@@ -230,68 +231,21 @@ enum{
    HUD_FPS,
    N_HUD
 };
-
-// Datatype definitions
-/*
-typedef struct point3f{
-   float x;
-   float y;
-   float z;
-   point3f(float a, float b, float c){
-       x = a;
-       y = b;
-       z = c;
-   }
-   point3f(){
-       x = ZERO;
-       y = ZERO;
-       z = ZERO;
-   }
-   point3f(const point3f* other){
-       x = other->x;
-       y = other->y;
-       z = other->z;
-   }
-
-   bool eq(const point3f other){
-    return x - other.x <= FLOAT_PRECISION
-        && y - other.y <= FLOAT_PRECISION
-        && z - other.z <= FLOAT_PRECISION;
-   }
-   point3f * deepcopy(const point3f* other){
-       x = other->x;
-       y = other->y;
-       z = other->z;
-
-       return this;
-   }
-} * point3f_t;
-
-typedef struct point3i{
-   int X;
-   int Y;
-   int Z;
-   point3i(int a, int b, int c){
-       X = a;
-       Y = b;
-       Z = c;
-   }
-   point3i(){
-       X = 0;
-       Y = 0;
-       Z = 0;
-   }
-   point3i(const point3i* other){
-       X = other->X;
-       Y = other->Y;
-       Z = other->Z;
-   }
-} * point3i_t;
-*/// Screen struct
+// Screen struct
 typedef struct screen{
     int W;
     int H;
-    int BPP;
+
+    // The default bits per pixel
+#ifdef WIN32
+    unsigned int BPP = 32;
+#else
+#ifdef __MACOSX__
+    unsigned int BPP = 32;
+#else
+    unsigned int BPP = 24;
+#endif//__MACOSX__
+#endif//WIN32
     SDL_Surface * S;
     screen(int w, int h, int bpp){
         W = w;
@@ -335,122 +289,6 @@ typedef struct hallentry
 
 #else
 
-
-// Bonus pills
-class pills: public WhatUC
-{	
-public:
-   int   type;  // Enumerated pill type
-   float speedz;
-   float rotspeed;
-   float rotx;
-   float len, rad;  // Length and radius of pill
-   point3f col;     // Pill color
-   char label;
-   SDL_Surface* surf;
-   text2d text;
-
-   void init();
-   void display();
-   int  animate(void);
-
-   pills()
-   {
-      type = -1;
-      active = FALSE;
-      speedz = -10.0f;
-      rotspeed = 360.0f;
-      rotx = 0.0f;
-      rad = 1.0f;
-      len = 3.5f; 
-
-      setsize(5.0f, 2*rad, 2*rad);
-   }
-
-   // Deallocate SDL_Surface data
-   ~pills()
-   {
-      SDL_FreeSurface(surf);
-      SDL_FreeSurface(text.T);
-   }
-};
-
-// ALIENS
-class aliens: public WhatUC
-{	
-public:
-   int     i,type;// explosion_life, type;
-   point3f speed;
-   float   roty,rotspeed,rad,particle_rad;
-   point3f pal[ALIEN_COLORS];
-   particles explosion[ALIEN_PARTICLES]; 
-
-   void display(void);
-   void animate(void);
-   void die(void);
-
-   aliens()
-   {
-      // White
-      pal[0].x = 1.0f;
-      pal[0].y = 1.0f;
-      pal[0].z = 1.0f;
-
-      // Yellow
-      pal[1].x = 1.0f;
-      pal[1].y = 1.0f;
-      pal[1].z = 0.0f;
-
-      // Red
-      pal[2].x = 1.0f;
-      pal[2].y = 0.0f;
-      pal[2].z = 0.0f;
-
-      //explosion_life = 0;
-      particle_rad = 0.125f;
-      place.x = 0.0f;
-      place.y = 0.0f;
-
-      setplace(0.0f, 0.0f, SCENE_MIN - SCENE_MAX + ALIENHOME);
-
-      for(i = 0; i< ALIEN_PARTICLES; i++)
-         explosion[i] = particles();
-
-      memset(&speed, 0, sizeof(point3f));	
-
-      roty = 0.0f;
-      rotspeed = 360.0f;
-      rad = 1.0f;
-      setsize(4*rad, 4*rad, 4*rad);
-   }
-
-   ~aliens()
-   {
-   }	
-};
-
-
-// LAZER SHOTS
-class shots: public WhatUC
-{	
-public:
-   float speedz;
-
-   void display(void);
-   int  animate(unsigned int*);
-
-   shots()
-   {
-      speedz = 40.0f;
-      setsize(0.3f, 0.3f, 1.2f);
-      active=FALSE;
-   }
-
-   ~shots()
-   {
-   }
-};
-
 // Function prototypes
 
 // Basic functions
@@ -476,10 +314,6 @@ BOOL InitErrorLog();   // Initialize The Error Log
 void CloseErrorLog();  // Close The Error Log
 void Deinitialize();   // Uninitialize game
 
-// Sound functions
-void mixer(void*, Uint8*, int);
-BOOL PlaySDLSound(int);
-
 // Core game engine
 int Update(Uint32, Uint8*, mousecntl*); // Update motion
 void Draw(SDL_Surface *, Uint32);       // Draw the game scene
@@ -501,28 +335,12 @@ void printText(BOOL, text2d*, SDL_Color, SDL_Color, int, int, const char* buf, .
 void DrawSDLText(SDL_Surface*, text2d*);
 void DrawOpenGLText(text2d*);
 
-// Collision detection
-BOOL    collision(float pL, float pR, float pU, float pD, float sL, float sR, float sU, float sD);
-point3i brickcoords(point3f);
-
-// Calculate the norm of a 3-vector
-float res3f(float, float, float);
-
-// Chasing functions
-int find_first(WhatUC *, int);
-point3f chase(point3f, point3f, float);
-
-// Generate a random vector
-point3f rand3f(float);
-
 // Given an int, calculate the next-largest power of two
 int nextpoweroftwo(int);
 
 // Calculate a moving average
 double moving_average(double, double*, int);
 
-// Probability function for bonus pills
-int roulette(void);
 
 // Clean up data structures
 void cleanup(void);
@@ -560,9 +378,4 @@ void display_lives(SDL_Surface *);
 void display_warp(void);
 void display_cross(int , point3f, int);
 void null_display(SDL_Surface * );
-
-// OpenGL geometry
-void mySolidCube(float);
-void mySolidTetrahedron(float);
-void mySolidRhombik(float);
 #endif  // _GLOID_H

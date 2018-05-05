@@ -1,8 +1,12 @@
 #include "GLoid.h"
 #include "Point.h"
 #include "WhatUC.h"
-#include "Vaus.h"
+
+#include "World.h"
+#include "Engine.h"
 #include "Game.h"
+
+#include "Vaus.h"
 #include "Pill.h"
 
 Vaus::Vaus(Game* g){

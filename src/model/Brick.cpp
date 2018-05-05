@@ -1,11 +1,12 @@
 #include "GLoid.h"
 #include "Point.h"
 #include "WhatUC.h"
+
+#include "World.h"
+#include "Engine.h"
 #include "Game.h"
 
 #include "Brick.h"
-
-
 
 Brick::Brick(const Point3f &color,
              const Point3i &coords,

@@ -16,6 +16,7 @@ class Brick: public WhatUC<Brick>{
     static constexpr float depth = 1.6f;
     static constexpr float opacity = 0.7f; //when brick is hit
     static const int duration = 200; //hit effect
+
 public:
     Uint32  hit_effect = 0;   // What happens when the brick is hit
     int     hit_counter;  // How many times has the brick been hit?

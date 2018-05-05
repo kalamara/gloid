@@ -1,5 +1,7 @@
 #include "GLoid.h"
 #include "Point.h"
+#include "World.h"
+#include "Engine.h"
 #include "Game.h"
 #include "WhatUC.h"
 #include "Vaus.h"
@@ -8,7 +10,6 @@
 
 Pill::Pill(const Point3f &where, Game* g){
     game = g;
-    vaus = g->vaus;//getVaus();
     setSize(5.0f, 2*rad, 2*rad);
     setPlace(where.x,
              where.y,
@@ -30,7 +31,7 @@ Pill::Pill(const Point3f &where, Game* g){
                 0,
                 game->fontSize,
                 game->fontSize,
-                game->bpp,
+                game->scr->BPP,
                 0x00ff0000,
                 0x0000ff00,
                 0x000000ff,
@@ -42,7 +43,7 @@ Pill::Pill(const Point3f &where, Game* g){
                 0,
                 game->fontSize,
                 game->fontSize,
-                game->bpp,
+                game->scr->BPP,
                 0x00ff0000,
                 0x0000ff00,
                 0x000000ff,
@@ -115,14 +116,15 @@ void Pill::display(){
 Pill& Pill::animate(double secPerFrame){
 
     if(active){
-        if((place.z >= vaus->size.z/2 - rad)
-                && collides(vaus->place.x - vaus->rad,
-                            vaus->place.x + vaus->rad,
-                            vaus->place.y + vaus->rad,
-                            vaus->place.y - vaus->rad)) {
+        Vaus * v = game->getVaus();
+        if((place.z >= v->size.z/2 - rad)
+                && collides(v->place.x - v->rad,
+                            v->place.x + v->rad,
+                            v->place.y + v->rad,
+                            v->place.y - v->rad)) {
             score += SCOREBONUS;
             active = FALSE;
-            vaus->reset();
+            v->reset(); //maybe game->resetVaus();
             game->setBonusMode(type);
 
             if(type == P){

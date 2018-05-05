@@ -12,7 +12,6 @@ typedef enum{
     S,       // Orange:  Slow
     N_PILLS  // Number of pills
 } PILLS;
-class Game;
 class Vaus;
 // Bonus pills
 class Pill: public WhatUC<Pill>{
@@ -22,6 +21,8 @@ class Pill: public WhatUC<Pill>{
     // Length and radius of pill
     static constexpr float rad = ONE;
     static constexpr float len = 3.5f;
+
+    Game * game;
 public:
     // Game color palette
     SDL_Color Palette[N_RGB_COLORS] =
@@ -43,14 +44,13 @@ public:
     Point3f col;     // Pill color
     char label;
     SDL_Surface* surf;
-    class Game * game;
-    class Vaus * vaus;
+
     text2d text;
 
     void display();
     Pill& animate(double secPerFrame);
 
-    Pill(const Point3f& where, class Game* g);
+    Pill(const Point3f& where, Game* g);
     ~Pill();
 private:
     GLUquadricObj * base;

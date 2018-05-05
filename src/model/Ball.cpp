@@ -1,11 +1,17 @@
 #include "GLoid.h"
 #include "Point.h"
 #include "WhatUC.h"
-#include "Ball.h"
-#include "Brick.h"
+
+#include "World.h"
+#include "Engine.h"
 #include "Game.h"
 
-Ball::Ball(){
+#include "Ball.h"
+#include "Brick.h"
+
+
+Ball::Ball(Game *g){
+    game = g;
     speed = Point3f();
     nextbounce = Point3f();
     nextspeed = Point3f();
@@ -282,7 +288,7 @@ Ball& Ball::launch(){
    if(!launched){
       launched = true;
       speed = speed.deepcopy(launchspeed);
-      Game::playSound(WAV_LAUNCH);
+      game->playSound(WAV_LAUNCH);
    }
    return * this;
 }

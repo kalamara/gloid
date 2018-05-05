@@ -2,6 +2,9 @@
 
 #include "GLoid.h"
 #include "Point.h"
+
+#include "World.h"
+#include "Engine.h"
 #include "Game.h"
 
 #include "model/WhatUC.h"
@@ -34,32 +37,33 @@ int rand() {
             .returnIntValue();
 }
 //Functions
-/*
-Point3f::Point3f(float base){
-    mock().actualCall("Point3f::Point3f");
-}
-*/
+
 Point3f::Point3f(const Point3i& other){
     mock().actualCall("Point3f::Point3f");
 }
-/*
-float Point3f::res3f(){
-    return mock().actualCall("Point3f::res3f")
-            .returnDoubleValue();
-}
-*/
+
 Point3f Point3f::chase(const Point3f& other, float U){
     mock().actualCall("Point3f::chase");
 }
 
 //Game
-void Game::playSound(int sound) {
+template<> void Engine<Game>::playSound(int sound) {
     mock().actualCall("Game::playSound");
     //  .withParameter("sound", WAV_LAUNCH);
 }
 
-int Game::now() {
+template<> int Engine<Game>::now() {
     mock().actualCall("Game::now");
+}
+
+template<> void Engine<Game>::printText(bool option,
+                     text2d* text,
+                     SDL_Color fg,
+                     SDL_Color bg,
+                     int x,
+                     int y,
+                     const char* buf, ...){
+    mock().actualCall("Game::printText");
 }
 
 bool Game::isHiScoring() {
@@ -73,32 +77,14 @@ unsigned int Game::levelType(){
     return 0;
 }
 
-Ball * Game::getActiveBall(){
+Ball * World::getActiveBall(){
     mock().actualCall("Game::getActiveBall");
     return NULL;
 }
 
-Brick * Game::getBrickAt(Point3f &where){
+Brick * World::getBrickAt(Point3f &where){
     mock().actualCall("Game::getBrickAt");
     return NULL;
-}
-
-void gluQuadricOrientation(GLUquadric* quad, GLenum orientation){
-    mock().actualCall("gluQuadricOrientation");
-}
-
-void gluDisk(GLUquadric* quad, GLdouble inner, GLdouble outer, GLint slices, GLint loops){
-    mock().actualCall("gluDisk");
-}
-
-void Game::printText(bool option,
-                     text2d* text,
-                     SDL_Color fg,
-                     SDL_Color bg,
-                     int x,
-                     int y,
-                     const char* buf, ...){
-    mock().actualCall("Game::printText");
 }
 
 void Game::setBonusMode(int type){
@@ -112,6 +98,11 @@ void Game::incLives(){
 void Game::divideBalls(){
     mock().actualCall("Game::divideBalls");
 }
+
+void Game::killVaus(){
+    mock().actualCall("Game::killVaus");
+}
+
 
 //SDL
 struct SDL_Surface Surf;
@@ -246,6 +237,13 @@ void gluCylinder (GLUquadric* quad, double base, double top, double height, int 
     mock().actualCall("gluCylinder");
 }
 
+void gluQuadricOrientation(GLUquadric* quad, GLenum orientation){
+    mock().actualCall("gluQuadricOrientation");
+}
+
+void gluDisk(GLUquadric* quad, GLdouble inner, GLdouble outer, GLint slices, GLint loops){
+    mock().actualCall("gluDisk");
+}
 
 TEST(ModelTestGroup, ParticleIsWhatUC){
     Point3f start_pos = Point3f(ONE, ONE, ONE);
@@ -314,7 +312,8 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
 
 TEST(ModelTestGroup, BallIsWhatUC){
     mock().expectOneCall("gluNewQuadric");
-    Ball *b = new Ball();
+    GameMock * gm = new GameMock();//GameMock::instance();
+    Ball *b = new Ball(gm);
     CHECK_FALSE(b->active);
     CHECK_FALSE(b->launched);
 
@@ -329,12 +328,14 @@ TEST(ModelTestGroup, BallIsWhatUC){
     b->animate(0.01f).display();
     mock().expectOneCall("gluDeleteQuadric");
     delete b;
+    delete gm;
     mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, BallAnimation){
     mock().expectOneCall("gluNewQuadric");
-    Ball *b = new Ball();
+    GameMock * gm = new GameMock();
+    Ball *b = new Ball(gm);
     //reinit inits
     Point3f init = {ONE, 2*ONE, 3*ONE};
     *b = b->reinit(init);
@@ -377,6 +378,7 @@ TEST(ModelTestGroup, BallAnimation){
     //if on wall, bounce
     mock().expectOneCall("gluDeleteQuadric");
     delete b;
+    delete gm;
     mock().checkExpectations();
 }
 
@@ -486,10 +488,12 @@ TEST(ModelTestGroup, BrickIsWhatUC){
 
 TEST(ModelTestGroup, PillIsWhatUC){
     GameMock * gm = new GameMock();
-    mock().expectOneCall("gluNewQuadric");
+    screen_t scr = new screen(800, 600, 32);
+    gm->scr = scr;
+    mock().expectNCalls(1,"gluNewQuadric");
     Vaus *v = new Vaus(gm);
+    gm->setVaus(v);
     Point3f start_pos = Point3f(ONE, ONE, -20.0f);
-    gm->vaus = v;
 
     mock().expectOneCall("Game::isHiScoring")
             .andReturnValue(false);
@@ -543,15 +547,16 @@ TEST(ModelTestGroup, PillIsWhatUC){
     *p = p->animate(0.01f);
     CHECK(!p->active);
 
-
     mock().expectNCalls(2, "SDL_FreeSurface");
-    mock().expectOneCall("gluDeleteQuadric");
+    mock().expectNCalls(1,"gluDeleteQuadric");
     delete p;
     mock().checkExpectations();
 
-    mock().expectOneCall("gluDeleteQuadric");
+    mock().expectNCalls(1,"gluDeleteQuadric");
+    delete scr;
     delete v;
     delete gm;
+
     mock().checkExpectations();
 }
 
@@ -559,7 +564,7 @@ TEST(ModelTestGroup, AlienIsWhatUC){
     GameMock * gm = new GameMock();
     mock().expectNCalls(2,"gluNewQuadric");
     Vaus *v = new Vaus(gm);
-    gm->vaus = v;
+    gm->setVaus(v);
     Alien *a = new Alien(gm);
     CHECK(a->place.eq(Point3f(ZERO, ZERO, SCENE_MIN - SCENE_MAX + ALIENHOME)));
     CHECK(a->size.eq(Point3f(4.0f, 4.0f, 4.0f)));
