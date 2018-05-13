@@ -108,7 +108,7 @@ void Alien::display(){
 
             // Alien 4
         case 3:
-            if((Game::now() % 4000) < 1000)
+            if((game->now() % 4000) < 1000)
             {
                 glPushMatrix();
                 glTranslatef(ZERO, ZERO, ZERO);
@@ -220,7 +220,7 @@ Alien &Alien::animate(double secPerFrame){
 void Alien::die()
 {
     int j;
-    active = FALSE;
+    active = false;
 
     //for(j = 0; j < ALIEN_PARTICLES; j++)
     //{

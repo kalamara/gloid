@@ -45,7 +45,7 @@ Particle& Particle::animate(double secPerFrame){
 
     life_fraction -= secPerFrame*1000/life_total;
     if(life_fraction < FLOAT_PRECISION){
-          active = FALSE;
+          active = false;
     }
     return *this;
 }

@@ -22,7 +22,7 @@
 
 #include "GameMock.h"
 
-#define RED         {1.0f, 0.0f, 0.0f}
+#define RED         {ONE, ZERO, ZERO}
 
 using namespace std;
 
@@ -47,6 +47,28 @@ Point3f Point3f::chase(const Point3f& other, float U){
 }
 
 //Game
+
+template<> Engine<Game>::Engine(){
+
+}
+
+template<> Engine<Game>::~Engine(){
+
+}
+
+struct mousecntl MockMouse = mousecntl(400, 300, false);
+struct screen MockScreen = screen(800, 600, 32);
+
+template<> mousecntl_t Engine<Game>::getMouse(){
+    mock().actualCall("Engine<Game>::getMouse");
+    return &MockMouse;
+}
+
+template<> screen_t Engine<Game>::getScreen(){
+    mock().actualCall("Engine<Game>::getScreen");
+    return &scr;
+}
+
 template<> void Engine<Game>::playSound(int sound) {
     mock().actualCall("Game::playSound");
     //  .withParameter("sound", WAV_LAUNCH);
@@ -384,13 +406,10 @@ TEST(ModelTestGroup, BallAnimation){
 
 TEST(ModelTestGroup, VausIsWhatUC){
     GameMock * gm = new GameMock();//GameMock::instance();
-    mousecntl_t mou = new mousecntl(400,300, FALSE);
-    screen_t scr = new screen(800, 600, 32);
+
     mock().expectOneCall("gluNewQuadric");
+
     Vaus *v = new Vaus(gm);
-    //
-    gm->mouse = mou;
-    gm->scr = scr;
 
     CHECK(v->active);
     CHECK_FALSE(v->armed);
@@ -414,6 +433,8 @@ TEST(ModelTestGroup, VausIsWhatUC){
     mock().expectNCalls(10,"glPopMatrix");
     mock().expectNCalls(8,"glColor3f");
     mock().expectNCalls(4,"gluCylinder");
+    mock().expectOneCall("Engine<Game>::getScreen");
+    mock().expectNCalls(1,"Engine<Game>::getMouse");
 
     v->animate(0.01f).display();
 
@@ -423,22 +444,30 @@ TEST(ModelTestGroup, VausIsWhatUC){
     //enlarge should enlarge and play enlarge
     gm->bonusMode = E;
     mock().expectOneCall("Game::playSound");
+    mock().expectOneCall("Engine<Game>::getScreen");
+    mock().expectNCalls(1,"Engine<Game>::getMouse");
     //.withParameter("sound", WAV_ENLARGE);
 
     *v = v->animate(0.01f);
+
     CHECK(v->large);
     mock().checkExpectations();
 
     gm->bonusMode = L;
+    mock().expectOneCall("Engine<Game>::getScreen");
+    mock().expectNCalls(1,"Engine<Game>::getMouse");
+
     *v = v->animate(0.01f);
+
     CHECK(v->armed);
     mock().checkExpectations();
-
-    gm->mouse->X = 800;
-    gm->mouse->Y = -600;
-
     gm->bonusMode = B;
+    MockMouse.X = 800;
+    MockMouse.Y = -600;
+
     mock().expectOneCall("Game::playSound");
+    mock().expectOneCall("Engine<Game>::getScreen");
+    mock().expectNCalls(1,"Engine<Game>::getMouse");
 
     *v = v->animate(0.01f);
 
@@ -447,8 +476,6 @@ TEST(ModelTestGroup, VausIsWhatUC){
     CHECK(v->warping);
     mock().checkExpectations();
 
-    delete mou;
-    delete scr;
     mock().expectOneCall("gluDeleteQuadric");
     delete v;
     delete gm;
@@ -459,9 +486,10 @@ TEST(ModelTestGroup, BrickIsWhatUC){
     Point3f red = RED;
     Point3i coords = {1,2,3};
     int t = BRIK_NORMAL;
+    GameMock * gm = new GameMock();
 
     mock().expectOneCall("Point3f::Point3f");
-    Brick * b = new Brick(red, coords, t);
+    Brick * b = new Brick(gm, red, coords, t);
     mock().checkExpectations();
     CHECK(b->active);
     CHECK(b->type == BRIK_NORMAL);
@@ -489,8 +517,8 @@ TEST(ModelTestGroup, BrickIsWhatUC){
 TEST(ModelTestGroup, PillIsWhatUC){
     GameMock * gm = new GameMock();
     screen_t scr = new screen(800, 600, 32);
-    gm->scr = scr;
     mock().expectNCalls(1,"gluNewQuadric");
+    mock().expectNCalls(1, "Engine<Game>::getScreen");
     Vaus *v = new Vaus(gm);
     gm->setVaus(v);
     Point3f start_pos = Point3f(ONE, ONE, -20.0f);
@@ -510,6 +538,7 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().expectOneCall("Game::printText");
     mock().expectOneCall("SDL_UpperBlit");
     mock().expectOneCall("gluNewQuadric");
+    mock().expectOneCall("Engine<Game>::getScreen");
     Pill *p = new Pill(start_pos, gm);
     //rand returned 1500 < RAND_MAX/20
     //and low scoring game => type should be L

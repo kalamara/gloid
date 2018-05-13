@@ -8,32 +8,33 @@
 
 #include "Brick.h"
 
-Brick::Brick(const Point3f &color,
+Brick::Brick(Game *g,
+             const Point3f &color,
              const Point3i &coords,
              int t){
-            active = true; //FALSE;
-            type = t;
-            Point3f gold = GOLD;
-            Point3f silver = SILVER;
-            switch(type){
-                case BRIK_GOLDEN:
-                    hit_counter = 0;
-                    rgb =  Point3f(gold);
-                    break;
+    active = true; //FALSE;
+    type = t;
+    Point3f gold = GOLD;
+    Point3f silver = SILVER;
+    switch(type){
+    case BRIK_GOLDEN:
+        hit_counter = 0;
+        rgb =  Point3f(gold);
+        break;
 
-                case BRIK_SILVER:
-                    hit_counter = 2;
-                    rgb =  Point3f(silver);
-                    break;
+    case BRIK_SILVER:
+        hit_counter = 2;
+        rgb =  Point3f(silver);
+        break;
 
-                default:
-                    hit_counter = 1;
-                    rgb = Point3f(color);
-                    break;
-            }
-            setSize(side, side, depth);
-            Point3f where = Point3f(coords);
-            setPlace(where.x, where.y, where.z);
+    default:
+        hit_counter = 1;
+        rgb = Point3f(color);
+        break;
+    }
+    setSize(side, side, depth);
+    Point3f where = Point3f(coords);
+    setPlace(where.x, where.y, where.z);
 }
 
 Brick::~Brick(){
@@ -42,8 +43,8 @@ Brick::~Brick(){
 // Brick was hit by ball or shot
 int Brick::hit(){
 
-   extern unsigned int Brick_count;
-   int score = 0;/*
+    extern unsigned int Brick_count;
+    int score = 0;/*
    int X;
    int Y;
    int Z;
@@ -80,30 +81,30 @@ int Brick::hit(){
          }
       }
    }*/
-   return score;
+    return score;
 }
 
 // Display bricks
 void Brick::display(){
-   if(active){
-      glEnable(GL_BLEND);
-      glPushMatrix();
-      glRotatef(HALF_CIRCLE, ZERO, ZERO, ONE);
-      glRotatef(HALF_CIRCLE, ZERO, ONE, ZERO);
-      glScalef(size.x, size.y, size.z);
+    if(active){
+        glEnable(GL_BLEND);
+        glPushMatrix();
+        glRotatef(HALF_CIRCLE, ZERO, ZERO, ONE);
+        glRotatef(HALF_CIRCLE, ZERO, ONE, ZERO);
+        glScalef(size.x, size.y, size.z);
 
-      // Normal brick
-      if(type == 0 || Game::now() - hit_effect < duration){
-         glDisable(GL_BLEND);
-         glColor3f(rgb.x, rgb.y, rgb.z);
-      }else{
-         hit_effect = 0;
-         glColor4f(rgb.x, rgb.y, rgb.z, opacity);
-      }
-      solidRhombik(ONE);
-      glPopMatrix();
-      glDisable(GL_BLEND);
-   }
+        // Normal brick
+        if(type == 0 || game->now() - hit_effect < duration){
+            glDisable(GL_BLEND);
+            glColor3f(rgb.x, rgb.y, rgb.z);
+        }else{
+            hit_effect = 0;
+            glColor4f(rgb.x, rgb.y, rgb.z, opacity);
+        }
+        solidRhombik(ONE);
+        glPopMatrix();
+        glDisable(GL_BLEND);
+    }
 }
 
 Brick& Brick::animate(double secPerFrame){
@@ -111,10 +112,10 @@ Brick& Brick::animate(double secPerFrame){
 }
 
 Point3f Brick::computeVertex(int tog,
-                          int dir,
-                          int dim,
-                          int neg,
-                          Point3f& vertex)
+                             int dir,
+                             int dim,
+                             int neg,
+                             Point3f& vertex)
 {
     float unary = side/2.0f;	//unit
     float big = unary*1.5f;
@@ -229,25 +230,25 @@ void Brick::solidRhombik(float side){
         glEnd();					// Done Drawing Quads
     }
 
-// Top Face
+    // Top Face
 
     glBegin(GL_TRIANGLE_STRIP);			// Start Drawing Strips
     glNormal3f( 0.0f, 1.0f, 0.0f);		// Normal Facing Up
     for(int j = 0; j <19; j++){
         glVertex3f(vertice[toppath[j]].x,  vertice[toppath[j]].y,  vertice[toppath[j]].z);
-				//Log(" E[%d] = (%g,%g,%g) V[%d] = (%g,%g,%g)\n", i, face[i].x, face[i].y, face[i].z, j, vertice[j].x, vertice[j].y, vertice[j].z ); 
-	}
+        //Log(" E[%d] = (%g,%g,%g) V[%d] = (%g,%g,%g)\n", i, face[i].x, face[i].y, face[i].z, j, vertice[j].x, vertice[j].y, vertice[j].z );
+    }
     glEnd();					// Done Drawing Strips
 
     glBegin(GL_TRIANGLE_STRIP);			// Start Drawing Strips
 
-// Bottom Face
+    // Bottom Face
 
     glNormal3f( 0.0f,-1.0f, 0.0f);		// Normal Facing Down
 
     for(int j = 0; j <19; j++){
         glVertex3f(vertice[botpath[j]].x,  vertice[botpath[j]].y,  vertice[botpath[j]].z);
-				//Log(" E[%d] = (%g,%g,%g) V[%d] = (%g,%g,%g)\n", i, face[i].x, face[i].y, face[i].z, j, vertice[j].x, vertice[j].y, vertice[j].z ); 
-	}
+        //Log(" E[%d] = (%g,%g,%g) V[%d] = (%g,%g,%g)\n", i, face[i].x, face[i].y, face[i].z, j, vertice[j].x, vertice[j].y, vertice[j].z );
+    }
     glEnd();					// Done Drawing Strips
 }

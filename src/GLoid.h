@@ -1,8 +1,10 @@
-/* MAIN APPLICATION HEADER: defines application specific types, classes, variables, constants, includes headers.*/
+/* MAIN APPLICATION HEADER: defines application specific types, classes,
+ * variables, constants, includes headers
+ * and in general stuff that is used frequently but changes infrequently.*/
 
 #ifndef _GLOID_H
 #define _GLOID_H
-
+#define DEBUG 1
 // Constants
 
 #define PI 3.141525f
@@ -24,7 +26,17 @@
 //#define BLACK       {0.0f, 0.0f, 0.0f}
 //#define PALE_GRAY   {0.5f, 0.5f, 0.5f}
 
+//*****->to Engine*****/
+// Number of sound channels (Stereo)
+#define NUM_BUFFERS 2
 
+#define GRAVITY	10.0f
+
+#define SCENE_MAX   17.5f // Up, right, in
+#define	SCENE_MIN  -17.5f // Down, left, out
+#define SCENE_AIR   11.7f // Camera distance
+
+//*****->to Game*****/
 #define ALIENHOME  3  // Where aliens spawn
 #define BALLNUM    4  // Maximum number of balls in play
 #define ALIENNUM  10  // Maximum number of aliens
@@ -45,18 +57,14 @@
 #define SCOREALIEN    100  // Score if you kill an alien
 #define SCOREBRICK     70  // Score if you break a brick
 
-// Name of the log file
-#define LOG_FILE  "log.txt"
-
 #define APP_NAME     "GLoid II is SDL/OpenGL Arkanoid " // The App Name And Caption
-#define APP_VERSION  "2.5"
+#define APP_VERSION  0x020500
 
-#define TEXTLINES  16  // Maximum number of lines of text
-
-#define TRUE  1
-#define FALSE 0
-#define BOOL unsigned int
-
+//#define TEXTLINES  16  // Maximum number of lines of tex
+//#define TRUE  1
+//#define FALSE 0
+//#define BOOL unsigned int
+/*
 #ifndef WIN32	
  #define USHORT unsigned short
  #define MAX_PATH 256
@@ -65,25 +73,16 @@
 #else 
  #define WORKPATH "."
 #endif
-
+*/
 #define MINSPEED  1.0f//minimum speed on any axis = 5% of initial speed on Z
 // Maximum string length
 #define MAXLINE 256
-
-// Number of sound channels (Stereo)
-#define NUM_BUFFERS 2
 
 #define VAUS_PARTICLES  128  //asplozans!
 #define ALIEN_PARTICLES 1024
 
 #define VAUS_COLORS  4
 #define ALIEN_COLORS 3
-
-#define GRAVITY	10.0f
-
-#define SCENE_MAX   17.5f // Up, right, in                
-#define	SCENE_MIN  -17.5f // Down, left, out
-#define SCENE_AIR   11.7f // Camera distance
 
 // Libraries
 
@@ -96,7 +95,6 @@
 #endif
 
 // Includes
-//#include <optional>
 #ifdef WIN32
  #include <windows.h>
 #else
@@ -108,17 +106,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-
-// The default bits per pixel
-#ifdef WIN32
-#define SCREEN_BPP 32
-#else 
-#ifdef __MACOSX__
-#define SCREEN_BPP 32
-#else
-#define SCREEN_BPP 24
-#endif
-#endif
 
 #ifndef __MACOSX__
 #include <GL/gl.h>
@@ -231,55 +218,7 @@ enum{
    HUD_FPS,
    N_HUD
 };
-// Screen struct
-typedef struct screen{
-    int W;
-    int H;
 
-    // The default bits per pixel
-#ifdef WIN32
-    unsigned int BPP = 32;
-#else
-#ifdef __MACOSX__
-    unsigned int BPP = 32;
-#else
-    unsigned int BPP = 24;
-#endif//__MACOSX__
-#endif//WIN32
-    SDL_Surface * S;
-    screen(int w, int h, int bpp){
-        W = w;
-        H = h;
-        BPP = bpp;
-    }
-}* screen_t;
-
-// Mouse struct
-typedef struct mousecntl{
-   int X;
-   int Y;
-   BOOL leftclick;
-   mousecntl(int x, int y, int l){
-       X = x;
-       Y = y;
-       leftclick = l;
-   }
-} * mousecntl_t;
-
-// Application runtime data
-typedef struct appstatus{
-   BOOL visible;         // Is the application visible or iconified?
-   BOOL mouse_focus;     // Is the mouse cursor inside the window?
-   BOOL keyboard_focus;  // Does our application have keyboard focus?
-} * appstatus_t;
-
-typedef struct text2d{
-   SDL_Surface *T;
-   SDL_Rect src;//obsolete 
-   char msg[MAXLINE];
-   Uint32 timestamp;  // If timestamp is zero, the message is always on.
-   Uint32 lifetime;   // If (ticks - timestamp) > lifetime, the popup dies.
-} * text2d_t;
 
 typedef struct hallentry
 {

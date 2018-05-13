@@ -106,8 +106,8 @@ Vaus& Vaus::animate(double secPerFrame){
 
    prevx = place.x;
    prevy = place.y;
-   mousecntl_t m = game->mouse;
-   screen_t s = game->scr;
+   mousecntl_t m = game->getMouse();
+   screen_t s = game->getScreen();
    setPlace((m->X * (SCENE_MAX - SCENE_MIN - size.x))/s->W + SCENE_MIN + size.x/2,
             (m->Y * (SCENE_MAX - SCENE_MIN - size.y))/s->H + SCENE_MAX - size.y/2,
             0.0f);

@@ -45,7 +45,7 @@ Shot& Shot::animate(double secPerFrame){
             score = brick->hit();//Brick[rel.X][rel.Y][rel.Z].hit();
         }
         if((place.z <= SCENE_MIN - SCENE_MAX + size.z/2) || (score > 0)){
-            active = FALSE;
+            active = false;
         }
         // Check for collision with alien
        /* for(i = 0; i < ALIENNUM; i++){

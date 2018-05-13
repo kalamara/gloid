@@ -17,6 +17,7 @@ class Brick: public WhatUC<Brick>{
     static constexpr float opacity = 0.7f; //when brick is hit
     static const int duration = 200; //hit effect
 
+    Game * game;
 public:
     Uint32  hit_effect = 0;   // What happens when the brick is hit
     int     hit_counter;  // How many times has the brick been hit?
@@ -25,7 +26,8 @@ public:
     Point3f rgb;
 
     int  hit();
-    Brick(const Point3f& color,
+    Brick(Game *g,
+          const Point3f& color,
           const Point3i& coords,
           int t);
 

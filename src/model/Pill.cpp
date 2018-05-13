@@ -29,9 +29,9 @@ Pill::Pill(const Point3f &where, Game* g){
 
     surf = SDL_CreateRGBSurface(
                 0,
-                game->fontSize,
-                game->fontSize,
-                game->scr->BPP,
+                game->getFontSize(),
+                game->getFontSize(),
+                game->getScreen()->BPP,
                 0x00ff0000,
                 0x0000ff00,
                 0x000000ff,
@@ -41,9 +41,9 @@ Pill::Pill(const Point3f &where, Game* g){
 
     text.T = SDL_CreateRGBSurface(
                 0,
-                game->fontSize,
-                game->fontSize,
-                game->scr->BPP,
+                game->getFontSize(),
+                game->getFontSize(),
+                game->getScreen()->BPP,
                 0x00ff0000,
                 0x0000ff00,
                 0x000000ff,
@@ -81,8 +81,8 @@ void Pill::display(){
         gluQuadricTexture(base, GL_TRUE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                     game->fontSize,
-                     game->fontSize,
+                     game->getFontSize(),
+                     game->getFontSize(),
                      0, GL_RGBA, GL_UNSIGNED_BYTE,
                      surf->pixels);
         glPushMatrix();
@@ -123,7 +123,7 @@ Pill& Pill::animate(double secPerFrame){
                             v->place.y + v->rad,
                             v->place.y - v->rad)) {
             score += SCOREBONUS;
-            active = FALSE;
+            active = false;
             v->reset(); //maybe game->resetVaus();
             game->setBonusMode(type);
 
@@ -136,7 +136,7 @@ Pill& Pill::animate(double secPerFrame){
             }
         }else{
             if(place.z > 1.0f){
-                active = FALSE;
+                active = false;
             }
         }
     }

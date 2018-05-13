@@ -1,7 +1,6 @@
 #ifndef _GAME_H
 #define _GAME_H
 
-// this is the BASE GAME ENGINE CORE.
 class Game:
         public World,
         public Engine<class Game>{
