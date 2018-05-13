@@ -85,12 +85,26 @@ int TTF_Init(void){
 }
 
 TTF_Font * TTF_OpenFont(const char *file, int ptsize){
-    return (TTF_Font *)mock().actualCall("TTF_OpenFont")
-                .returnPointerValue();
+    mock().actualCall("TTF_OpenFont");
+    return (TTF_Font *)NULL;
+        /*mock().actualCall("TTF_OpenFont")
+                .returnPointerValue();*/
 }
 
 void TTF_SetFontStyle(TTF_Font *font, int style){
     mock().actualCall("TTF_SetFontStyle");
+}
+
+SDL_Surface * TTF_RenderText_Shaded
+(TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg){
+    mock().actualCall("TTF_RenderText_Shaded");
+    return (SDL_Surface * )NULL;
+}
+
+SDL_Surface * TTF_RenderText_Blended
+(TTF_Font *font,const char *text, SDL_Color fg){
+    mock().actualCall("TTF_RenderText_Blended");
+    return (SDL_Surface * )NULL;
 }
 
 //audio
@@ -227,20 +241,24 @@ TEST(GameTestGroup, version_test){
     STRCMP_EQUAL("V1.2.3", version(ver).toString().c_str());
 }
 
-TEST(GameTestGroup, ctor_dtor_test){
+TEST(GameTestGroup, init_test){
     mock().expectOneCall("SDL_Init");
     mock().expectOneCall("SDL_GetTicks").andReturnValue(123);
     mock().expectOneCall("srand");
+
     Game * game = new Game();
+
     mock().checkExpectations();
 //old sdl library -> go hunting for desktop setup
     struct version sdlv = version(1,2,8);
 
     mock().expectNCalls(36, "SDL_SetVideoMode");
     mock().expectOneCall("SDL_GetError");
+
     game = game->withSdlGlVideo(sdlv);
+
     mock().checkExpectations();
-/*
+
     //newer sdl library -> call sdlgetvideoinfo
     sdlv = version(1,2,9);
 
@@ -250,7 +268,16 @@ TEST(GameTestGroup, ctor_dtor_test){
 
     game = game->withSdlGlVideo(sdlv);
 
-    mock().checkExpectations();*/
+    mock().checkExpectations();
+
+    mock().expectOneCall("TTF_Init");
+    mock().expectOneCall("TTF_OpenFont");
+    mock().expectOneCall("SDL_GetError").andReturnValue("error");
+
+    game = game->withSdlTtf("./DejaVuSans.ttf");
+
+    mock().checkExpectations();
+
     delete game;
 }
 

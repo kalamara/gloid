@@ -54,7 +54,7 @@ Pill::Pill(const Point3f &where, Game* g){
                 SDL_SRCCOLORKEY | SDL_RLEACCEL,
                 SDL_MapRGBA(text.T->format, 0, 0, 0, 0));
 
-    Game::printText(true,&text, f, b, 0, 0, "%c", label);
+    game->printText(true,&text, f, b, 0, 0, "%c", label);
 
     SDL_FillRect(
                 surf,

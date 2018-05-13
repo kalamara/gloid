@@ -31,10 +31,16 @@ typedef struct screen{
 #endif//WIN32
     SDL_Surface * S;
     screen(){}
-    screen(int w, int h, int bpp){
+//    screen(struct screen & other){
+//        W = other.W;
+//        H = other.H;
+//        BPP = other.BPP;
+//    }
+    screen(int w, int h, int bpp, SDL_Surface * s){
         W = w;
         H = h;
         BPP = bpp;
+        S = s;
     }
 } * screen_t;
 
@@ -132,18 +138,29 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
 
     std::ofstream logStream;
     struct sdlVer;
-    struct screen scr;
+
     struct mousecntl mouse;
     struct appstatus app;
     unsigned int fontSize = 22;
     //time
     unsigned int tic;
-
-    SDL_Surface *sdlScreen = NULL;  // Reference to SDL Screen
+    struct screen * sdlScreen = NULL;
     TTF_Font *dejaVuSans = NULL;
     const SDL_VideoInfo* desktop;
     //SDL_AudioSpec sdlAudio;
 
+    screen_t testVmode(unsigned x, unsigned int y);
+
+        /*TODO: add time*/
+    template<typename T, typename... Args> void error(T value, Args... args){
+        log(&logStream,  "ERROR:", value,  args...);
+    }
+    template<typename T,typename... Args> void info(T value, Args... args){
+        log(&logStream,  "INFO:",  value, args...);
+    }
+    template<typename T,typename... Args> void warning(T value, Args... args){
+        log(&logStream,  "WARNING:",  value, args...);
+    }
 public:
     Engine();
     ~Engine();
@@ -158,6 +175,7 @@ public:
   to interface with derived Game class
    return dynamic_cast<G*>(this);
     }*/
+    G* withSdlTtf(std::string fontPath);
 
     //variadic log
     template <typename T> static void log(std::ostream * to, T s){
@@ -186,7 +204,7 @@ public:
     //time
     int now();
     //printing
-    static void printText(bool option,
+    void printText(bool option,
                           text2d* text,
                           SDL_Color fg,
                           SDL_Color bg,

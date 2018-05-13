@@ -57,7 +57,7 @@ template<> Engine<Game>::~Engine(){
 }
 
 struct mousecntl MockMouse = mousecntl(400, 300, false);
-struct screen MockScreen = screen(800, 600, 32);
+struct screen MockScreen = screen(800, 600, 32, NULL);
 
 template<> mousecntl_t Engine<Game>::getMouse(){
     mock().actualCall("Engine<Game>::getMouse");
@@ -66,7 +66,7 @@ template<> mousecntl_t Engine<Game>::getMouse(){
 
 template<> screen_t Engine<Game>::getScreen(){
     mock().actualCall("Engine<Game>::getScreen");
-    return &scr;
+    return &MockScreen;
 }
 
 template<> void Engine<Game>::playSound(int sound) {
@@ -516,7 +516,7 @@ TEST(ModelTestGroup, BrickIsWhatUC){
 
 TEST(ModelTestGroup, PillIsWhatUC){
     GameMock * gm = new GameMock();
-    screen_t scr = new screen(800, 600, 32);
+    screen_t scr = new screen(800, 600, 32, NULL);
     mock().expectNCalls(1,"gluNewQuadric");
     mock().expectNCalls(1, "Engine<Game>::getScreen");
     Vaus *v = new Vaus(gm);
