@@ -59,12 +59,12 @@ template<> Engine<Game>::~Engine(){
 struct mousecntl MockMouse = mousecntl(400, 300, false);
 struct screen MockScreen = screen(800, 600, 32, NULL);
 
-template<> mousecntl_t Engine<Game>::getMouse(){
+template<> mousecntl_t Engine<Game>::getMouse() {
     mock().actualCall("Engine<Game>::getMouse");
     return &MockMouse;
 }
 
-template<> screen_t Engine<Game>::getScreen(){
+template<> screen_t Engine<Game>::getScreen() const{
     mock().actualCall("Engine<Game>::getScreen");
     return &MockScreen;
 }

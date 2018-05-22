@@ -34,44 +34,6 @@ template<> Engine<Game>::Engine(){
     // Initialize rand()
     srand(tic);
 
-////Init font
-//    if(TTF_Init() == -1)
-//       {/*
-//          log(TTF_GetError());
-//          log(": Unable to initialize SDL_ttf\n");
-//          return FALSE;*/
-//       }
-//       dejaVuSans = TTF_OpenFont((std::string(WORKPATH)
-//                                  + "/DejaVuSans.ttf").c_str(),
-//                                 fontSize);
-
-//       if(dejaVuSans == NULL){
-//   //       Log(TTF_GetError());
-//   //       Log(": Unable to Load Font\n");
-//   //       return FALSE;
-//       }else{
-//           TTF_SetFontStyle(dejaVuSans, TTF_STYLE_BOLD);
-//        }
-////init audio
-//    // 16-bit stereo audio at 22kHz
-//    SDL_AudioSpec sdlAudio;
-//    sdlAudio.freq = 22050;
-//    sdlAudio.format = AUDIO_S16;
-//    sdlAudio.channels = 2;
-//    sdlAudio.samples = 512;
-//    sdlAudio.callback = NULL;//FIXME: mixer;
-//    sdlAudio.userdata = NULL;
-
-//    // Open the audio device
-//    if(SDL_OpenAudio(&sdlAudio, NULL) < 0){
-//        std::cout   << "Unable to open audio:"
-//                    << SDL_GetError()
-//                    << std::endl;
-//        exit(1);
-//    }
-//    // Start playing whatever is in the buffer
-//    SDL_PauseAudio(0);
-
 ////initialize OpenGL
 
 //    // Black background
@@ -140,9 +102,12 @@ template<> Engine<Game>::~Engine(){
     if(sdlScreen){
         delete sdlScreen;
     }
+    if(sdlAudio){
+        delete sdlAudio;
+    }
 }
 
-template<> screen_t Engine<Game>::getScreen()  {
+template<> screen_t Engine<Game>::getScreen() const {
     return sdlScreen;
 }
 
@@ -165,9 +130,9 @@ template<> void Engine<Game>::printText(bool option,
      va_end(Arg);
 
      if(option){
-        text->T = TTF_RenderText_Shaded(dejaVuSans, text->msg, fg, bg);
+        text->T = TTF_RenderText_Shaded(font, text->msg, fg, bg);
      }else{
-        text->T = TTF_RenderText_Blended(dejaVuSans, text->msg, fg);
+        text->T = TTF_RenderText_Blended(font, text->msg, fg);
      }
      text->src.w = text->T->w;
      text->src.h = text->T->h;
@@ -228,14 +193,39 @@ template<> Game* Engine<Game>::withSdlTtf(std::string fontPath){
         error("Unable to initialize SDL_ttf: ",
               TTF_GetError());
     }else{
-        dejaVuSans = TTF_OpenFont(fontPath.c_str(),
+        font = TTF_OpenFont(fontPath.c_str(),
                                   fontSize);
-        if(dejaVuSans == NULL){
+        if(font == NULL){
             error("Unable to initialize SDL_ttf: ",
                   TTF_GetError());
         }else{
-            TTF_SetFontStyle(dejaVuSans, TTF_STYLE_BOLD);
+            TTF_SetFontStyle(font, TTF_STYLE_BOLD);
         }
+    }
+    return static_cast<Game*>(this);
+}
+
+template<> void Engine<Game>::mixer(void *udata, Uint8 *stream, int len){}
+
+template<> Game* Engine<Game>::withSdlAudio(int freq,
+                                            unsigned char channels,
+                                            unsigned int samples){
+    sdlAudio = new SDL_AudioSpec();
+
+    sdlAudio->freq = freq;
+    sdlAudio->format = AUDIO_S16;
+    sdlAudio->channels = channels;
+    sdlAudio->samples = samples;
+    sdlAudio->callback = Engine<Game>::mixer;
+    sdlAudio->userdata = NULL;
+
+// Open the audio device
+    if(SDL_OpenAudio(sdlAudio, NULL) < 0){
+        error("Unable to open audio:",SDL_GetError());
+        delete sdlAudio;
+        sdlAudio = NULL;
+    } else {// Start playing whatever is in the buffer
+         SDL_PauseAudio(0);
     }
     return static_cast<Game*>(this);
 }

@@ -259,7 +259,7 @@ TEST(GameTestGroup, init_test){
 
     mock().checkExpectations();
 
-    //newer sdl library -> call sdlgetvideoinfo
+//newer sdl library -> call sdlgetvideoinfo
     sdlv = version(1,2,9);
 
     mock().expectOneCall("SDL_GetVideoInfo");
@@ -267,18 +267,49 @@ TEST(GameTestGroup, init_test){
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
     game = game->withSdlGlVideo(sdlv);
-
     mock().checkExpectations();
 
-    mock().expectOneCall("TTF_Init");
-    mock().expectOneCall("TTF_OpenFont");
+/*ttf font*/
+/* ttf_init fails*/
+    mock().expectOneCall("TTF_Init").andReturnValue(-1);
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
     game = game->withSdlTtf("./DejaVuSans.ttf");
 
+    CHECK(game->getFont() == NULL);
     mock().checkExpectations();
+/*ttf_init succeeds, ttf_openfont fails*/
+    mock().expectOneCall("TTF_Init").andReturnValue(0);
+    mock().expectOneCall("TTF_OpenFont");
+    mock().expectOneCall("SDL_GetError").andReturnValue("error");
+
+    game = game->withSdlTtf("./DejaVuSans.ttf");
+    CHECK(game->getFont() == NULL);
+    mock().checkExpectations();
+/*sdl audio*/
+/*openaudio fails*/
+    mock().expectOneCall("SDL_OpenAudio").andReturnValue(-1);
+    mock().expectOneCall("SDL_GetError").andReturnValue("error");
+
+    game = game->withSdlAudio(22050, 2, 0);
+
+    mock().checkExpectations();
+    CHECK(game->getSdlAudio() == NULL);
+
+/*openaudio succeds*/
+    mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
+    mock().expectOneCall("SDL_PauseAudio");
+
+    game = game->withSdlAudio(22050, 2, 512);
+
+    mock().checkExpectations();
+    CHECK(game->getSdlAudio() != NULL);
 
     delete game;
+}
+
+TEST(GameTestGroup, sound_test){
+
 }
 
 int main(int ac, char** av)

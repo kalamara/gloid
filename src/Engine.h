@@ -136,18 +136,25 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     static constexpr float mat_diffuse[] = {0.4, 0.4, 0.4, 1.0};
     static constexpr float mat_emission[] = {0.2f, 0.2f, 0.2f, 0.0f};
 
-    std::ofstream logStream;
-    struct sdlVer;
-
-    struct mousecntl mouse;
     struct appstatus app;
+
+    //logging
+    std::ofstream logStream;
+    //sdl
+    struct sdlVer;
+    //mouse
+    struct mousecntl mouse;
+    //text
     unsigned int fontSize = 22;
     //time
     unsigned int tic;
-    struct screen * sdlScreen = NULL;
-    TTF_Font *dejaVuSans = NULL;
+    //video
     const SDL_VideoInfo* desktop;
-    //SDL_AudioSpec sdlAudio;
+
+    //any of those are NULL if initialization has failed
+    struct screen * sdlScreen = NULL;
+    TTF_Font *font = NULL;
+    SDL_AudioSpec *sdlAudio = NULL;
 
     screen_t testVmode(unsigned x, unsigned int y);
 
@@ -161,22 +168,32 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     template<typename T,typename... Args> void warning(T value, Args... args){
         log(&logStream,  "WARNING:",  value, args...);
     }
+    static void mixer(void *udata, Uint8 *stream, int len);
 public:
     Engine();
     ~Engine();
-    screen_t getScreen();
+
+    screen_t getScreen() const ;
     mousecntl_t getMouse();
-    unsigned int getFontSize(){
+
+    SDL_AudioSpec * getSdlAudio() const {
+        return sdlAudio;
+    }
+    unsigned int getFontSize() const {
         return fontSize;
     }
+    TTF_Font *getFont() const{
+            return font;
+    }
     //initialization builders
-    G* withSdlGlVideo(struct version & v);/*{
+/*{
   TODO: make this polymorphic (draw and animate can be virtual
   to interface with derived Game class
    return dynamic_cast<G*>(this);
     }*/
+    G* withSdlGlVideo(struct version & v);
     G* withSdlTtf(std::string fontPath);
-
+    G* withSdlAudio(int freq, unsigned char channels, unsigned int samples);
     //variadic log
     template <typename T> static void log(std::ostream * to, T s){
         if (to) {
@@ -211,6 +228,8 @@ public:
                           int x,
                           int y,
                           const char* buf, ...);
+
+
 
 };
 #endif // ENGINE_H
