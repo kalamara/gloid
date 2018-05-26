@@ -1,7 +1,7 @@
 #include <string>
 #include <ios>
 //#include <experimental/filesystem>
-#include <algorithm>    // std::for_each
+#include <algorithm>
 #include "GLoid.h"
 #include "Point.h"
 
@@ -176,11 +176,48 @@ template<> void Engine<Game>::mixer(void *udata, Uint8 *stream, int len){
                 return sbuffer(traf, s.dlen - amount);
             }
             return s; //sapio
-        });/*
-        std::remove_if(buf->begin(), buf->end(), [](sbuffer_t s){
-            return s->data == NULL || s->dlen <= s->dpos;
-        });*/
+        });
     }
+}
+
+template<> Game* Engine<Game>::addSound(unsigned char * data,
+                                        unsigned int dlen,
+                                        unsigned int key){
+    if(sdlAudio){
+        SDL_AudioCVT wave;
+        SDL_BuildAudioCVT(&wave,
+            sdlAudio->format,
+            sdlAudio->channels,
+            sdlAudio->freq,
+            AUDIO_S16, 2, 22050);
+
+          wave.buf = (unsigned char *)malloc(dlen * wave.len_mult);
+
+          memcpy(wave.buf, data, dlen);
+          wave.len = dlen;
+
+          SDL_ConvertAudio(&wave);
+          sounds.emplace( key, wave);
+    }
+    return static_cast<Game*>(this);
+}
+
+template<> bool Engine<Game>::playSound(unsigned int sound){
+
+   std::remove_if(soundBuffers.begin(),
+                  soundBuffers.end(),
+                  [](struct sbuffer s){
+                return s.data == NULL || s.dlen == 0;
+            });
+
+   std::map<unsigned int, SDL_AudioCVT>::iterator found = sounds.find(sound);
+   if(found != sounds.end()){
+       soundBuffers.emplace_back(sbuffer(found->second.buf,
+                                         found->second.len_cvt));
+
+       return true;
+   }
+   return false;
 }
 
 template<> Game* Engine<Game>::withSdlGlVideo(version &v){
@@ -242,7 +279,7 @@ template<> Game* Engine<Game>::withSdlAudio(int freq,
     sdlAudio->channels = channels;
     sdlAudio->samples = samples;
     sdlAudio->callback = Engine<Game>::mixer;
-    sdlAudio->userdata = NULL;
+    sdlAudio->userdata = (void *)&soundBuffers;
 
 // Open the audio device
     if(SDL_OpenAudio(sdlAudio, NULL) < 0){

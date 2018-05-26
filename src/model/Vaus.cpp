@@ -24,7 +24,7 @@ Vaus::~Vaus(){
 Vaus& Vaus::enlarge(){
    if(large == false){
       large = true;
-      Game::playSound(WAV_ENLARGE);
+      game->playSound(WAV_ENLARGE);
    }
    return *this;
 }
@@ -121,7 +121,7 @@ Vaus& Vaus::animate(double secPerFrame){
          && (place.y <= SCENE_MIN + (size.y/2)+5.0f)){
             if(!warping){	
                warping = true;
-               Game::playSound(WAV_WARP);
+               game->playSound(WAV_WARP);
             }
          }
          break;

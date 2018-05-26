@@ -3,6 +3,7 @@
 // this is the BASE GAME ENGINE CORE.
 #include <list>
 #include <vector>
+#include <map>
 #include <utility>
 #include <fstream>
 #include <iostream>
@@ -170,7 +171,8 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     //video
     const SDL_VideoInfo* desktop;
     //audio
-    std::vector<sbuffer_t> soundBuffers[NUM_BUFFERS];
+    std::vector<struct sbuffer> soundBuffers;
+    std::map<unsigned int, SDL_AudioCVT> sounds;
     //any of those are NULL if initialization has failed
     struct screen * sdlScreen = NULL;
     TTF_Font *font = NULL;
@@ -237,7 +239,14 @@ public:
     //public SDL interface
     //audio
     static void mixer(void *udata, Uint8 *stream, int len);
-    static void playSound(int sound);
+    G* addSound(unsigned char * data,
+                unsigned int dlen,
+                unsigned int key);
+    bool playSound(unsigned int sound);
+    unsigned int pendingSounds(){
+
+        return soundBuffers.size();
+    }
     //time
     int now();
     //printing

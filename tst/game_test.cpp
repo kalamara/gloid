@@ -3,6 +3,7 @@
 //#include <functional>
 //#include <optional>
 #include <vector>
+#include <map>
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
@@ -120,6 +121,20 @@ void SDL_PauseAudio(int pause_on){
 
 void  SDL_MixAudio(Uint8 *dst, const Uint8 *src, Uint32 len, int volume){
     mock().actualCall("SDL_MixAudio");
+}
+
+int SDL_BuildAudioCVT(SDL_AudioCVT *cvt,
+                      Uint16 src_format, Uint8 src_channels, int src_rate,
+                      Uint16 dst_format, Uint8 dst_channels, int dst_rate){
+    mock().actualCall("SDL_BuildAudioCVT");
+
+    return 0;
+}
+
+int SDL_ConvertAudio(SDL_AudioCVT *cvt){
+    mock().actualCall("SDL_ConvertAudio");
+
+    return 0;
 }
 
 //openGL
@@ -320,12 +335,10 @@ TEST(GameTestGroup, sound_test){
 
     std::vector<struct sbuffer> buffers;//(NUM_BUFFERS);
 
-    //struct sbuffer sample1 = {data1, 0,0};
-    //buffers.push_back(&sample1);
     buffers.push_back(sbuffer(data1, 6));
     buffers.push_back(sbuffer(data2, 7));
 
-    mock().expectNCalls(NUM_BUFFERS, "SDL_MixAudio");
+    mock().expectNCalls(2, "SDL_MixAudio");
 
     Game::mixer((void *)&buffers, mix, 2);
     CHECK_EQUAL(4,buffers[0].dlen);
@@ -333,14 +346,41 @@ TEST(GameTestGroup, sound_test){
     STRCMP_EQUAL("345", (const char *)buffers[0].data);
     STRCMP_EQUAL("8910",(const char *)buffers[1].data);
 
-    mock().expectNCalls(NUM_BUFFERS, "SDL_MixAudio");
+    mock().expectNCalls(2, "SDL_MixAudio");
 
     Game::mixer((void *)&buffers, mix, 5);
     CHECK_EQUAL(0,buffers[0].dlen);
     CHECK_EQUAL(0,buffers[1].dlen);
     STRCMP_EQUAL("", (const char *)buffers[0].data);
-    STRCMP_EQUAL("",(const char *)buffers[1].data);
+    STRCMP_EQUAL("", (const char *)buffers[1].data);
     mock().checkExpectations();
+
+    /*we need an instance of game to actually play a sound*/
+    mock().expectOneCall("SDL_Init");
+    mock().expectOneCall("SDL_GetTicks").andReturnValue(123);
+    mock().expectOneCall("srand");
+    mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
+    mock().expectOneCall("SDL_PauseAudio");
+
+    Game * game = new Game();
+    game = game->withSdlAudio(22050, 2, 512);
+
+    mock().checkExpectations();
+
+    //newly alloc'd data by SDL_LoadWAV
+    unsigned char  loaded[8] = "1234567";
+    mock().expectOneCall("SDL_BuildAudioCVT");
+    mock().expectOneCall("SDL_ConvertAudio");
+    game = game->addSound(loaded, 8, 0);
+
+    bool succ = game->playSound(-1);
+    CHECK(!succ);
+
+    succ = game->playSound(0);
+    CHECK(succ);
+    CHECK_EQUAL(1, game->pendingSounds());
+
+    delete game;
 }
 
 int main(int ac, char** av)
