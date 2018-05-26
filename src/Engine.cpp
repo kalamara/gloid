@@ -1,7 +1,7 @@
 #include <string>
 #include <ios>
 //#include <experimental/filesystem>
-
+#include <algorithm>    // std::for_each
 #include "GLoid.h"
 #include "Point.h"
 
@@ -156,6 +156,33 @@ template<> screen_t Engine<Game>::testVmode(unsigned x, unsigned int y){
     }
 }
 
+template<> void Engine<Game>::mixer(void *udata, Uint8 *stream, int len){
+    std::vector<struct sbuffer> *buf = (std::vector<struct sbuffer> *)udata;
+    if(buf){
+        std::transform(buf->begin(),
+                       buf->end(),
+                       buf->begin(),
+                       [stream, len](struct sbuffer s) -> struct sbuffer{
+            if(s.data){
+                // How much is left to play?
+                int amount = (s.dlen > len) ? len : s.dlen;
+                unsigned char * traf = (amount < s.dlen) ?
+                                            &(s.data[amount]) :
+                                            (unsigned char *)"";
+                SDL_MixAudio(stream,
+                             s.data,
+                             amount, SDL_MIX_MAXVOLUME);
+
+                return sbuffer(traf, s.dlen - amount);
+            }
+            return s; //sapio
+        });/*
+        std::remove_if(buf->begin(), buf->end(), [](sbuffer_t s){
+            return s->data == NULL || s->dlen <= s->dpos;
+        });*/
+    }
+}
+
 template<> Game* Engine<Game>::withSdlGlVideo(version &v){
     if(v.value() < 0x010209){
         warning("libSDL ",
@@ -204,8 +231,6 @@ template<> Game* Engine<Game>::withSdlTtf(std::string fontPath){
     }
     return static_cast<Game*>(this);
 }
-
-template<> void Engine<Game>::mixer(void *udata, Uint8 *stream, int len){}
 
 template<> Game* Engine<Game>::withSdlAudio(int freq,
                                             unsigned char channels,

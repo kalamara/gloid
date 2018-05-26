@@ -2,7 +2,7 @@
 #include <sstream>
 //#include <functional>
 //#include <optional>
-
+#include <vector>
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
@@ -116,6 +116,10 @@ int SDL_OpenAudio(SDL_AudioSpec *desired, SDL_AudioSpec *obtained){
 
 void SDL_PauseAudio(int pause_on){
     mock().actualCall("SDL_PauseAudio");
+}
+
+void  SDL_MixAudio(Uint8 *dst, const Uint8 *src, Uint32 len, int volume){
+    mock().actualCall("SDL_MixAudio");
 }
 
 //openGL
@@ -309,7 +313,34 @@ TEST(GameTestGroup, init_test){
 }
 
 TEST(GameTestGroup, sound_test){
+    Game::mixer(NULL, NULL, 0);
+    unsigned char mix[6] = {0};
+    unsigned char data1[6] = "12345";
+    unsigned char data2[7] = "678910";
 
+    std::vector<struct sbuffer> buffers;//(NUM_BUFFERS);
+
+    //struct sbuffer sample1 = {data1, 0,0};
+    //buffers.push_back(&sample1);
+    buffers.push_back(sbuffer(data1, 6));
+    buffers.push_back(sbuffer(data2, 7));
+
+    mock().expectNCalls(NUM_BUFFERS, "SDL_MixAudio");
+
+    Game::mixer((void *)&buffers, mix, 2);
+    CHECK_EQUAL(4,buffers[0].dlen);
+    CHECK_EQUAL(5,buffers[1].dlen);
+    STRCMP_EQUAL("345", (const char *)buffers[0].data);
+    STRCMP_EQUAL("8910",(const char *)buffers[1].data);
+
+    mock().expectNCalls(NUM_BUFFERS, "SDL_MixAudio");
+
+    Game::mixer((void *)&buffers, mix, 5);
+    CHECK_EQUAL(0,buffers[0].dlen);
+    CHECK_EQUAL(0,buffers[1].dlen);
+    STRCMP_EQUAL("", (const char *)buffers[0].data);
+    STRCMP_EQUAL("",(const char *)buffers[1].data);
+    mock().checkExpectations();
 }
 
 int main(int ac, char** av)

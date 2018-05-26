@@ -1,7 +1,8 @@
 #ifndef ENGINE_H
 #define ENGINE_H
-
+// this is the BASE GAME ENGINE CORE.
 #include <list>
+#include <vector>
 #include <utility>
 #include <fstream>
 #include <iostream>
@@ -14,7 +15,7 @@
 /*SDL_MAJOR_VERSION * 0x10000
         + SDL_MINOR_VERSION * 0x100
         + SDL_PATCHLEVEL;*/
-// this is the BASE GAME ENGINE CORE.
+
 // Screen struct
 typedef struct screen{
     int W=800;
@@ -56,6 +57,23 @@ typedef struct mousecntl{
         leftclick = l;
     }
 } * mousecntl_t;
+
+// Sound buffer: SDL only works with double-buffering, so NUM_BUFFERS = 2
+typedef struct sbuffer{
+   unsigned char *data = NULL;
+//   unsigned int dpos = 0;
+   unsigned int dlen = 0;
+   sbuffer(){}
+   sbuffer(unsigned char * d,
+           //unsigned int p,
+           unsigned int l){
+       data = d;
+//       dpos = p;
+       dlen = l;
+   }
+} * sbuffer_t;
+
+//soundBuffer[NUM_BUFFERS];
 
 // Application runtime data
 typedef struct appstatus{
@@ -114,6 +132,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     static const int multisampleBuf = 1;
     static const int multisampleSamples = 4;
     static const int colorSize = 5;
+
     const pairs videoModes = {
         {2048, 1152},
         {1920, 1200},
@@ -150,7 +169,8 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     unsigned int tic;
     //video
     const SDL_VideoInfo* desktop;
-
+    //audio
+    std::vector<sbuffer_t> soundBuffers[NUM_BUFFERS];
     //any of those are NULL if initialization has failed
     struct screen * sdlScreen = NULL;
     TTF_Font *font = NULL;
@@ -168,7 +188,6 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     template<typename T,typename... Args> void warning(T value, Args... args){
         log(&logStream,  "WARNING:",  value, args...);
     }
-    static void mixer(void *udata, Uint8 *stream, int len);
 public:
     Engine();
     ~Engine();
@@ -217,6 +236,7 @@ public:
     }
     //public SDL interface
     //audio
+    static void mixer(void *udata, Uint8 *stream, int len);
     static void playSound(int sound);
     //time
     int now();
