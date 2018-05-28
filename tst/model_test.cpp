@@ -512,6 +512,7 @@ TEST(ModelTestGroup, BrickIsWhatUC){
     mock().checkExpectations();
 
     delete b;
+    delete gm;
 }
 
 TEST(ModelTestGroup, PillIsWhatUC){

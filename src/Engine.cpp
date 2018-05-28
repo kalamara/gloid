@@ -189,10 +189,10 @@ template<> Game* Engine<Game>::withSdlGlVideo(version &v){
         // Hide system cursor
         SDL_ShowCursor(0);
         fontSize = sdlScreen->H/16;
+        info("SDL OpenGL desktop(",
+             sdlScreen->W, "x", sdlScreen->H,
+             ")initialized!");
     }
-    info("SDL OpenGL desktop(",
-         sdlScreen->W, "x", sdlScreen->H,
-         ")initialized!");
     return static_cast<Game*>(this);
 }
 /*(std::string(WORKPATH)+ "/DejaVuSans.ttf").c_str()*/
