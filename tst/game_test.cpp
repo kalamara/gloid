@@ -268,7 +268,7 @@ TEST(GameTestGroup, log_test){
 TEST(GameTestGroup, time_test){
     Game * game = newGame();
     mock().expectOneCall("SDL_GetTicks");
-    game->now();
+    game->toc();
     mock().checkExpectations();
     delete game;
 }

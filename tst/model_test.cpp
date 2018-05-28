@@ -74,7 +74,7 @@ template<> bool Engine<Game>::playSound(unsigned int sound) {
     //  .withParameter("sound", WAV_LAUNCH);
 }
 
-template<> int Engine<Game>::now() {
+template<> int Engine<Game>::toc() {
     mock().actualCall("Game::now");
 }
 

@@ -63,7 +63,7 @@ template<> void Engine<Game>::printText(bool option,
                      int x,
                      int y,
                      const char* buf, ...){
-    // extern TTF_Font *DejaVuSans;
+
      va_list Arg;
 
      va_start(Arg, buf);
@@ -190,6 +190,9 @@ template<> Game* Engine<Game>::withSdlGlVideo(version &v){
         SDL_ShowCursor(0);
         fontSize = sdlScreen->H/16;
     }
+    info("SDL OpenGL desktop(",
+         sdlScreen->W, "x", sdlScreen->H,
+         ")initialized!");
     return static_cast<Game*>(this);
 }
 /*(std::string(WORKPATH)+ "/DejaVuSans.ttf").c_str()*/
@@ -205,6 +208,7 @@ template<> Game* Engine<Game>::withSdlTtf(std::string fontPath){
                   TTF_GetError());
         }else{
             TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+            info("TTF font found!");
         }
     }
     return static_cast<Game*>(this);
@@ -228,6 +232,7 @@ template<> Game* Engine<Game>::withSdlAudio(int freq,
         delete sdlAudio;
         sdlAudio = NULL;
     } else {// Start playing whatever is in the buffer
+         info("Audio open!");
          SDL_PauseAudio(0);
     }
     return static_cast<Game*>(this);
@@ -236,13 +241,13 @@ template<> Game* Engine<Game>::withSdlAudio(int freq,
 template<> Game* Engine<Game>::withOpenGl(){
 //initialize OpenGL
 
-    // Black background
+//    info("Black background");
     glClearColor(ZERO, ZERO, ZERO, ZERO);
 
-    // Set up depth buffer
+//    info("Set up depth buffer");
     glClearDepth(ONE);
 
-    // Set the type of depth testing
+//    info("Set the type of depth testing");
     glDepthFunc(GL_LEQUAL);
 
     //       if(Option_smooth)
@@ -250,27 +255,27 @@ template<> Game* Engine<Game>::withOpenGl(){
     //   else
     glShadeModel(GL_FLAT);
 
-    // Set perspective calculations to most accurate
+//    info("Set perspective calculations to most accurate");
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-    // Set point smoothing to nicest
+//    info("Set point smoothing to nicest");
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 
-    // Set the blending function
+//    info("Set the blending function");
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 
-    // Enable multisampling
+//    info("Enable multisampling");
 #ifndef WIN32
     if(multisampleBuf > 0)
         glEnable(GL_MULTISAMPLE_ARB);
 #endif
-    // Enable alpha blending
+//    info("Enable alpha blending");
     glEnable(GL_BLEND);
 
-    // Enable texture mapping
+//    info("Enable texture mapping");
     glEnable(GL_TEXTURE_2D);
 
-    // Set up the lighting parameters
+//    info("Set up the lighting parameters");
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
@@ -286,7 +291,7 @@ template<> Game* Engine<Game>::withOpenGl(){
     }else{
         scr = screen(sdlScreen->W, sdlScreen->H, sdlScreen->BPP, sdlScreen->S);
     }
-    // Set up the OpenGL view
+//    info("Set up the OpenGL view");
     glViewport(0, 0, (GLsizei)(scr.W),(GLsizei)(scr.H));
 
     glMatrixMode(GL_PROJECTION);
@@ -303,11 +308,12 @@ template<> Game* Engine<Game>::withOpenGl(){
               ZERO, ONE, ZERO);
 
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    info("OpenGL initialized!");
 
     return static_cast<Game*>(this);
 }
 
-template<> int Engine<Game>::now(){
+template<> int Engine<Game>::toc(){
         return SDL_GetTicks();
 }
 
@@ -373,7 +379,6 @@ template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
                             [k](keypair &i){
                 i.second = k[i.first];
             });
-
         }   break;
 
         case SDL_MOUSEMOTION:
@@ -397,13 +402,18 @@ template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
 template<> Game* Engine<Game>::loop(){
     SDL_Event evt;    // SDL event
     if(SDL_PollEvent(&evt)){
+        info("caught an event...");
         return handleEvent(evt);
     }else{
         if(!app.visible){
             SDL_WaitEvent(NULL);
             return static_cast<Game*>(this);
-//        }else{
-//            return handleKeys()->nextStep();
-        }
+        }else{
+//            step.draw();
+//            step.update();
+//            step = step.next();
+
+            return static_cast<Game*>(this);
+       }
     }
 }

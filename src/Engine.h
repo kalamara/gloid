@@ -127,7 +127,7 @@ using keypair = std::pair<const unsigned char, bool>;
 
 template<class G> class Engine{ //base class: Engine, derived class: Game
 
-    static const int vFlags = SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_FULLSCREEN;
+    static const int vFlags = SDL_OPENGLBLIT | SDL_HWSURFACE;// | SDL_FULLSCREEN;
     static const int multisampleBuf = 1;
     static const int multisampleSamples = 4;
     static const int colorSize = 5;
@@ -313,7 +313,7 @@ public:
         return soundBuffers.size();
     }
     //time
-    int now();
+    int toc();
     //printing
     void printText(bool option,
                           text2d* text,

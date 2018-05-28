@@ -94,7 +94,7 @@ void Brick::display(){
         glScalef(size.x, size.y, size.z);
 
         // Normal brick
-        if(type == 0 || game->now() - hit_effect < duration){
+        if(type == 0 || game->toc() - hit_effect < duration){
             glDisable(GL_BLEND);
             glColor3f(rgb.x, rgb.y, rgb.z);
         }else{

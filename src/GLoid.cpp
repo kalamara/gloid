@@ -394,9 +394,10 @@ int main(int argc, char **argv)
                 ->withSdlTtf("./DejaVuSans.ttf")
                 ->withSdlAudio(22050, 2, 0)
                 ->withOpenGl();
-
+     int i = 0;
      while(game->looping()){
           game = game->loop();
+          i++;
      }
 //        if(SDL_PollEvent(&E)){
 //            return handleEvent(E);

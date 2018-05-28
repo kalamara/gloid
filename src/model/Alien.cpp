@@ -108,7 +108,7 @@ void Alien::display(){
 
             // Alien 4
         case 3:
-            if((game->now() % 4000) < 1000)
+            if((game->toc() % 4000) < 1000)
             {
                 glPushMatrix();
                 glTranslatef(ZERO, ZERO, ZERO);
