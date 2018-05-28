@@ -74,8 +74,6 @@ typedef struct sbuffer{
    }
 } * sbuffer_t;
 
-//soundBuffer[NUM_BUFFERS];
-
 // Application runtime data
 typedef struct appstatus{
     bool looping = true;         // still looping or heve caught QUIT message?
@@ -124,8 +122,8 @@ typedef struct version {
     }
 } * version_t;
 
-
 using pairs = std::list<std::pair<unsigned int, unsigned int>>;
+using keypair = std::pair<const unsigned char, bool>;
 
 template<class G> class Engine{ //base class: Engine, derived class: Game
 
@@ -164,6 +162,46 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     struct sdlVer;
     //mouse
     struct mousecntl mouse;
+    //keyboard (only the keys we are handling)
+    std::map<unsigned char, bool> keys = {
+
+        {SDLK_a,        false},
+        {SDLK_b,        false},
+        {SDLK_c,        false},
+        {SDLK_d,        false},
+        {SDLK_e,        false},
+        {SDLK_f,        false},
+        {SDLK_g,        false},
+        {SDLK_h,        false},
+        {SDLK_i,        false},
+        {SDLK_j,        false},
+        {SDLK_k,        false},
+        {SDLK_l,        false},
+        {SDLK_m,        false},
+        {SDLK_n,        false},
+        {SDLK_o,        false},
+        {SDLK_p,        false},
+        {SDLK_q,        false},
+        {SDLK_r,        false},
+        {SDLK_s,        false},
+        {SDLK_t,        false},
+        {SDLK_u,        false},
+        {SDLK_v,        false},
+        {SDLK_w,        false},
+        {SDLK_x,        false},
+        {SDLK_y,        false},
+        {SDLK_z,        false},
+        {SDLK_RETURN,   false},
+        {SDLK_DELETE,   false},
+        {SDLK_BACKSPACE,false},
+        {SDLK_ESCAPE,   false},
+        {SDLK_RIGHT,    false},
+        {SDLK_LEFT,     false},
+        {SDLK_UP,       false},
+        {SDLK_DOWN,     false},
+        {SDLK_KP_PLUS,  false},
+        {SDLK_KP_MINUS, false},
+    };
     //text
     unsigned int fontSize = 22;
     //time
@@ -173,12 +211,19 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     //audio
     std::vector<struct sbuffer> soundBuffers;
     std::map<unsigned int, SDL_AudioCVT> sounds;
+    //3d scene
+    class Point3f camera;      // Camera coordinates
+    float phi = ZERO;
+    float theta = ZERO;
+
     //any of those are NULL if initialization has failed
     struct screen * sdlScreen = NULL;
     TTF_Font *font = NULL;
     SDL_AudioSpec *sdlAudio = NULL;
 
     screen_t testVmode(unsigned x, unsigned int y);
+
+    void reshape(int width, int height);
 
         /*TODO: add time*/
     template<typename T, typename... Args> void error(T value, Args... args){
@@ -194,13 +239,29 @@ public:
     Engine();
     ~Engine();
 
+    bool looping(){
+        return app.looping;
+    }
+    bool visible(){
+        return app.visible;
+    }
+    bool mouseFocusing(){
+        return app.mouse_focus;
+    }
+    bool kbdFocusing(){
+        return app.keyboard_focus;
+    }
+    bool keyPressed(unsigned char k){
+        return keys[k];
+    }
+
     screen_t getScreen() const ;
     mousecntl_t getMouse();
 
     SDL_AudioSpec * getSdlAudio() const {
         return sdlAudio;
     }
-    unsigned int getFontSize() const {
+    unsigned int getFontSize() {
         return fontSize;
     }
     TTF_Font *getFont() const{
@@ -215,6 +276,10 @@ public:
     G* withSdlGlVideo(struct version & v);
     G* withSdlTtf(std::string fontPath);
     G* withSdlAudio(int freq, unsigned char channels, unsigned int samples);
+    G* withOpenGl();
+
+    G* handleEvent(SDL_Event & e);
+    G* loop();
     //variadic log
     template <typename T> static void log(std::ostream * to, T s){
         if (to) {

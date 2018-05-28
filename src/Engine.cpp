@@ -28,72 +28,13 @@ template<> Engine<Game>::Engine(){
                     SDL_MINOR_VERSION,
                     SDL_PATCHLEVEL).toString(),
             ": Initialized! ");
+       // Set the window caption
+       SDL_WM_SetCaption(APP_NAME, NULL);
     }
     // Initialize timer
     tic = SDL_GetTicks();
     // Initialize rand()
     srand(tic);
-
-////initialize OpenGL
-
-//    // Black background
-//    glClearColor(ZERO, ZERO, ZERO, ZERO);
-
-//    // Set up depth buffer
-//    glClearDepth(ONE);
-
-//    // Set the type of depth testing
-//    glDepthFunc(GL_LEQUAL);
-
-//    //       if(Option_smooth)
-//    //        glShadeModel(GL_SMOOTH);
-//    //   else
-//    glShadeModel(GL_FLAT);
-
-//    // Set perspective calculations to most accurate
-//    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-//    // Set point smoothing to nicest
-//    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-
-//    // Set the blending function
-//    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-
-//    // Enable multisampling
-//#ifndef WIN32
-//    if(multisampleBuf > 0)
-//        glEnable(GL_MULTISAMPLE_ARB);
-//#endif
-//    // Enable alpha blending
-//    glEnable(GL_BLEND);
-
-//    // Enable texture mapping
-//    glEnable(GL_TEXTURE_2D);
-
-//    // Set up the lighting parameters
-//    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-//    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-//    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-//    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
-//    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
-//    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
-//    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
-
-//    // Set up the OpenGL view
-//    glViewport(0, 0, (GLsizei)(scr.W),(GLsizei)(scr.H));
-
-//    glMatrixMode(GL_PROJECTION);
-//    glLoadIdentity();
-//    gluPerspective(90.0f, (GLfloat)(scr.W)/(GLfloat)(scr.H), 0.1f, 500.0f);
-
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
-//    gluLookAt(ZERO, ZERO, 10.0f ,
-//              ZERO, ZERO, -SCENE_MAX,
-//              ZERO, ONE, ZERO);
-
-//    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 }
 
 template<> Engine<Game>::~Engine(){
@@ -292,6 +233,177 @@ template<> Game* Engine<Game>::withSdlAudio(int freq,
     return static_cast<Game*>(this);
 }
 
+template<> Game* Engine<Game>::withOpenGl(){
+//initialize OpenGL
+
+    // Black background
+    glClearColor(ZERO, ZERO, ZERO, ZERO);
+
+    // Set up depth buffer
+    glClearDepth(ONE);
+
+    // Set the type of depth testing
+    glDepthFunc(GL_LEQUAL);
+
+    //       if(Option_smooth)
+    //        glShadeModel(GL_SMOOTH);
+    //   else
+    glShadeModel(GL_FLAT);
+
+    // Set perspective calculations to most accurate
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+    // Set point smoothing to nicest
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+
+    // Set the blending function
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+
+    // Enable multisampling
+#ifndef WIN32
+    if(multisampleBuf > 0)
+        glEnable(GL_MULTISAMPLE_ARB);
+#endif
+    // Enable alpha blending
+    glEnable(GL_BLEND);
+
+    // Enable texture mapping
+    glEnable(GL_TEXTURE_2D);
+
+    // Set up the lighting parameters
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
+
+    struct screen scr;
+    if(sdlScreen == NULL){
+        warning("SDL desktop not initialized, falling back to screen defaults...");
+        scr = screen();
+    }else{
+        scr = screen(sdlScreen->W, sdlScreen->H, sdlScreen->BPP, sdlScreen->S);
+    }
+    // Set up the OpenGL view
+    glViewport(0, 0, (GLsizei)(scr.W),(GLsizei)(scr.H));
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(90.0f,
+                   (GLfloat)(scr.W)/(GLfloat)(scr.H),
+                   0.1f,
+                   500.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(ZERO, ZERO, 10.0f ,
+              ZERO, ZERO, -SCENE_MAX,
+              ZERO, ONE, ZERO);
+
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    return static_cast<Game*>(this);
+}
+
 template<> int Engine<Game>::now(){
-    return SDL_GetTicks();
+        return SDL_GetTicks();
+}
+
+template<> void Engine<Game>::reshape(int width, int height)
+{
+   // Reset the current viewport
+   glViewport(0, 0, (GLsizei)(width), (GLsizei)(height));
+
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+
+   // Calculate the aspect ratio of the window
+   gluPerspective(45.0f, (GLfloat)(width)/ (GLfloat)(height), 0.1f, 500.0f);
+
+   camera.x = ZERO;
+   camera.y = ZERO;
+   camera.z = SCENE_AIR;  // Center of rotation = SCENE_AIR - SCENE_MAX
+
+   phi = ZERO;
+   theta = ZERO;
+
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+
+   // Set the perspective
+   gluLookAt(camera.x, camera.y, camera.z,
+             ZERO, ZERO, -SCENE_MAX,
+             ZERO, ONE, ZERO);
+}
+
+template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
+    switch(e.type){
+        case SDL_QUIT:
+            app.looping = false;
+            //info("Frames skipped:", frameskips);
+            info("Quitting!");
+            break;
+
+        case SDL_VIDEORESIZE:
+            reshape(e.resize.w, e.resize.h);
+            break;
+
+        case SDL_ACTIVEEVENT:
+                   // Visibility status has changed
+            if(e.active.state & SDL_APPACTIVE){
+                app.visible = e.active.gain;
+            }
+                   // Mouse focus status has changed
+            if(e.active.state & SDL_APPMOUSEFOCUS){
+                app.mouse_focus = e.active.gain;
+            }
+                   // Input focus status has changed
+            if(e.active.state & SDL_APPINPUTFOCUS){
+                app.keyboard_focus = e.active.gain;
+            }
+            break;
+
+        case SDL_KEYDOWN:{
+                   // Take a snapshot of the keyboard
+            unsigned char * k = SDL_GetKeyState(NULL);
+            std::for_each(keys.begin(),
+                            keys.end(),
+                            [k](keypair &i){
+                i.second = k[i.first];
+            });
+
+        }   break;
+
+        case SDL_MOUSEMOTION:
+            mouse.X = e.motion.x;
+            mouse.Y = e.motion.y;
+            break;
+
+        case SDL_MOUSEBUTTONDOWN:
+             mouse.leftclick = true;
+             break;
+
+        case SDL_MOUSEBUTTONUP:
+             mouse.leftclick = false;
+             break;
+
+        default: break;
+    }
+    return static_cast<Game*>(this);
+}
+
+template<> Game* Engine<Game>::loop(){
+    SDL_Event evt;    // SDL event
+    if(SDL_PollEvent(&evt)){
+        return handleEvent(evt);
+    }else{
+        if(!app.visible){
+            SDL_WaitEvent(NULL);
+            return static_cast<Game*>(this);
+//        }else{
+//            return handleKeys()->nextStep();
+        }
+    }
 }

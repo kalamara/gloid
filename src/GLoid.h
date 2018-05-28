@@ -137,7 +137,7 @@
  18. Thomas also fixed some other bugs                                    OK
  19. Transparent and 3d fonts (for pills)                                 OK
  **********GLOID 2.1: *****************************************************
- 1. refactoring and unit tests                                            OK
+ 1. massive rewrite and unit tests                                            OK
  2. cmake build system                                                    OK
  3. bugs and glitches fixed
 ****************************************************************************/

@@ -10,6 +10,7 @@
 ***********************************************/
 
 #include "GLoid.h"
+#include "Point.h"
 #include "Engine.h"
 #include "World.h"
 #include "Game.h"
@@ -385,26 +386,31 @@
 int main(int argc, char **argv)
 {
 
-   // Initialize the game
-//   if(!Initialize())  --> to engine
-//   {
-//      Log("App init failed: %s\n", SDL_GetError());
-//      exit(1);
-//   }
+    Game * game = new Game();
+    struct version sdlv = version(SDL_MAJOR_VERSION,
+                                  SDL_MINOR_VERSION,
+                                  SDL_PATCHLEVEL);
+    game = game->withSdlGlVideo(sdlv)
+                ->withSdlTtf("./DejaVuSans.ttf")
+                ->withSdlAudio(22050, 2, 0)
+                ->withOpenGl();
 
-//   // Set the window caption --> to engine
-//   SDL_WM_SetCaption(APP_NAME, NULL);
+     while(game->looping()){
+          game = game->loop();
+     }
+//        if(SDL_PollEvent(&E)){
+//            return handleEvent(E);
+//        }else{
+//            if(!app.visible){
+//                SDL_WaitEvent(NULL);
+//                return this;
+//             }else{
+//                //            toc = SDL_GetTicks();
+//                return handleKeys()->nextStep(step);
+//            }
+//        }
 
-//   // Initialize OpenGL parameters
-//   InitGL(Screen);
 
-//   // Initialize game timer
-//   tic = SDL_GetTicks();
-
-    bool looping = false;
-    Game game = Game();
-    while(looping == true)
-    {
 //      if(SDL_PollEvent(&E)) --> to engine
 //      {
 //         switch(E.type)
@@ -602,12 +608,13 @@ int main(int argc, char **argv)
 //            }
 //         }
 //      }
-   }
+//   }
 
    // Free allocated memory
 //   Deinitialize(); --> to dtors
 
    // exit() calls SDL_Quit()
+   delete game;
    exit(0);
 
    return 0;

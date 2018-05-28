@@ -36,6 +36,28 @@ Uint32 SDL_GetTicks(void){
     return mock().actualCall("SDL_GetTicks")
                 .returnIntValue();
 }
+
+void SDL_WM_SetCaption(const char *title, const char *icon){
+    mock().actualCall("SDL_WM_SetCaption");
+}
+
+int SDL_PollEvent(SDL_Event *event){
+    return mock().actualCall("SDL_PollEvent")
+                .returnIntValue();
+}
+
+int SDL_WaitEvent(SDL_Event *event){
+    return mock().actualCall("SDL_WaitEvent")
+                .returnIntValue();
+}
+unsigned char MockKeyboard[SDLK_LAST] = {0};
+
+unsigned char * SDL_GetKeyState(int *numkeys){
+    mock().actualCall("SDL_GetKeyState");
+    //            .returnPointerValue();
+    return MockKeyboard;
+}
+
 SDL_VideoInfo MockDesktop = {
 1,/**< Flag: Can you create hardware surfaces? */
 1,	/**< Flag: Can you talk to a window manager? */
@@ -54,6 +76,7 @@ NULL,/**< Value: The format of the video surface */
 800,/**< Value: The current video mode width */
 600/**< Value: The current video mode height */
 };
+
 const SDL_VideoInfo * SDL_GetVideoInfo(void){
     /*return (const SDL_VideoInfo * )mock().actualCall("SDL_GetVideoInfo")
                 .returnPointerValue();*/
@@ -140,7 +163,7 @@ int SDL_ConvertAudio(SDL_AudioCVT *cvt){
 //openGL
 void glClearColor
 ( GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha ){
-    mock().actualCall("voidglClearColor");
+    mock().actualCall("glClearColor");
 }
 
 void glClearDepth( GLclampd depth ){
@@ -211,6 +234,15 @@ void gluLookAt
     mock().actualCall("gluLookAt");
 }
 
+Game * newGame(){
+    mock().expectOneCall("SDL_WM_SetCaption");
+    mock().expectOneCall("SDL_Init");
+    mock().expectOneCall("SDL_GetTicks")
+            .andReturnValue(123);
+    mock().expectOneCall("srand");
+    return new Game();
+}
+
 TEST_GROUP(GameTestGroup){
     void teardown(){
             mock().clear();
@@ -234,14 +266,80 @@ TEST(GameTestGroup, log_test){
 }
 
 TEST(GameTestGroup, time_test){
-    mock().expectOneCall("SDL_Init");
-    mock().expectOneCall("SDL_GetTicks")
-            .andReturnValue(123);
-    mock().expectOneCall("srand");
-    Game * game = new Game();
+    Game * game = newGame();
     mock().expectOneCall("SDL_GetTicks");
     game->now();
     mock().checkExpectations();
+    delete game;
+}
+
+TEST(GameTestGroup, loop_test){
+    Game * game = newGame();
+
+    mock().expectOneCall("SDL_PollEvent").andReturnValue(1);
+    game = game->loop();
+
+    SDL_Event evt;
+    evt.type = SDL_QUIT;
+
+    game = game->handleEvent(evt);
+
+    CHECK(!game->looping());
+
+    evt.type = SDL_VIDEORESIZE;
+    evt.resize.w = 800;
+    evt.resize.h = 600;
+    mock().expectOneCall("glViewport");
+    mock().expectNCalls(2,"glLoadIdentity");
+    mock().expectNCalls(2,"glMatrixMode");
+    mock().expectOneCall("gluPerspective");
+    mock().expectOneCall("gluLookAt");
+
+    game = game->handleEvent(evt);
+
+    evt.type = SDL_ACTIVEEVENT;
+    evt.active.state = SDL_APPACTIVE | SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS;
+    evt.active.gain = false;
+
+    game = game->handleEvent(evt);
+
+    CHECK(!game->visible());
+    CHECK(!game->mouseFocusing());
+    CHECK(!game->kbdFocusing());
+    //app is not visible, next loop should block on SDL_WaitEvent
+    mock().expectOneCall("SDL_PollEvent").andReturnValue(0);
+    mock().expectOneCall("SDL_WaitEvent");
+    game = game->loop();
+
+    evt.type = SDL_KEYDOWN;
+
+    MockKeyboard[SDLK_RETURN] = true;
+    mock().expectOneCall("SDL_GetKeyState").andReturnValue(MockKeyboard);
+
+    game = game->handleEvent(evt);
+    CHECK(game->keyPressed(SDLK_RETURN));
+
+    evt.type = SDL_MOUSEMOTION;
+    evt.motion.x = 15;
+    evt.motion.y = 20;
+
+    game = game->handleEvent(evt);
+
+    CHECK_EQUAL(15, game->getMouse()->X);
+    CHECK_EQUAL(20, game->getMouse()->Y);
+
+    evt.type = SDL_MOUSEBUTTONDOWN;
+
+    game = game->handleEvent(evt);
+
+    CHECK(game->getMouse()->leftclick);
+
+    evt.type = SDL_MOUSEBUTTONUP;
+
+    game = game->handleEvent(evt);
+
+    CHECK(!game->getMouse()->leftclick);
+
     delete game;
 }
 
@@ -262,6 +360,7 @@ TEST(GameTestGroup, version_test){
 
 TEST(GameTestGroup, init_test){
     mock().expectOneCall("SDL_Init");
+    mock().expectOneCall("SDL_WM_SetCaption");
     mock().expectOneCall("SDL_GetTicks").andReturnValue(123);
     mock().expectOneCall("srand");
 
@@ -324,6 +423,26 @@ TEST(GameTestGroup, init_test){
     mock().checkExpectations();
     CHECK(game->getSdlAudio() != NULL);
 
+/*OpenGL*/
+    mock().expectOneCall("glClearColor");
+    mock().expectOneCall("glClearDepth");
+    mock().expectOneCall("glDepthFunc");
+    mock().expectOneCall("glShadeModel");
+    mock().expectNCalls(2,"glHint");
+    mock().expectOneCall("glBlendFunc");
+    mock().expectNCalls(3,"glEnable");
+    mock().expectNCalls(2,"glLightfv");
+    mock().expectNCalls(5,"glMaterialfv");
+    mock().expectOneCall("glViewport");
+    mock().expectNCalls(2,"glLoadIdentity");
+    mock().expectNCalls(2,"glMatrixMode");
+    mock().expectOneCall("gluPerspective");
+    mock().expectOneCall("gluLookAt");
+    mock().expectOneCall("glClear");
+
+    game = game->withOpenGl();
+    mock().checkExpectations();
+
     delete game;
 }
 
@@ -356,13 +475,12 @@ TEST(GameTestGroup, sound_test){
     mock().checkExpectations();
 
     /*we need an instance of game to actually play a sound*/
-    mock().expectOneCall("SDL_Init");
-    mock().expectOneCall("SDL_GetTicks").andReturnValue(123);
-    mock().expectOneCall("srand");
+
+    Game * game = newGame();
+
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
     mock().expectOneCall("SDL_PauseAudio");
 
-    Game * game = new Game();
     game = game->withSdlAudio(22050, 2, 512);
 
     mock().checkExpectations();
@@ -374,6 +492,7 @@ TEST(GameTestGroup, sound_test){
     game = game->addSound(loaded, 8, 0);
 
     bool succ = game->playSound(-1);
+    CHECK_EQUAL(0, game->pendingSounds());
     CHECK(!succ);
 
     succ = game->playSound(0);
