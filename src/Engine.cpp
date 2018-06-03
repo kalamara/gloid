@@ -51,31 +51,6 @@ template<> mousecntl_t Engine<Game>::getMouse()  {
     return &mouse;
 }
 
-//template<> void Engine<Game>::printText(bool option,
-//                     text2d* text,
-//                     SDL_Color fg,
-//                     SDL_Color bg,
-//                     int x,
-//                     int y,
-//                     const char* buf, ...){
-
-//     va_list Arg;
-
-//     va_start(Arg, buf);
-//     vsprintf(text->msg,buf, Arg);
-//     va_end(Arg);
-
-//     if(option){
-//        text->T = TTF_RenderText_Shaded(font, text->msg, fg, bg);
-//     }else{
-//        text->T = TTF_RenderText_Blended(font, text->msg, fg);
-//     }
-//     text->src.w = text->T->w;
-//     text->src.h = text->T->h;
-//     text->src.x = x;
-//     text->src.y = y;
-//}
-
 template<> screen_t Engine<Game>::testVmode(unsigned x, unsigned int y){
     unsigned char bpp = 32;
     SDL_Surface *s = NULL;
@@ -398,14 +373,63 @@ template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
     if(text.blended){
 
         return TTF_RenderText_Shaded(font,
-                                     text.msg(),
+                                     text.msg().c_str(),
                                      text.foreground,
                                      text.background);
     }else{
 
         return TTF_RenderText_Blended(font,
-                                      text.msg(),
+                                      text.msg().c_str(),
                                       text.foreground);
+    }
+}
+
+template<> void Engine<Game>::draw2d(
+        SDL_Surface *surf,
+        unsigned int x,
+        unsigned int y){
+    if(surf && sdlScreen){
+        unsigned int w = nextpoweroftwo(surf->w);
+        unsigned int h = nextpoweroftwo(surf->h);
+
+        float xx = SCENE_MIN + 2 * SCENE_MAX * x / sdlScreen->W;
+        float yy = -SCENE_MIN + 2 * SCENE_MAX * y / sdlScreen->H;
+
+        SDL_Surface *s = SDL_CreateRGBSurface(surf->flags,
+                                              w, h,
+                                              sdlScreen->BPP,
+                                              0x00ff0000, 0x0000ff00,
+                                              0x000000ff, 0xff000000);
+
+        SDL_SetColorKey(s, SDL_SRCCOLORKEY|SDL_RLEACCEL,
+                        SDL_MapRGBA(s->format, 0, 0, 0, 0));
+
+        SDL_BlitSurface(surf, 0, s, 0);
+
+        glEnable(GL_TEXTURE_2D);
+        //      glBindTexture(GL_TEXTURE_2D, TextureID[N_BMP]);//use warp ID + 1
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
+                     GL_UNSIGNED_BYTE, s->pixels);
+
+        glColor3f(1.0f, 1.0f, 1.0f);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(xx + fontSize * w / sdlScreen->W,
+                   yy - fontSize * h / sdlScreen->H, -SCENE_AIR);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(xx + fontSize * w / sdlScreen->W, yy, -SCENE_AIR);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(xx, yy, -SCENE_AIR);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(xx, yy - fontSize * h / sdlScreen->H, -SCENE_AIR);
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+        SDL_FreeSurface(s);
     }
 }
 

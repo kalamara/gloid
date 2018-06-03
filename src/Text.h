@@ -1,31 +1,41 @@
 #ifndef _TEXT_H_
 #define _TEXT_H_
+#include <sstream>
+#include <string>
 class text2d{
     std::stringstream str;
-
     unsigned int timestamp = 0;  // If timestamp is zero, the message is always on.
     unsigned int lifetime = 0;   // If (ticks - timestamp) > lifetime, the popup dies.
 public:
+
     bool blended = true;
     SDL_Color foreground = {0};
     SDL_Color background = {0};
 
-    const char * msg(){
-        return str.str().c_str();
+    std::string msg(){
+
+        return str.str();
     }
-    text2d(){}
+    text2d * clear(){
+        str.str( std::string() );
+        str.clear();
+
+        return this;
+    }
+    text2d(){
+    }
     text2d(SDL_Color& fg,
            SDL_Color& bg,
+           int life = 0,
+           int toc = 0,
            bool blend = true){
-
+        lifetime = (unsigned int)life;
+        timestamp = life >= 0 ? toc : 0;
         blended = blend;
         foreground = fg;
         background = bg;
     }
-    template<typename T,typename... Args> text2d * print(int life,
-            T value, Args... args){
-        lifetime = (unsigned int)life;
-        //timestamp = life >= 0 ? Engine<Game>::toc() : 0;
+    template<typename T,typename... Args> text2d * print(T value, Args... args){
         log(&str, value, args...);
 
         return this;

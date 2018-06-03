@@ -50,8 +50,8 @@ Pill::Pill(const Point3f &where, Game* g){
                 textSurf,
                 SDL_SRCCOLORKEY | SDL_RLEACCEL,
                 SDL_MapRGBA(textSurf->format, 0, 0, 0, 0));
-    text = new text2d(f,b);
-    text = text->print(-1, label);
+//    text = new text2d(f,b);
+//    text = text->print(-1, label);
 
     SDL_FillRect(
                 surf,

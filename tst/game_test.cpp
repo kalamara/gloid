@@ -161,10 +161,61 @@ int SDL_ConvertAudio(SDL_AudioCVT *cvt){
     return 0;
 }
 
+struct SDL_Surface Surf;
+
+SDL_Surface * SDL_CreateRGBSurface
+(Uint32 flags, int width, int height, int depth,
+ Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask){
+    return (SDL_Surface *)mock().actualCall("SDL_CreateRGBSurface")
+            .returnPointerValueOrDefault(&Surf);
+}
+
+int SDL_SetColorKey
+(SDL_Surface *surface, Uint32 flag, Uint32 key){
+    mock().actualCall("SDL_SetColorKey");
+}
+
+int SDL_FillRect
+(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color){
+    mock().actualCall("SDL_FillRect");
+}
+
+int SDL_UpperBlit
+(SDL_Surface *src, SDL_Rect *srcrect,
+ SDL_Surface *dst, SDL_Rect *dstrect){
+    mock().actualCall("SDL_UpperBlit");
+}
+
+void SDL_FreeSurface(SDL_Surface *surface){
+    mock().actualCall("SDL_FreeSurface");
+}
+Uint32 SDL_MapRGBA
+(const SDL_PixelFormat * const format,
+ const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a){
+    mock().actualCall("SDL_MapRGBA");
+}
+
 //openGL
+void glColor3f( float x, float y, float z){
+    mock().actualCall("glColor3f");
+}
+
 void glClearColor
 ( GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha ){
     mock().actualCall("glClearColor");
+}
+
+
+void glTexParameteri( GLenum target, GLenum pname, GLint param ){
+    mock().actualCall("glTexParameteri");
+}
+
+void glTexImage2D( GLenum target, GLint level,
+                   GLint internalFormat,
+                   GLsizei width, GLsizei height,
+                   GLint border, GLenum format, GLenum type,
+                   const GLvoid *pixels ){
+    mock().actualCall("glTexImage2D");
 }
 
 void glClearDepth( GLclampd depth ){
@@ -185,6 +236,18 @@ void glEnable( GLenum cap ){
 
 void glDisable( GLenum cap ){
     mock().actualCall("glDisable");
+}
+
+void glBegin(unsigned int mode){
+    mock().actualCall("glBegin");
+}
+
+void glEnd(){
+    mock().actualCall("glEnd");
+}
+
+void glVertex3f(float x, float y, float z){
+    mock().actualCall("glVertex3f");
 }
 
 void glHint( GLenum target, GLenum mode ){
@@ -221,6 +284,10 @@ void glClear( GLbitfield mask ){
     mock().actualCall("glClear");
 }
 
+void glTexCoord2f( GLfloat s, GLfloat t ){
+    mock().actualCall("glTexCoord2f");
+}
+
 //GLU extentions
 
 void gluPerspective
@@ -250,20 +317,44 @@ TEST_GROUP(GameTestGroup){
     }
 };
 
-TEST(GameTestGroup, log_test){
+TEST(GameTestGroup, pow_test){
+    CHECK_EQUAL(0, Engine<Game>::nextpoweroftwo(0));
+    CHECK_EQUAL(1, Engine<Game>::nextpoweroftwo(1));
+    CHECK_EQUAL(2, Engine<Game>::nextpoweroftwo(2));
+    CHECK_EQUAL(4, Engine<Game>::nextpoweroftwo(3));
+    CHECK_EQUAL(256, Engine<Game>::nextpoweroftwo(129));
+    CHECK_EQUAL(256, Engine<Game>::nextpoweroftwo(256));
+
+}
+
+TEST(GameTestGroup, text_test){
     std::stringstream str;
     text2d::log(&str, "ena =");
 
-    STRCMP_EQUAL("ena =\n", str.str().c_str());
+    STRCMP_EQUAL("ena =\n",str.str().c_str());
 
     str.str( std::string() );
     str.clear();
-
     text2d::log(&str, "ena = ", 1, ",~dyo ison ", 2.00001f);
 
     STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n", str.str().c_str());
 
-    //std::cout << str.str();
+    text2d * text = new text2d();
+    text = text->print("ena =");
+    STRCMP_EQUAL("ena =\n", text->msg().c_str());
+
+    text = text->clear()->print("ena = ", 1, ",~dyo ison ", 2.00001f);
+
+    STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n",  text->msg().c_str());
+
+    mock().expectOneCall("TTF_RenderText_Shaded");
+    Game * game = newGame();
+    SDL_Surface * s = game->print2d(*text);
+
+    game->draw2d(s,0,0);
+
+    delete game;
+    delete text;
 }
 
 TEST(GameTestGroup, time_test){

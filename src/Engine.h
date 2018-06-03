@@ -209,7 +209,6 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
 
     void reshape(int width, int height);
 
-
 public:
     Engine();
     ~Engine();
@@ -288,6 +287,12 @@ public:
             SDL_Surface *surf,
             unsigned int x,
             unsigned int y);
+
+    static unsigned int nextpoweroftwo(unsigned int x){
+       double y = pow(2, ceil(log(x) / log(2)));
+
+       return (unsigned int)y;
+    }
 
 };
 #endif // ENGINE_H
