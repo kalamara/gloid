@@ -5,6 +5,7 @@
 #ifndef _GLOID_H
 #define _GLOID_H
 #define DEBUG 1
+
 // Constants
 
 #define PI 3.141525f
@@ -85,6 +86,14 @@
 #define ALIEN_COLORS 3
 
 // Libraries
+#include <list>
+#include <vector>
+#include <map>
+#include <utility>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
 
 // If we're under MSVC, tell the linker to look for these libraries.
 #ifdef WIN32
@@ -225,6 +234,13 @@ typedef struct hallentry
    char* initials;
    int score;
 } * hallentry_t;
+
+//GLoid core
+#include "Point.h"
+#include "World.h"
+#include "Text.h"
+#include "Engine.h"
+#include "Game.h"
 
 #else
 

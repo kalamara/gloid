@@ -1,12 +1,7 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 // this is the BASE GAME ENGINE CORE.
-#include <list>
-#include <vector>
-#include <map>
-#include <utility>
-#include <fstream>
-#include <iostream>
+
 
 #define WORKPATH "."
 // Name of the log file
@@ -62,14 +57,11 @@ typedef struct mousecntl{
 // Sound buffer: SDL only works with double-buffering, so NUM_BUFFERS = 2
 typedef struct sbuffer{
    unsigned char *data = NULL;
-//   unsigned int dpos = 0;
    unsigned int dlen = 0;
    sbuffer(){}
    sbuffer(unsigned char * d,
-           //unsigned int p,
            unsigned int l){
        data = d;
-//       dpos = p;
        dlen = l;
    }
 } * sbuffer_t;
@@ -81,14 +73,6 @@ typedef struct appstatus{
     bool mouse_focus = true;     // Is the mouse cursor inside the window?
     bool keyboard_focus = true;  // Does our application have keyboard focus?
 } * appstatus_t;
-
-typedef struct text2d{
-    SDL_Surface *T;
-    SDL_Rect src;//obsolete
-    char msg[MAXLINE];
-    unsigned int timestamp;  // If timestamp is zero, the message is always on.
-    unsigned int lifetime;   // If (ticks - timestamp) > lifetime, the popup dies.
-} * text2d_t;
 
 typedef struct version {
     unsigned char major = 0;
@@ -225,16 +209,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
 
     void reshape(int width, int height);
 
-        /*TODO: add time*/
-    template<typename T, typename... Args> void error(T value, Args... args){
-        log(&logStream,  "ERROR:", value,  args...);
-    }
-    template<typename T,typename... Args> void info(T value, Args... args){
-        log(&logStream,  "INFO:",  value, args...);
-    }
-    template<typename T,typename... Args> void warning(T value, Args... args){
-        log(&logStream,  "WARNING:",  value, args...);
-    }
+
 public:
     Engine();
     ~Engine();
@@ -281,25 +256,15 @@ public:
     G* handleEvent(SDL_Event & e);
     G* loop();
     //variadic log
-    template <typename T> static void log(std::ostream * to, T s){
-        if (to) {
-#ifdef DEBUG
-            *to << s << std::endl;
-#endif
-            std::cout << s << std::endl;
-        }
+    /*TODO: add time*/
+    template<typename T, typename... Args> void error(T value, Args... args){
+        text2d::log(&logStream,  "ERROR:", value,  args...);
     }
-    template<typename T, typename... Args> static void log(std::ostream * to,
-                                                           T value,
-                                                           Args... args){
-        if (to) {
-            std::cout << value;		// use first non-format argument
-#ifdef DEBUG
-            *to << value;
-#endif
-            return log(to, args ...); 	// ``peel off'' first argument
-         }
-         *to << value << std::endl;
+    template<typename T,typename... Args> void info(T value, Args... args){
+        text2d::log(&logStream,  "INFO:",  value, args...);
+    }
+    template<typename T,typename... Args> void warning(T value, Args... args){
+        text2d::log(&logStream,  "WARNING:",  value, args...);
     }
     //public SDL interface
     //audio
@@ -313,17 +278,16 @@ public:
         return soundBuffers.size();
     }
     //time
-    int toc();
+    static int toc();
+
     //printing
-    void printText(bool option,
-                          text2d* text,
-                          SDL_Color fg,
-                          SDL_Color bg,
-                          int x,
-                          int y,
-                          const char* buf, ...);
+    SDL_Surface * print2d(text2d & text);
 
-
+    //draw a 2D SDL surface
+    void draw2d(
+            SDL_Surface *surf,
+            unsigned int x,
+            unsigned int y);
 
 };
 #endif // ENGINE_H

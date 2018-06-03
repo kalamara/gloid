@@ -24,7 +24,7 @@ class Pill: public WhatUC<Pill>{
 
     Game * game;
 public:
-    // Game color palette
+    // Pill color palette
     SDL_Color Palette[N_RGB_COLORS] =
     {{198, 198, 198, 128},  // Grey
      {255, 128, 255, 128},  // Pink
@@ -44,8 +44,8 @@ public:
     Point3f col;     // Pill color
     char label;
     SDL_Surface* surf;
-
-    text2d text;
+    SDL_Surface* textSurf;
+    class text2d * text;
 
     void display();
     Pill& animate(double secPerFrame);

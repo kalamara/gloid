@@ -7,6 +7,7 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
+
 #include "Point.h"
 #include "Engine.h"
 #include "World.h"
@@ -251,14 +252,14 @@ TEST_GROUP(GameTestGroup){
 
 TEST(GameTestGroup, log_test){
     std::stringstream str;
-    Engine<Game>::log(&str, "ena =");
+    text2d::log(&str, "ena =");
 
     STRCMP_EQUAL("ena =\n", str.str().c_str());
 
     str.str( std::string() );
     str.clear();
 
-    Engine<Game>::log(&str, "ena = ", 1, ",~dyo ison ", 2.00001f);
+    text2d::log(&str, "ena = ", 1, ",~dyo ison ", 2.00001f);
 
     STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n", str.str().c_str());
 

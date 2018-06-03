@@ -1,8 +1,5 @@
 #include "GLoid.h"
-#include "Point.h"
-#include "World.h"
-#include "Engine.h"
-#include "Game.h"
+
 #include "WhatUC.h"
 #include "Vaus.h"
 
@@ -37,9 +34,9 @@ Pill::Pill(const Point3f &where, Game* g){
                 0x000000ff,
                 0xff000000);
 
-    memset(&text,0,sizeof(text2d));
+    //memset(&text,0,sizeof(text2d));
 
-    text.T = SDL_CreateRGBSurface(
+    textSurf = SDL_CreateRGBSurface(
                 0,
                 game->getFontSize(),
                 game->getFontSize(),
@@ -47,27 +44,28 @@ Pill::Pill(const Point3f &where, Game* g){
                 0x00ff0000,
                 0x0000ff00,
                 0x000000ff,
-                0xff000000);
+                0xff000000); //TODO: or maybe print2d ??
 
     SDL_SetColorKey(
-                text.T,
+                textSurf,
                 SDL_SRCCOLORKEY | SDL_RLEACCEL,
-                SDL_MapRGBA(text.T->format, 0, 0, 0, 0));
-
-    game->printText(true,&text, f, b, 0, 0, "%c", label);
+                SDL_MapRGBA(textSurf->format, 0, 0, 0, 0));
+    text = new text2d(f,b);
+    text = text->print(-1, label);
 
     SDL_FillRect(
                 surf,
                 NULL,
                 SDL_MapRGBA(surf->format, b.r, b.g, b.b, 128));
-    SDL_BlitSurface(text.T, 0, surf, 0);
+    SDL_BlitSurface(textSurf, 0, surf, 0);
 }
 
 // Deallocate SDL_Surface data
 Pill::~Pill(){
     SDL_FreeSurface(surf);
-    SDL_FreeSurface(text.T);
+    SDL_FreeSurface(textSurf);
     gluDeleteQuadric(base);
+    delete text;
 }
 
 void Pill::display(){

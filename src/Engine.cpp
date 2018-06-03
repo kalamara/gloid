@@ -3,11 +3,6 @@
 //#include <experimental/filesystem>
 #include <algorithm>
 #include "GLoid.h"
-#include "Point.h"
-
-#include "Engine.h"
-#include "World.h"
-#include "Game.h"
 
 //APP_NAME + " V" + APP_VERSION +
 template<> Engine<Game>::Engine(){
@@ -56,30 +51,30 @@ template<> mousecntl_t Engine<Game>::getMouse()  {
     return &mouse;
 }
 
-template<> void Engine<Game>::printText(bool option,
-                     text2d* text,
-                     SDL_Color fg,
-                     SDL_Color bg,
-                     int x,
-                     int y,
-                     const char* buf, ...){
+//template<> void Engine<Game>::printText(bool option,
+//                     text2d* text,
+//                     SDL_Color fg,
+//                     SDL_Color bg,
+//                     int x,
+//                     int y,
+//                     const char* buf, ...){
 
-     va_list Arg;
+//     va_list Arg;
 
-     va_start(Arg, buf);
-     vsprintf(text->msg,buf, Arg);
-     va_end(Arg);
+//     va_start(Arg, buf);
+//     vsprintf(text->msg,buf, Arg);
+//     va_end(Arg);
 
-     if(option){
-        text->T = TTF_RenderText_Shaded(font, text->msg, fg, bg);
-     }else{
-        text->T = TTF_RenderText_Blended(font, text->msg, fg);
-     }
-     text->src.w = text->T->w;
-     text->src.h = text->T->h;
-     text->src.x = x;
-     text->src.y = y;
-}
+//     if(option){
+//        text->T = TTF_RenderText_Shaded(font, text->msg, fg, bg);
+//     }else{
+//        text->T = TTF_RenderText_Blended(font, text->msg, fg);
+//     }
+//     text->src.w = text->T->w;
+//     text->src.h = text->T->h;
+//     text->src.x = x;
+//     text->src.y = y;
+//}
 
 template<> screen_t Engine<Game>::testVmode(unsigned x, unsigned int y){
     unsigned char bpp = 32;
@@ -399,6 +394,21 @@ template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
     return static_cast<Game*>(this);
 }
 
+template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
+    if(text.blended){
+
+        return TTF_RenderText_Shaded(font,
+                                     text.msg(),
+                                     text.foreground,
+                                     text.background);
+    }else{
+
+        return TTF_RenderText_Blended(font,
+                                      text.msg(),
+                                      text.foreground);
+    }
+}
+
 template<> Game* Engine<Game>::loop(){
     SDL_Event evt;    // SDL event
     if(SDL_PollEvent(&evt)){
@@ -411,7 +421,7 @@ template<> Game* Engine<Game>::loop(){
         }else{
 //            step.draw();
 //            step.update();
-//            step = step.next();
+//            step = next(step);
 
             return static_cast<Game*>(this);
        }

@@ -1,11 +1,6 @@
 #include "GLoid.h"
-#include "Point.h"
+
 #include "WhatUC.h"
-
-#include "World.h"
-#include "Engine.h"
-#include "Game.h"
-
 #include "Ball.h"
 #include "Brick.h"
 

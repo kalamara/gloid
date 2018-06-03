@@ -16,6 +16,7 @@ add_executable(${PROJECT_NAME}
     "Engine.cpp"
     "Game.h"
     "Game.cpp"
+    "Text.h"
     "World.h"
     "Point.h"
     "GLoid.h"

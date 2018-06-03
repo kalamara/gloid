@@ -10,10 +10,6 @@
 ***********************************************/
 
 #include "GLoid.h"
-#include "Point.h"
-#include "Engine.h"
-#include "World.h"
-#include "Game.h"
 
 // Text buffer for on-screen messages
 // char Textbuffer[TEXTLINES][MAXLINE];  --> to engine
@@ -399,99 +395,7 @@ int main(int argc, char **argv)
           game = game->loop();
           i++;
      }
-//        if(SDL_PollEvent(&E)){
-//            return handleEvent(E);
-//        }else{
-//            if(!app.visible){
-//                SDL_WaitEvent(NULL);
-//                return this;
-//             }else{
-//                //            toc = SDL_GetTicks();
-//                return handleKeys()->nextStep(step);
-//            }
-//        }
 
-
-//      if(SDL_PollEvent(&E)) --> to engine
-//      {
-//         switch(E.type)
-//         {
-//            case SDL_QUIT:
-//               looping = FALSE;
-//#ifdef DEBUG
-//               Log("Frames skipped: %d\n", frameskips);
-//               Log("Quitting!\n");
-//#endif
-//               break;
-
-//            case SDL_VIDEORESIZE:
-//               ReshapeGL(E.resize.w, E.resize.h);
-//               break;
-
-//            case SDL_ACTIVEEVENT:
-//               // Visibility status has changed
-//               if(E.active.state & SDL_APPACTIVE)
-//               {
-//                  if(E.active.gain)
-//                     AppStatus.visible = TRUE;
-//                  else
-//                     AppStatus.visible = FALSE;
-//               }
-
-//               // Mouse focus status has changed
-//               if(E.active.state & SDL_APPMOUSEFOCUS)
-//               {
-//                  if(E.active.gain)
-//                     AppStatus.mouse_focus = TRUE;
-//                  else
-//                     AppStatus.mouse_focus = FALSE;
-//               }
-
-//               // Input focus status has changed
-//               if(E.active.state & SDL_APPINPUTFOCUS)
-//               {
-//                  if(E.active.gain)
-//                     AppStatus.keyboard_focus = TRUE;
-//                  else
-//                     AppStatus.keyboard_focus = FALSE;
-//               }
-//               break;
-
-//            case SDL_KEYDOWN:
-//               // Take a snapshot of the keyboard
-//               keys = SDL_GetKeyState(NULL);
-//               break;
-
-//            case SDL_MOUSEMOTION:
-//               mouse.x = E.motion.x;
-//               mouse.y = E.motion.y;
-//               break;
-
-//            case SDL_MOUSEBUTTONDOWN:
-//               mouse.leftclick = TRUE;
-//               break;
-
-//            case SDL_MOUSEBUTTONUP:
-//               mouse.leftclick = FALSE;
-//               break;
-
-//            default:
-//               break;
-//         }
-//      }
-     // else
-//      { --> to engine
-//         // If the app isn't visible, don't do anything
-//         if(!AppStatus.visible)
-//            SDL_WaitEvent(NULL);
-//         else
-//         {
-//            toc = SDL_GetTicks();
-//             if(keys)
-//             {
-//                     if(keys[SDLK_ESCAPE])
-//                      TerminateApplication ();
-//             }
 //            switch(gamestep) --> to game
 //            {
 //               case LOADING:

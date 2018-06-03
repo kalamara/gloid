@@ -1,11 +1,4 @@
-//#include <list>
-
 #include "GLoid.h"
-#include "Point.h"
-
-#include "World.h"
-#include "Engine.h"
-#include "Game.h"
 
 #include "model/WhatUC.h"
 #include "model/Particle.h"
@@ -76,16 +69,6 @@ template<> bool Engine<Game>::playSound(unsigned int sound) {
 
 template<> int Engine<Game>::toc() {
     mock().actualCall("Game::now");
-}
-
-template<> void Engine<Game>::printText(bool option,
-                     text2d* text,
-                     SDL_Color fg,
-                     SDL_Color bg,
-                     int x,
-                     int y,
-                     const char* buf, ...){
-    mock().actualCall("Game::printText");
 }
 
 bool Game::isHiScoring() {
@@ -536,7 +519,6 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().expectNCalls(2, "SDL_MapRGBA");
     mock().expectOneCall("SDL_SetColorKey");
     mock().expectOneCall("SDL_FillRect");
-    mock().expectOneCall("Game::printText");
     mock().expectOneCall("SDL_UpperBlit");
     mock().expectOneCall("gluNewQuadric");
     mock().expectOneCall("Engine<Game>::getScreen");

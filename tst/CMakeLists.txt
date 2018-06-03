@@ -13,6 +13,7 @@ include_directories(
 add_executable(model_test
     ${SUT}/GLoid.h
     ${SUT}/Game.h
+    ${SUT}/Text.h
     ${SUT}/Point.h
     ${SUT}/Engine.h
     ${SUT}/World.h
@@ -36,6 +37,7 @@ add_executable(model_test
 
 add_executable(functions_test
     ${SUT}/GLoid.h
+    ${SUT}/Text.h
     ${SUT}/Point.h
     ${SUT}/Point.cpp
     functions_test.cpp)
@@ -44,6 +46,7 @@ add_executable(game_test
     ${SUT}/GLoid.h
     ${SUT}/Game.h
     ${SUT}/Game.cpp
+    ${SUT}/Text.h
     ${SUT}/Engine.h
     ${SUT}/Engine.cpp
     ${SUT}/World.h
