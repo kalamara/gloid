@@ -3,14 +3,14 @@
 // LAZER SHOTS
 class Shot: public WhatUC<Shot>
 {	
-    Game * game;
+    class Play * gameplay;
     GLUquadric * base;
     static constexpr float speedz = 40.0f;
 public:
    int score;
    void display(void);
    Shot& animate(double secPerFrame);
-   Shot(Game *game, const class Point3f &where);
+   Shot(class Play *game, const class Point3f &where);
    ~Shot();
 };
 #endif

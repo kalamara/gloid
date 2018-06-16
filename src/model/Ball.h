@@ -9,7 +9,7 @@ class Ball: public WhatUC<Ball>{
     static const int slices = 12;
     static const int stacks = 12;
 
-    Game * game;
+    class Game * game;
 
 public:
     bool launched = false;
@@ -20,7 +20,7 @@ public:
     Point3f launchspeed;
     Point3f initspeed;
 
-    Ball(Game * g);
+    Ball(class Game *g);
     ~Ball();
 
     void display();

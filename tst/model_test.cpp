@@ -1,4 +1,5 @@
 #include "GLoid.h"
+#include "game/Play.h"
 
 #include "model/WhatUC.h"
 #include "model/Particle.h"
@@ -12,8 +13,6 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
-
-#include "GameMock.h"
 
 #define RED         {ONE, ZERO, ZERO}
 
@@ -40,72 +39,104 @@ Point3f Point3f::chase(const Point3f& other, float U){
 }
 
 //Game
-
 template<> Engine<Game>::Engine(){
-
 }
 
 template<> Engine<Game>::~Engine(){
+}
+
+Game::Game(){
+
+}
+
+Game::~Game(){
+
+}
+
+Game* Game::loop(){
+}
+
+Game* Game::nextStep(){
+}
+
+
+Play::Play(){
+
+}
+
+Play::~Play(){
+
+}
+
+Play * Play::draw(){
+
+}
+
+Play * Play::update(){
+
+}
+
+Play * Play::next(){
 
 }
 
 struct mousecntl MockMouse = mousecntl(400, 300, false);
 struct screen MockScreen = screen(800, 600, 32, NULL);
 
-template<> mousecntl_t Engine<Game>::getMouse() {
-    mock().actualCall("Engine<Game>::getMouse");
+template <> mousecntl_t Engine<Game>::getMouse() {
+    mock().actualCall("Engine::getMouse");
     return &MockMouse;
 }
 
-template<> screen_t Engine<Game>::getScreen() const{
-    mock().actualCall("Engine<Game>::getScreen");
+template <> screen_t Engine<Game>::getScreen() const{
+    mock().actualCall("Engine::getScreen");
     return &MockScreen;
 }
 
-template<> bool Engine<Game>::playSound(unsigned int sound) {
-    mock().actualCall("Game::playSound");
+template <> bool Engine<Game>::playSound(unsigned int sound) {
+    mock().actualCall("Engine::playSound");
     //  .withParameter("sound", WAV_LAUNCH);
 }
 
-template<> int Engine<Game>::toc() {
-    mock().actualCall("Game::now");
+template <> int Engine<Game>::toc() {
+    mock().actualCall("Engine::now");
 }
 
-bool Game::isHiScoring() {
-    mock().actualCall("Game::isHiScoring")
+bool Play::isHiScoring() {
+    mock().actualCall("Play::isHiScoring")
             .returnBoolValue();
 }
 
-unsigned int Game::levelType(){
-    mock().actualCall("Game::levelType")
+unsigned int Play::levelType(){
+    mock().actualCall("Play::levelType")
             .returnIntValue();
     return 0;
 }
 
 Ball * World::getActiveBall(){
-    mock().actualCall("Game::getActiveBall");
+    mock().actualCall("Play::getActiveBall");
     return NULL;
 }
 
 Brick * World::getBrickAt(Point3f &where){
-    mock().actualCall("Game::getBrickAt");
+    mock().actualCall("Play::getBrickAt");
     return NULL;
 }
 
-void Game::setBonusMode(int type){
-    mock().actualCall("Game::setBonusMode");
+void Play::setBonusMode(int type){
+    mock().actualCall("Play::setBonusMode");
 }
 
-void Game::incLives(){
-    mock().actualCall("Game::setBonusMode");
+void Play::incLives(){
+    mock().actualCall("Play::incLives");
 }
 
-void Game::divideBalls(){
-    mock().actualCall("Game::divideBalls");
+void Play::divideBalls(){
+    mock().actualCall("Play::divideBalls");
 }
 
-void Game::killVaus(){
-    mock().actualCall("Game::killVaus");
+void Play::killVaus(){
+    mock().actualCall("Play::killVaus");
 }
 
 
@@ -317,7 +348,7 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
 
 TEST(ModelTestGroup, BallIsWhatUC){
     mock().expectOneCall("gluNewQuadric");
-    GameMock * gm = new GameMock();//GameMock::instance();
+    Game * gm = new Game();
     Ball *b = new Ball(gm);
     CHECK_FALSE(b->active);
     CHECK_FALSE(b->launched);
@@ -339,7 +370,7 @@ TEST(ModelTestGroup, BallIsWhatUC){
 
 TEST(ModelTestGroup, BallAnimation){
     mock().expectOneCall("gluNewQuadric");
-    GameMock * gm = new GameMock();
+    Game * gm = new Game();
     Ball *b = new Ball(gm);
     //reinit inits
     Point3f init = {ONE, 2*ONE, 3*ONE};
@@ -366,7 +397,7 @@ TEST(ModelTestGroup, BallAnimation){
 
     //launch launches
 
-    mock().expectOneCall("Game::playSound");
+    mock().expectOneCall("Engine::playSound");
     // .withParameter("sound", WAV_LAUNCH);
     *b = b->launch();
 
@@ -388,11 +419,11 @@ TEST(ModelTestGroup, BallAnimation){
 }
 
 TEST(ModelTestGroup, VausIsWhatUC){
-    GameMock * gm = new GameMock();//GameMock::instance();
-
+    Game * gm = new Game();
+    Play * pl = new Play();
     mock().expectOneCall("gluNewQuadric");
 
-    Vaus *v = new Vaus(gm);
+    Vaus *v = new Vaus(gm, pl);
 
     CHECK(v->active);
     CHECK_FALSE(v->armed);
@@ -416,8 +447,8 @@ TEST(ModelTestGroup, VausIsWhatUC){
     mock().expectNCalls(10,"glPopMatrix");
     mock().expectNCalls(8,"glColor3f");
     mock().expectNCalls(4,"gluCylinder");
-    mock().expectOneCall("Engine<Game>::getScreen");
-    mock().expectNCalls(1,"Engine<Game>::getMouse");
+    mock().expectOneCall("Engine::getScreen");
+    mock().expectNCalls(1,"Engine::getMouse");
 
     v->animate(0.01f).display();
 
@@ -425,10 +456,10 @@ TEST(ModelTestGroup, VausIsWhatUC){
     DOUBLES_EQUAL(30.0f, v->place.y, FLOAT_PRECISION);
     mock().checkExpectations();
     //enlarge should enlarge and play enlarge
-    gm->bonusMode = E;
-    mock().expectOneCall("Game::playSound");
-    mock().expectOneCall("Engine<Game>::getScreen");
-    mock().expectNCalls(1,"Engine<Game>::getMouse");
+    pl->bonusMode = E;
+    mock().expectOneCall("Engine::playSound");
+    mock().expectOneCall("Engine::getScreen");
+    mock().expectNCalls(1,"Engine::getMouse");
     //.withParameter("sound", WAV_ENLARGE);
 
     *v = v->animate(0.01f);
@@ -436,21 +467,21 @@ TEST(ModelTestGroup, VausIsWhatUC){
     CHECK(v->large);
     mock().checkExpectations();
 
-    gm->bonusMode = L;
-    mock().expectOneCall("Engine<Game>::getScreen");
-    mock().expectNCalls(1,"Engine<Game>::getMouse");
+    pl->bonusMode = L;
+    mock().expectOneCall("Engine::getScreen");
+    mock().expectNCalls(1,"Engine::getMouse");
 
     *v = v->animate(0.01f);
 
     CHECK(v->armed);
     mock().checkExpectations();
-    gm->bonusMode = B;
+    pl->bonusMode = B;
     MockMouse.X = 800;
     MockMouse.Y = -600;
 
-    mock().expectOneCall("Game::playSound");
-    mock().expectOneCall("Engine<Game>::getScreen");
-    mock().expectNCalls(1,"Engine<Game>::getMouse");
+    mock().expectOneCall("Engine::playSound");
+    mock().expectOneCall("Engine::getScreen");
+    mock().expectNCalls(1,"Engine::getMouse");
 
     *v = v->animate(0.01f);
 
@@ -462,6 +493,7 @@ TEST(ModelTestGroup, VausIsWhatUC){
     mock().expectOneCall("gluDeleteQuadric");
     delete v;
     delete gm;
+    delete pl;
     mock().checkExpectations();
 }
 
@@ -469,7 +501,7 @@ TEST(ModelTestGroup, BrickIsWhatUC){
     Point3f red = RED;
     Point3i coords = {1,2,3};
     int t = BRIK_NORMAL;
-    GameMock * gm = new GameMock();
+    Game * gm = new Game();
 
     mock().expectOneCall("Point3f::Point3f");
     Brick * b = new Brick(gm, red, coords, t);
@@ -499,15 +531,16 @@ TEST(ModelTestGroup, BrickIsWhatUC){
 }
 
 TEST(ModelTestGroup, PillIsWhatUC){
-    GameMock * gm = new GameMock();
+    Game * gm = new Game();
+    Play * pl = new Play();
     screen_t scr = new screen(800, 600, 32, NULL);
     mock().expectNCalls(1,"gluNewQuadric");
-    mock().expectNCalls(1, "Engine<Game>::getScreen");
-    Vaus *v = new Vaus(gm);
-    gm->setVaus(v);
+    mock().expectNCalls(1, "Engine::getScreen");
+    Vaus *v = new Vaus(gm, pl);
+    pl->setVaus(v);
     Point3f start_pos = Point3f(ONE, ONE, -20.0f);
 
-    mock().expectOneCall("Game::isHiScoring")
+    mock().expectOneCall("Play::isHiScoring")
             .andReturnValue(false);
     mock().expectOneCall("rand")
             .andReturnValue(1500);
@@ -521,8 +554,8 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().expectOneCall("SDL_FillRect");
     mock().expectOneCall("SDL_UpperBlit");
     mock().expectOneCall("gluNewQuadric");
-    mock().expectOneCall("Engine<Game>::getScreen");
-    Pill *p = new Pill(start_pos, gm);
+    mock().expectOneCall("Engine::getScreen");
+    Pill *p = new Pill(start_pos, gm, pl);
     //rand returned 1500 < RAND_MAX/20
     //and low scoring game => type should be L
     CHECK(p->active)
@@ -555,7 +588,7 @@ TEST(ModelTestGroup, PillIsWhatUC){
 
     p->setPlace(ONE, ONE, ZERO);
     //pill has reached vaus
-    mock().expectOneCall("Game::setBonusMode");
+    mock().expectOneCall("Play::setBonusMode");
     *p = p->animate(0.01f);
     CHECK(!p->active);
 
@@ -568,22 +601,23 @@ TEST(ModelTestGroup, PillIsWhatUC){
     delete scr;
     delete v;
     delete gm;
-
+    delete pl;
     mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, AlienIsWhatUC){
-    GameMock * gm = new GameMock();
+    Game * gm = new Game();
+    Play * pl = new Play();
     mock().expectNCalls(2,"gluNewQuadric");
-    Vaus *v = new Vaus(gm);
-    gm->setVaus(v);
-    Alien *a = new Alien(gm);
+    Vaus *v = new Vaus(gm, pl);
+    pl->setVaus(v);
+    Alien *a = new Alien(gm, pl);
     CHECK(a->place.eq(Point3f(ZERO, ZERO, SCENE_MIN - SCENE_MAX + ALIENHOME)));
     CHECK(a->size.eq(Point3f(4.0f, 4.0f, 4.0f)));
     CHECK(a->active);
-    mock().expectOneCall("Game::getActiveBall");
-    mock().expectOneCall("Game::getBrickAt");
-    mock().expectOneCall("Game::levelType");
+    mock().expectOneCall("Play::getActiveBall");
+    mock().expectOneCall("Play::getBrickAt");
+    mock().expectOneCall("Play::levelType");
     //leveltype is 0, alien type 1 (blue double cone)
     mock().expectNCalls(4,"glPushMatrix");
     mock().expectNCalls(4,"glPopMatrix");
@@ -605,6 +639,7 @@ TEST(ModelTestGroup, AlienIsWhatUC){
     delete v;
     delete gm;
     delete a;
+    delete pl;
     mock().checkExpectations();
 }
 
@@ -613,8 +648,9 @@ TEST(ModelTestGroup, AlienIsWhatUC){
 
 TEST(ModelTestGroup, ShotIsWhatUC){
     mock().expectNCalls(1,"gluNewQuadric");
-    GameMock * gm = new GameMock();//GameMock::instance();
-    Shot * s = new Shot(gm, Point3f(ONE, ONE, ONE));
+    Game * gm = new Game();
+    Play * pl = new Play();
+    Shot * s = new Shot(pl, Point3f(ONE, ONE, ONE));
 
     mock().expectNCalls(2,"glPushMatrix");
     mock().expectNCalls(2,"glPopMatrix");
@@ -623,12 +659,13 @@ TEST(ModelTestGroup, ShotIsWhatUC){
     mock().expectOneCall("glColor3f");
     mock().expectNCalls(1,"gluSphere");
 
-    mock().expectOneCall("Game::getBrickAt");
+    mock().expectOneCall("Play::getBrickAt");
     s->animate(0.01f).display();
     DOUBLES_EQUAL( 0.6, s->place.z, FLOAT_PRECISION);
 
     mock().expectNCalls(1,"gluDeleteQuadric");
     delete gm;
+    delete pl;
     delete s;
     mock().checkExpectations();
 }

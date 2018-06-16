@@ -4,10 +4,10 @@
 #include <string>
 class text2d{
     std::stringstream str;
-    unsigned int timestamp = 0;  // If timestamp is zero, the message is always on.
-    unsigned int lifetime = 0;   // If (ticks - timestamp) > lifetime, the popup dies.
-public:
+    unsigned int timestamp = 0;//If timestamp is zero, the message is always on.
+    unsigned int lifetime = 0; //If (ticks - timestamp) > lifetime, the popup dies.
 
+public:
     bool blended = true;
     SDL_Color foreground = {0};
     SDL_Color background = {0};
@@ -40,7 +40,6 @@ public:
 
         return this;
     }
-
     template <typename T> static void log(std::ostream * to, T s){
         if (to) {
 #ifdef DEBUG

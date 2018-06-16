@@ -22,7 +22,9 @@ class Pill: public WhatUC<Pill>{
     static constexpr float rad = ONE;
     static constexpr float len = 3.5f;
 
-    Game * game;
+    class Game * game;
+    class Play * gameplay;
+
 public:
     // Pill color palette
     SDL_Color Palette[N_RGB_COLORS] =
@@ -50,7 +52,7 @@ public:
     void display();
     Pill& animate(double secPerFrame);
 
-    Pill(const Point3f& where, Game* g);
+    Pill(const Point3f& where, class Game *g, class Play *p);
     ~Pill();
 private:
     GLUquadricObj * base;

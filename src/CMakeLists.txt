@@ -12,10 +12,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(${PROJECT_NAME}
-    "Engine.h"
-    "Engine.cpp"
+    "Step.h"
+    "game/Loading.h"
+    "game/Loading.cpp"
+    "game/Play.h"
+    "game/Play.cpp"
     "Game.h"
     "Game.cpp"
+    "Engine.h"
+    "Engine.cpp"
     "Text.h"
     "World.h"
     "Point.h"

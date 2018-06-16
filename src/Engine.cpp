@@ -110,7 +110,7 @@ template<> Game* Engine<Game>::addSound(unsigned char * data,
           SDL_ConvertAudio(&wave);
           sounds.emplace( key, wave);
     }
-    return static_cast<Game*>(this);
+    return dynamic_cast<Game*>(this);
 }
 
 template<> bool Engine<Game>::playSound(unsigned int sound){
@@ -163,7 +163,7 @@ template<> Game* Engine<Game>::withSdlGlVideo(version &v){
              sdlScreen->W, "x", sdlScreen->H,
              ")initialized!");
     }
-    return static_cast<Game*>(this);
+    return dynamic_cast<Game*>(this);
 }
 /*(std::string(WORKPATH)+ "/DejaVuSans.ttf").c_str()*/
 template<> Game* Engine<Game>::withSdlTtf(std::string fontPath){
@@ -181,7 +181,7 @@ template<> Game* Engine<Game>::withSdlTtf(std::string fontPath){
             info("TTF font found!");
         }
     }
-    return static_cast<Game*>(this);
+    return dynamic_cast<Game*>(this);
 }
 
 template<> Game* Engine<Game>::withSdlAudio(int freq,
@@ -205,7 +205,7 @@ template<> Game* Engine<Game>::withSdlAudio(int freq,
          info("Audio open!");
          SDL_PauseAudio(0);
     }
-    return static_cast<Game*>(this);
+    return dynamic_cast<Game*>(this);
 }
 
 template<> Game* Engine<Game>::withOpenGl(){
@@ -280,7 +280,7 @@ template<> Game* Engine<Game>::withOpenGl(){
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     info("OpenGL initialized!");
 
-    return static_cast<Game*>(this);
+    return dynamic_cast<Game*>(this);
 }
 
 template<> int Engine<Game>::toc(){
@@ -314,60 +314,7 @@ template<> void Engine<Game>::reshape(int width, int height)
              ZERO, ONE, ZERO);
 }
 
-template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
-    switch(e.type){
-        case SDL_QUIT:
-            app.looping = false;
-            //info("Frames skipped:", frameskips);
-            info("Quitting!");
-            break;
 
-        case SDL_VIDEORESIZE:
-            reshape(e.resize.w, e.resize.h);
-            break;
-
-        case SDL_ACTIVEEVENT:
-                   // Visibility status has changed
-            if(e.active.state & SDL_APPACTIVE){
-                app.visible = e.active.gain;
-            }
-                   // Mouse focus status has changed
-            if(e.active.state & SDL_APPMOUSEFOCUS){
-                app.mouse_focus = e.active.gain;
-            }
-                   // Input focus status has changed
-            if(e.active.state & SDL_APPINPUTFOCUS){
-                app.keyboard_focus = e.active.gain;
-            }
-            break;
-
-        case SDL_KEYDOWN:{
-                   // Take a snapshot of the keyboard
-            unsigned char * k = SDL_GetKeyState(NULL);
-            std::for_each(keys.begin(),
-                            keys.end(),
-                            [k](keypair &i){
-                i.second = k[i.first];
-            });
-        }   break;
-
-        case SDL_MOUSEMOTION:
-            mouse.X = e.motion.x;
-            mouse.Y = e.motion.y;
-            break;
-
-        case SDL_MOUSEBUTTONDOWN:
-             mouse.leftclick = true;
-             break;
-
-        case SDL_MOUSEBUTTONUP:
-             mouse.leftclick = false;
-             break;
-
-        default: break;
-    }
-    return static_cast<Game*>(this);
-}
 
 template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
     if(text.blended){
@@ -433,21 +380,57 @@ template<> void Engine<Game>::draw2d(
     }
 }
 
-template<> Game* Engine<Game>::loop(){
-    SDL_Event evt;    // SDL event
-    if(SDL_PollEvent(&evt)){
-        info("caught an event...");
-        return handleEvent(evt);
-    }else{
-        if(!app.visible){
-            SDL_WaitEvent(NULL);
-            return static_cast<Game*>(this);
-        }else{
-//            step.draw();
-//            step.update();
-//            step = next(step);
+template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
+    switch(e.type){
+        case SDL_QUIT:
+            app.looping = false;
+            //info("Frames skipped:", frameskips);
+            info("Quitting!");
+            break;
 
-            return static_cast<Game*>(this);
-       }
+        case SDL_VIDEORESIZE:
+            reshape(e.resize.w, e.resize.h);
+            break;
+
+        case SDL_ACTIVEEVENT:
+                   // Visibility status has changed
+            if(e.active.state & SDL_APPACTIVE){
+                app.visible = e.active.gain;
+            }
+                   // Mouse focus status has changed
+            if(e.active.state & SDL_APPMOUSEFOCUS){
+                app.mouse_focus = e.active.gain;
+            }
+                   // Input focus status has changed
+            if(e.active.state & SDL_APPINPUTFOCUS){
+                app.keyboard_focus = e.active.gain;
+            }
+            break;
+
+        case SDL_KEYDOWN:{
+                   // Take a snapshot of the keyboard
+            unsigned char * k = SDL_GetKeyState(NULL);
+            std::for_each(keys.begin(),
+                            keys.end(),
+                            [k](keypair &i){
+                i.second = k[i.first];
+            });
+        }   break;
+
+        case SDL_MOUSEMOTION:
+            mouse.X = e.motion.x;
+            mouse.Y = e.motion.y;
+            break;
+
+        case SDL_MOUSEBUTTONDOWN:
+             mouse.leftclick = true;
+             break;
+
+        case SDL_MOUSEBUTTONUP:
+             mouse.leftclick = false;
+             break;
+
+        default: break;
     }
+    return dynamic_cast<Game*>(this);
 }

@@ -1,21 +1,20 @@
 #ifndef _GAME_H
 #define _GAME_H
 
-class Game:
-        public World,
-        public Engine<class Game>{
+class Game: public Engine<class Game>{
 public:
-    int bonusMode;
-    int level;
-//gameplay interface
-    bool isHiScoring();
-    unsigned int levelType();
-    //int getBonusMode();
-    void setBonusMode(int type);
-    //int getLives();
-    void incLives();
-    void divideBalls();
-    void killVaus();
+    Game();
+    ~Game();
+    class Step * step = NULL;
+    //Game* handleEvent(SDL_Event & e);
+
+    Game* loop();
+    /*Game* start(class Step * at){
+        step = at;
+    }*///this might merge with nextStep if at == NULL
+    Game* nextStep();
+
+
 
 };
 #endif //_GAME_H

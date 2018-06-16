@@ -94,7 +94,6 @@
 #include <iostream>
 #include <sstream>
 
-
 // If we're under MSVC, tell the linker to look for these libraries.
 #ifdef WIN32
  #pragma comment(lib, "OpenGL32.lib")
@@ -198,16 +197,6 @@ enum{
    N_WAV 
 };
 
-// Game states
-enum{
-   LOADING,
-   WAITING,
-   INTRO,
-   GO,
-   PLAY,
-   WIN
-};
-
 // Parser tokens
 enum{
    PARSE_BRIK,
@@ -228,7 +217,6 @@ enum{
    N_HUD
 };
 
-
 typedef struct hallentry
 {
    char* initials;
@@ -239,6 +227,7 @@ typedef struct hallentry
 #include "Point.h"
 #include "World.h"
 #include "Text.h"
+#include "Step.h"
 #include "Engine.h"
 #include "Game.h"
 

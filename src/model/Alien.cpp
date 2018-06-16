@@ -1,12 +1,13 @@
 #include "GLoid.h"
 
+#include "game/Play.h"
 #include "WhatUC.h"
 #include "Vaus.h"
 #include "Ball.h"
 #include "Brick.h"
 #include "Alien.h"
 
-Alien::Alien(Game * g){
+Alien::Alien(Game *g, Play * p){
     setPlace(ZERO, ZERO, SCENE_MIN - SCENE_MAX + ALIENHOME);
 
     /*for(i = 0; i< ALIEN_PARTICLES; i++){
@@ -14,6 +15,7 @@ Alien::Alien(Game * g){
         }*/
     speed = Point3f();
     game = g;
+    gameplay = p;
     setSize(4*baseRad, 4*baseRad, 4*baseRad);
     base = gluNewQuadric();
 }
@@ -23,7 +25,7 @@ Alien::~Alien(){
 }
 
 void Alien::display(){
-    type = game->levelType();
+    type = gameplay->levelType();
 
     if(active){
 
@@ -141,14 +143,14 @@ Alien &Alien::animate(double secPerFrame){
         // If the alien flies off the screen, it dies
         if(place.z > ZERO){
             die();
-            Vaus * v = game->getVaus();
+            Vaus * v = gameplay->getVaus();
             R = baseRad + v->rad;
             Point3f distance(place.x - v->place.x,
                             place.y - v->place.y,
                             ZERO);
             M = distance.res3f();//distance resultant
             if(M < R){
-                game->killVaus();
+                gameplay->killVaus();
                 /*vaus->active = false;
                 for(i = 0; i < VAUS_PARTICLES; i++){
                vaus->explosion[i].active = TRUE;
@@ -158,13 +160,13 @@ Alien &Alien::animate(double secPerFrame){
         }else{
             //FIXME: rel = Functions::coords(&place);
             int i = 0;
-            Ball * ball = game->getActiveBall();
+            Ball * ball = gameplay->getActiveBall();
             if(ball){
                 float ballspeed = ball->speed.res3f();
                 alienspeed = place.chase(ball->place,ballspeed);
             }
             speed = speed.deepcopy(alienspeed);
-            Brick * brick = game->getBrickAt(place);
+            Brick * brick = gameplay->getBrickAt(place);
             if(brick){
                 speed.x = -speed.x;
                 speed.y = -speed.y;

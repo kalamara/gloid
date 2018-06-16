@@ -10,8 +10,9 @@
 
 #include "Point.h"
 #include "Engine.h"
-#include "World.h"
 #include "Game.h"
+
+//#include "World.h"
 
 //C++ libraries
 
@@ -538,6 +539,15 @@ TEST(GameTestGroup, init_test){
     delete game;
 }
 
+//TEST(GameTestGroup, step_factory_test){
+//    Game * game = newGame();
+//    Step s = game->next(NULL);
+//    CHECK_EQUAL(STEP_LOADING, s.type);
+//    s = Step(STEP_LOADING);
+//    s = game->next(&s);
+//    delete game;
+//}
+
 TEST(GameTestGroup, sound_test){
     Game::mixer(NULL, NULL, 0);
     unsigned char mix[6] = {0};
@@ -593,6 +603,8 @@ TEST(GameTestGroup, sound_test){
 
     delete game;
 }
+
+
 
 int main(int ac, char** av)
 {

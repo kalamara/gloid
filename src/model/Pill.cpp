@@ -1,12 +1,16 @@
 #include "GLoid.h"
 
+#include "game/Play.h"
 #include "WhatUC.h"
 #include "Vaus.h"
 
 #include "Pill.h"
 
-Pill::Pill(const Point3f &where, Game* g){
+Pill::Pill(const Point3f &where,
+           Game *g,
+           Play* p){
     game = g;
+    gameplay = p;
     setSize(5.0f, 2*rad, 2*rad);
     setPlace(where.x,
              where.y,
@@ -14,7 +18,7 @@ Pill::Pill(const Point3f &where, Game* g){
     SDL_Color b;
     SDL_Color f;
     base = gluNewQuadric();
-    type = roulette(game->isHiScoring());
+    type = roulette(gameplay->isHiScoring());
     col.x = Palette[type].b/255;
     col.y = Palette[type].g/255;
     col.z = Palette[type].r/255;
@@ -114,7 +118,7 @@ void Pill::display(){
 Pill& Pill::animate(double secPerFrame){
 
     if(active){
-        Vaus * v = game->getVaus();
+        Vaus * v = gameplay->getVaus();
         if((place.z >= v->size.z/2 - rad)
                 && collides(v->place.x - v->rad,
                             v->place.x + v->rad,
@@ -123,14 +127,14 @@ Pill& Pill::animate(double secPerFrame){
             score += SCOREBONUS;
             active = false;
             v->reset(); //maybe game->resetVaus();
-            game->setBonusMode(type);
+            gameplay->setBonusMode(type);
 
             if(type == P){
-                game->incLives();
+                gameplay->incLives();
                 game->playSound(WAV_KANONAKI);
             }
             if(type == D){
-                game->divideBalls();
+                gameplay->divideBalls();
             }
         }else{
             if(place.z > 1.0f){

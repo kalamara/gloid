@@ -9,8 +9,8 @@ class Alien: public WhatUC<Alien>{
     static constexpr float rotSpeed = 2*HALF_CIRCLE;
     static constexpr float zSpeed = 5.0f;
 
-    Game * game;
-
+    class Game * game;
+    class Play * gameplay;
 public:
     int type = 0;
     float roty = ZERO;
@@ -26,7 +26,7 @@ public:
     Alien& animate(double secPerFrame);
     void die(void);
 
-    Alien(Game * g);
+    Alien(Game * g, Play * p);
     ~Alien();
 private:
      GLUquadricObj * base;

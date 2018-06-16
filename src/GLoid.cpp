@@ -10,6 +10,7 @@
 ***********************************************/
 
 #include "GLoid.h"
+#include "game/Loading.h"
 
 // Text buffer for on-screen messages
 // char Textbuffer[TEXTLINES][MAXLINE];  --> to engine
@@ -381,21 +382,20 @@
 
 int main(int argc, char **argv)
 {
-
     Game * game = new Game();
+    Loading * step = new Loading();
     struct version sdlv = version(SDL_MAJOR_VERSION,
                                   SDL_MINOR_VERSION,
                                   SDL_PATCHLEVEL);
     game = game->withSdlGlVideo(sdlv)
                 ->withSdlTtf("./DejaVuSans.ttf")
                 ->withSdlAudio(22050, 2, 0)
-                ->withOpenGl();
-     int i = 0;
-     while(game->looping()){
+                ->withOpenGl();//->start(step);
+    int i = 0;
+    while(game->looping()){
           game = game->loop();
           i++;
      }
-
 //            switch(gamestep) --> to game
 //            {
 //               case LOADING:

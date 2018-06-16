@@ -138,8 +138,6 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     static constexpr float mat_diffuse[] = {0.4, 0.4, 0.4, 1.0};
     static constexpr float mat_emission[] = {0.2f, 0.2f, 0.2f, 0.0f};
 
-    struct appstatus app;
-
     //logging
     std::ofstream logStream;
     //sdl
@@ -210,6 +208,8 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     void reshape(int width, int height);
 
 public:
+    struct appstatus app;
+
     Engine();
     ~Engine();
 
@@ -243,8 +243,7 @@ public:
     }
     //initialization builders
 /*{
-  TODO: make this polymorphic (draw and animate can be virtual
-  to interface with derived Game class
+  TODO:
    return dynamic_cast<G*>(this);
     }*/
     G* withSdlGlVideo(struct version & v);
@@ -253,7 +252,11 @@ public:
     G* withOpenGl();
 
     G* handleEvent(SDL_Event & e);
-    G* loop();
+
+    virtual G* loop()=0;
+    //virtual G* start(class Step * at)=0;
+    virtual G* nextStep()=0;
+
     //variadic log
     /*TODO: add time*/
     template<typename T, typename... Args> void error(T value, Args... args){
@@ -287,7 +290,7 @@ public:
             SDL_Surface *surf,
             unsigned int x,
             unsigned int y);
-
+//helper math function
     static unsigned int nextpoweroftwo(unsigned int x){
        double y = pow(2, ceil(log(x) / log(2)));
 
