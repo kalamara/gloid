@@ -8,11 +8,11 @@ public:
     class Step * step = NULL;
     //Game* handleEvent(SDL_Event & e);
 
-    Game* loop();
+    Game * loop();
     /*Game* start(class Step * at){
         step = at;
     }*///this might merge with nextStep if at == NULL
-    Game* nextStep();
+    class Step * nextStep();
 
 
 

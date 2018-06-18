@@ -255,7 +255,7 @@ public:
 
     virtual G* loop()=0;
     //virtual G* start(class Step * at)=0;
-    virtual G* nextStep()=0;
+    virtual class Step* nextStep()=0;
 
     //variadic log
     /*TODO: add time*/

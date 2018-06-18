@@ -1,0 +1,5 @@
+#ifndef MOCK_SDL_OPENGL_H
+#define MOCK_SDL_OPENGL_H
+
+
+#endif // MOCK_SDL_OPENGL_H

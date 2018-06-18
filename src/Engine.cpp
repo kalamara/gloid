@@ -33,7 +33,7 @@ template<> Engine<Game>::Engine(){
 }
 
 template<> Engine<Game>::~Engine(){
-    logStream.flush();
+    //logStream.flush();
     logStream.close();
     if(sdlScreen){
         delete sdlScreen;

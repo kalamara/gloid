@@ -56,7 +56,7 @@ Game::~Game(){
 Game* Game::loop(){
 }
 
-Game* Game::nextStep(){
+Step* Game::nextStep(){
 }
 
 
@@ -137,148 +137,6 @@ void Play::divideBalls(){
 
 void Play::killVaus(){
     mock().actualCall("Play::killVaus");
-}
-
-
-//SDL
-struct SDL_Surface Surf;
-
-SDL_Surface * SDL_CreateRGBSurface
-(Uint32 flags, int width, int height, int depth,
- Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask){
-    return (SDL_Surface *)mock().actualCall("SDL_CreateRGBSurface")
-            .returnPointerValueOrDefault(&Surf);
-}
-
-int SDL_SetColorKey
-(SDL_Surface *surface, Uint32 flag, Uint32 key){
-    mock().actualCall("SDL_SetColorKey");
-}
-
-int SDL_FillRect
-(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color){
-    mock().actualCall("SDL_FillRect");
-}
-
-int SDL_UpperBlit
-(SDL_Surface *src, SDL_Rect *srcrect,
- SDL_Surface *dst, SDL_Rect *dstrect){
-    mock().actualCall("SDL_UpperBlit");
-}
-
-void SDL_FreeSurface(SDL_Surface *surface){
-    mock().actualCall("SDL_FreeSurface");
-}
-Uint32 SDL_MapRGBA
-(const SDL_PixelFormat * const format,
- const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a){
-    mock().actualCall("SDL_MapRGBA");
-}
-
-//OpenGL
-void glPushMatrix(){
-    mock().actualCall("glPushMatrix");
-}
-
-void glPopMatrix(){
-    mock().actualCall("glPopMatrix");
-}
-
-void glBegin(unsigned int mode){
-    mock().actualCall("glBegin");
-}
-
-void glEnd(){
-    mock().actualCall("glEnd");
-}
-
-void glEnable( GLenum cap ){
-    mock().actualCall("glEnable");
-}
-
-void glDisable( GLenum cap ){
-    mock().actualCall("glDisable");
-}
-
-void glScalef( GLfloat x, float y, float z ){
-    mock().actualCall("glScalef");
-}
-
-void glTranslatef(float x, float y, float z){
-    mock().actualCall("glTranslatef");
-}
-
-void glRotatef(float a, float x, float y, float z){
-    mock().actualCall("glRotatef");
-}
-
-void glVertex3f(float x, float y, float z){
-    mock().actualCall("glVertex3f");
-}
-
-void glColor4f( float x, float y, float z, float a){
-    mock().actualCall("glColor4f");
-}
-
-void glColor3f( float x, float y, float z){
-    mock().actualCall("glColor3f");
-}
-
-void glNormal3f( float x, float y, float z){
-    mock().actualCall("glNormal3f");
-}
-
-void glTexEnvf( GLenum target, GLenum pname, GLfloat param ){
-    mock().actualCall("glTexEnvf");
-}
-
-void glTexParameteri( GLenum target, GLenum pname, GLint param ){
-    mock().actualCall("glTexParameteri");
-}
-
-void glTexImage2D( GLenum target, GLint level,
-                   GLint internalFormat,
-                   GLsizei width, GLsizei height,
-                   GLint border, GLenum format, GLenum type,
-                   const GLvoid *pixels ){
-    mock().actualCall("glTexImage2D");
-}
-
-void glMatrixMode( GLenum mode ){
-    mock().actualCall("glMatrixMode");
-}
-
-//OpenGL extensions
-GLUquadric * gluNewQuadric(){
-    mock().actualCall("gluNewQuadric");
-}
-
-void gluDeleteQuadric(GLUquadric * base){
-    mock().actualCall("gluDeleteQuadric");
-}
-
-void gluQuadricDrawStyle (GLUquadric* quad, GLenum draw){
-    mock().actualCall("gluQuadricDrawStyle");
-}
-
-void gluQuadricTexture (GLUquadric* quad, GLboolean texture){
-    mock().actualCall("gluQuadricTexture");
-}
-
-void gluSphere( GLUquadric * b, double r, int sl, int st){
-    mock().actualCall("gluSphere");
-}
-
-void gluCylinder (GLUquadric* quad, double base, double top, double height, int slices, int stacks){
-    mock().actualCall("gluCylinder");
-}
-
-void gluQuadricOrientation(GLUquadric* quad, GLenum orientation){
-    mock().actualCall("gluQuadricOrientation");
-}
-
-void gluDisk(GLUquadric* quad, GLdouble inner, GLdouble outer, GLint slices, GLint loops){
-    mock().actualCall("gluDisk");
 }
 
 TEST(ModelTestGroup, ParticleIsWhatUC){
@@ -531,6 +389,8 @@ TEST(ModelTestGroup, BrickIsWhatUC){
 }
 
 TEST(ModelTestGroup, PillIsWhatUC){
+    extern struct SDL_Surface Surf;
+
     Game * gm = new Game();
     Play * pl = new Play();
     screen_t scr = new screen(800, 600, 32, NULL);

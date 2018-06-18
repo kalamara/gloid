@@ -4,7 +4,7 @@
 
 
 Game::Game(){
-//nextStep();
+    //step = nextStep();
 }
 
 Game::~Game(){
@@ -23,16 +23,16 @@ Game* Game::loop(){
             SDL_WaitEvent(NULL);
             return (this);
         }else{
-//            step.draw();
-//            step.update();
-//            step = next(step);
-
+            step = nextStep()->draw()
+                             ->update();
             return (this);
        }
     }
 }
-Game* Game::nextStep(){
-//    if(step==NULL){
-//        step = new Loading();
-//    }
+
+Step* Game::nextStep(){
+    if(step==NULL){
+        step = new Loading();
+    }
+    return step;
 }
