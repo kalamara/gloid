@@ -225,7 +225,7 @@ void Alien::die()
     // explosion[j].explode(place, pal, 3, particle_rad);
 
     //}
-    game->playSound(WAV_ALIEN);
+    game->playSound("alien");//WAV_ALIEN);
 }
 
 void Alien::solidCube(float side){

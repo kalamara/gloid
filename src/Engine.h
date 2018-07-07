@@ -192,7 +192,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     const SDL_VideoInfo* desktop;
     //audio
     std::vector<struct sbuffer> soundBuffers;
-    std::map<unsigned int, SDL_AudioCVT> sounds;
+    std::map<std::string, SDL_AudioCVT> sounds;
     //3d scene
     class Point3f camera;      // Camera coordinates
     float phi = ZERO;
@@ -204,7 +204,6 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     SDL_AudioSpec *sdlAudio = NULL;
 
     screen_t testVmode(unsigned x, unsigned int y);
-
     void reshape(int width, int height);
 
 public:
@@ -242,15 +241,10 @@ public:
             return font;
     }
     //initialization builders
-/*{
-  TODO:
-   return dynamic_cast<G*>(this);
-    }*/
     G* withSdlGlVideo(struct version & v);
     G* withSdlTtf(std::string fontPath);
     G* withSdlAudio(int freq, unsigned char channels, unsigned int samples);
     G* withOpenGl();
-
     G* handleEvent(SDL_Event & e);
 
     virtual G* loop()=0;
@@ -271,10 +265,11 @@ public:
     //public SDL interface
     //audio
     static void mixer(void *udata, Uint8 *stream, int len);
+    G* loadSound(const std::string & name);
     G* addSound(unsigned char * data,
                 unsigned int dlen,
-                unsigned int key);
-    bool playSound(unsigned int sound);
+                const std::string & key);
+    bool playSound(const std::string & sound);
     unsigned int pendingSounds(){
 
         return soundBuffers.size();

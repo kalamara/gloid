@@ -131,7 +131,7 @@ Pill& Pill::animate(double secPerFrame){
 
             if(type == P){
                 gameplay->incLives();
-                game->playSound(WAV_KANONAKI);
+                game->playSound("kanonaki");//WAV_KANONAKI);
             }
             if(type == D){
                 gameplay->divideBalls();

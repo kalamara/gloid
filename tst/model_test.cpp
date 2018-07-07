@@ -93,7 +93,7 @@ template <> screen_t Engine<Game>::getScreen() const{
     return &MockScreen;
 }
 
-template <> bool Engine<Game>::playSound(unsigned int sound) {
+template <> bool Engine<Game>::playSound(const std::string & sound) {
     mock().actualCall("Engine::playSound");
     //  .withParameter("sound", WAV_LAUNCH);
 }

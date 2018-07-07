@@ -86,6 +86,20 @@ int SDL_ShowCursor(int toggle){
                 .returnIntValue();
 }
 
+SDL_RWops * SDL_RWFromFile(const char *file, const char *mode){
+    mock().actualCall("SDL_RWFromFile");
+    return (SDL_RWops *)NULL;
+}
+
+SDL_AudioSpec * SDL_LoadWAV_RW(SDL_RWops *src,
+                               int freesrc,
+                               SDL_AudioSpec *spec,
+                               Uint8 **audio_buf,
+                               Uint32 *audio_len){
+    mock().actualCall("SDL_LoadWAV_RW");
+    return (SDL_AudioSpec *)NULL;
+}
+
 //TTF
 
 int TTF_Init(void){

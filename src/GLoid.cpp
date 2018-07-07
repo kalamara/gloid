@@ -383,7 +383,7 @@
 int main(int argc, char **argv)
 {
     Game * game = new Game();
-    Loading * step = new Loading();
+//maybe useless    Loading * step = new Loading(game);
     struct version sdlv = version(SDL_MAJOR_VERSION,
                                   SDL_MINOR_VERSION,
                                   SDL_PATCHLEVEL);

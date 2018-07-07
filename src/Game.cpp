@@ -21,18 +21,18 @@ Game* Game::loop(){
     }else{
         if(!app.visible){
             SDL_WaitEvent(NULL);
-            return (this);
+            return this;
         }else{
             step = nextStep()->draw()
                              ->update();
-            return (this);
+            return this;
        }
     }
 }
 
 Step* Game::nextStep(){
     if(step==NULL){
-        step = new Loading();
+        step = new Loading(this);
     }
     return step;
 }

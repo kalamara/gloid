@@ -6,8 +6,10 @@ public:
     Game();
     ~Game();
     class Step * step = NULL;
-    //Game* handleEvent(SDL_Event & e);
+    int queryStep(){
 
+            return step?(step->type):-1;
+    }
     Game * loop();
     /*Game* start(class Step * at){
         step = at;

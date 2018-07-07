@@ -24,8 +24,8 @@ public:
     }
     text2d(){
     }
-    text2d(SDL_Color& fg,
-           SDL_Color& bg,
+    text2d(const SDL_Color& fg,
+           const SDL_Color& bg,
            int life = 0,
            int toc = 0,
            bool blend = true){

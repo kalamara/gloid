@@ -283,7 +283,7 @@ Ball& Ball::launch(){
    if(!launched){
       launched = true;
       speed = speed.deepcopy(launchspeed);
-      game->playSound(WAV_LAUNCH);
+      game->playSound("launch");//WAV_LAUNCH);
    }
    return * this;
 }

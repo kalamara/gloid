@@ -93,7 +93,7 @@ template<> void Engine<Game>::mixer(void *udata, Uint8 *stream, int len){
 
 template<> Game* Engine<Game>::addSound(unsigned char * data,
                                         unsigned int dlen,
-                                        unsigned int key){
+                                        const std::string & key){
     if(sdlAudio){
         SDL_AudioCVT wave;
         SDL_BuildAudioCVT(&wave,
@@ -113,7 +113,22 @@ template<> Game* Engine<Game>::addSound(unsigned char * data,
     return dynamic_cast<Game*>(this);
 }
 
-template<> bool Engine<Game>::playSound(unsigned int sound){
+template<> Game* Engine<Game>::loadSound(const std::string & name){
+    Uint8 *data;
+    Uint32 dlen;
+    std::string path = std::string(WORKPATH) +
+                       "/sounds/" + name + ".wav" ;
+    if(SDL_LoadWAV(path.c_str(), getSdlAudio(), &data, &dlen)){
+
+        return addSound(data, dlen, name);
+    }else{
+        error("Couldn't load ", path, ": ", SDL_GetError());
+
+        return dynamic_cast<Game*>(this);
+    }
+}
+
+template<> bool Engine<Game>::playSound(const std::string & sound){
 
    std::remove_if(soundBuffers.begin(),
                   soundBuffers.end(),
@@ -121,7 +136,7 @@ template<> bool Engine<Game>::playSound(unsigned int sound){
                 return s.data == NULL || s.dlen == 0;
             });
 
-   std::map<unsigned int, SDL_AudioCVT>::iterator found = sounds.find(sound);
+   std::map<std::string, SDL_AudioCVT>::iterator found = sounds.find(sound);
    if(found != sounds.end()){
        soundBuffers.emplace_back(sbuffer(found->second.buf,
                                          found->second.len_cvt));
@@ -313,8 +328,6 @@ template<> void Engine<Game>::reshape(int width, int height)
              ZERO, ZERO, -SCENE_MAX,
              ZERO, ONE, ZERO);
 }
-
-
 
 template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
     if(text.blended){

@@ -15,7 +15,7 @@ void srand(unsigned int s) {
 }
 
 
-Loading::Loading(){
+Loading::Loading(Game *g){
 
 }
 
@@ -245,13 +245,13 @@ TEST(GameTestGroup, sound_test){
     unsigned char  loaded[8] = "1234567";
     mock().expectOneCall("SDL_BuildAudioCVT");
     mock().expectOneCall("SDL_ConvertAudio");
-    game = game->addSound(loaded, 8, 0);
+    game = game->addSound(loaded, 8, "alien");
 
-    bool succ = game->playSound(-1);
+    bool succ = game->playSound("");
     CHECK_EQUAL(0, game->pendingSounds());
     CHECK(!succ);
 
-    succ = game->playSound(0);
+    succ = game->playSound("alien");
     CHECK(succ);
     CHECK_EQUAL(1, game->pendingSounds());
 
