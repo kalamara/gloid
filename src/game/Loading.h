@@ -25,10 +25,10 @@ const std::vector<std::string> SoundFiles = {
 
 class Loading: public Step{
     static constexpr SDL_Color white = {255, 255, 255, 128};
-    static constexpr SDL_Color black = {255, 255, 255, 128};
+    static constexpr SDL_Color black = {0, 0, 0, 128};
 
     int phase = LOAD_SOUNDS;
-    std::list<SDL_Surface *> text;
+    std::vector<SDL_Surface *> text;
     void loadSounds();
 public:
     Loading(class Game  * g);

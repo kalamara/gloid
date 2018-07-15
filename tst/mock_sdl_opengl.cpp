@@ -76,6 +76,10 @@ SDL_Surface * SDL_SetVideoMode
                 .returnPointerValue();*/
 }
 
+void SDL_GL_SwapBuffers(void){
+    mock().actualCall("SDL_GL_SwapBuffers");
+}
+
 int SDL_GL_SetAttribute(SDL_GLattr attr, int value){
     return mock().actualCall("SDL_GL_SetAttribute")
                 .returnIntValue();

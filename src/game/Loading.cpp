@@ -29,7 +29,6 @@ void Loading::loadSounds(){
     if(s){
         text.push_back(s);
     }
-
     std::for_each(SoundFiles.begin(),
                   SoundFiles.end(),
                   [this](const std::string &f){
@@ -51,6 +50,10 @@ Loading * Loading::update(){
 
 Loading * Loading::draw(){
 
+    for(int i = 0; i < text.size(); i++){
+           game->draw2d(text[i], 0, -i*game->getFontSize());
+    }
+    SDL_GL_SwapBuffers();
     return this;
 }
 

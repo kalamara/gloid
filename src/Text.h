@@ -42,20 +42,21 @@ public:
     }
     template <typename T> static void log(std::ostream * to, T s){
         if (to) {
-#ifdef DEBUG
             *to << s << std::endl;
-#endif
+#ifdef DEBUG
             std::cout << s << std::endl;
+#endif
         }
     }
     template<typename T, typename... Args> static void log(std::ostream * to,
                                                            T value,
                                                            Args... args){
         if (to) {
-            std::cout << value;		// use first non-format argument
 #ifdef DEBUG
-            *to << value;
+            std::cout << value;		// use first non-format argument
 #endif
+            *to << value;
+
             return log(to, args ...); 	// ``peel off'' first argument
          }
          *to << value << std::endl;

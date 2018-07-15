@@ -281,10 +281,9 @@ public:
     SDL_Surface * print2d(text2d & text);
 
     //draw a 2D SDL surface
-    void draw2d(
-            SDL_Surface *surf,
-            unsigned int x,
-            unsigned int y);
+    void draw2d(SDL_Surface *surf,
+            int x,
+            int y);
 //helper math function
     static unsigned int nextpoweroftwo(unsigned int x){
        double y = pow(2, ceil(log(x) / log(2)));

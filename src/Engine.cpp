@@ -119,6 +119,7 @@ template<> Game* Engine<Game>::loadSound(const std::string & name){
     std::string path = std::string(WORKPATH) +
                        "/sounds/" + name + ".wav" ;
     if(SDL_LoadWAV(path.c_str(), getSdlAudio(), &data, &dlen)){
+        info("Loaded ", path);
 
         return addSound(data, dlen, name);
     }else{
@@ -331,7 +332,7 @@ template<> void Engine<Game>::reshape(int width, int height)
 
 template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
     if(text.blended){
-
+//TODO: trim
         return TTF_RenderText_Shaded(font,
                                      text.msg().c_str(),
                                      text.foreground,
@@ -346,8 +347,8 @@ template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
 
 template<> void Engine<Game>::draw2d(
         SDL_Surface *surf,
-        unsigned int x,
-        unsigned int y){
+         int x,
+         int y){
     if(surf && sdlScreen){
         unsigned int w = nextpoweroftwo(surf->w);
         unsigned int h = nextpoweroftwo(surf->h);

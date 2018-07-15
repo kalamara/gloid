@@ -58,6 +58,8 @@ TEST(GameTestGroup, loop_test){
     mock().expectNCalls(11,"SDL_RWFromFile");
     mock().expectNCalls(11,"SDL_LoadWAV_RW");
     mock().expectNCalls(11,"SDL_GetError");
+    //from draw
+    mock().expectOneCall("SDL_GL_SwapBuffers");
 //first step should be loading
     game = game->loop();
     CHECK_EQUAL(STEP_LOADING, game->queryStep());

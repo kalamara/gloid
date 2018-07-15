@@ -32,3 +32,9 @@ target_link_libraries(gloid
     ${SDL}
     ${GL}
     ${GLU})
+
+file(COPY "${CMAKE_SOURCE_DIR}/DejaVuSans.ttf"
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file(COPY "${CMAKE_SOURCE_DIR}/sounds"
+    DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")

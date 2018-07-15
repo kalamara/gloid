@@ -16,7 +16,7 @@ Game::~Game(){
 Game* Game::loop(){
     SDL_Event evt;    // SDL event
     if(SDL_PollEvent(&evt)){
-        info("caught an event...");
+        //info("caught an event...");
         return handleEvent(evt);
     }else{
         if(!app.visible){
