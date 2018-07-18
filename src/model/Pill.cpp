@@ -15,16 +15,15 @@ Pill::Pill(const Point3f &where,
     setPlace(where.x,
              where.y,
              where.z);
-    SDL_Color b;
-    SDL_Color f;
+
     base = gluNewQuadric();
     type = roulette(gameplay->isHiScoring());
     col.x = Palette[type].b/255;
     col.y = Palette[type].g/255;
     col.z = Palette[type].r/255;
 
-    b = Palette[type];
-    f = Palette[RGB_BLACK];
+    auto b = Palette[type];
+    auto f = Palette[RGB_BLACK];
 
     label = PillLabels[type];
 
@@ -37,8 +36,6 @@ Pill::Pill(const Point3f &where,
                 0x0000ff00,
                 0x000000ff,
                 0xff000000);
-
-    //memset(&text,0,sizeof(text2d));
 
     textSurf = SDL_CreateRGBSurface(
                 0,
@@ -54,12 +51,9 @@ Pill::Pill(const Point3f &where,
                 textSurf,
                 SDL_SRCCOLORKEY | SDL_RLEACCEL,
                 SDL_MapRGBA(textSurf->format, 0, 0, 0, 0));
-//    text = new text2d(f,b);
-//    text = text->print(-1, label);
-
     SDL_FillRect(
                 surf,
-                NULL,
+                nullptr,
                 SDL_MapRGBA(surf->format, b.r, b.g, b.b, 128));
     SDL_BlitSurface(textSurf, 0, surf, 0);
 }
@@ -69,7 +63,7 @@ Pill::~Pill(){
     SDL_FreeSurface(surf);
     SDL_FreeSurface(textSurf);
     gluDeleteQuadric(base);
-    delete text;
+    //delete text;
 }
 
 void Pill::display(){
@@ -89,13 +83,13 @@ void Pill::display(){
                      surf->pixels);
         glPushMatrix();
         glPushMatrix();
-        glRotatef(rotx, -1.0f, 0.0f, 0.0f);
-        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        glRotatef(rotx, -ONE, ZERO, ZERO);
+        glRotatef(HALF_CIRCLE/2, ZERO, ONE, ZERO);
         glMatrixMode(GL_TEXTURE);
         glPushMatrix();
-        glTranslatef(len/2, 0.0f, 0.0f);
-        glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
-        glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+        glTranslatef(len/2, ZERO, ZERO);
+        glRotatef(HALF_CIRCLE/2, ZERO, ZERO, ONE);
+        glRotatef(HALF_CIRCLE, ONE, ZERO, ZERO);
         gluCylinder(base, rad, rad, len, 12, 12);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
@@ -103,11 +97,11 @@ void Pill::display(){
         glColor3f(col.x, col.y, col.z);
         glDisable(GL_TEXTURE_2D);
         glPushMatrix();
-        glTranslatef(0, 0.0f, 0.0f);
+        glTranslatef(0, ZERO, ZERO);
         gluSphere(base, rad, 12, 12);
         glPopMatrix();
         glPushMatrix();
-        glTranslatef(len, 0.0f, 0.0f);
+        glTranslatef(len, ZERO, ZERO);
         gluSphere(base, rad, 12, 12);
         glPopMatrix();
         glPopMatrix();

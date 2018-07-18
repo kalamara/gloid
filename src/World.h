@@ -4,7 +4,7 @@
 class Vaus;
 class Point3f;
 class World{
-    Vaus * vaus = NULL;
+    Vaus * vaus = nullptr;
 public:
     class Ball * getActiveBall();
     class Brick * getBrickAt(Point3f& where);

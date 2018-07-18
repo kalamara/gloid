@@ -93,6 +93,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 // If we're under MSVC, tell the linker to look for these libraries.
 #ifdef WIN32

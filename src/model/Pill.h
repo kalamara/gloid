@@ -47,7 +47,7 @@ public:
     char label;
     SDL_Surface* surf;
     SDL_Surface* textSurf;
-    class text2d * text;
+    std::unique_ptr<class text2d> text;
 
     void display();
     Pill& animate(double secPerFrame);

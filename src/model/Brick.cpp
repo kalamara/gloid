@@ -228,7 +228,7 @@ void Brick::solidRhombik(float side){
     // Top Face
 
     glBegin(GL_TRIANGLE_STRIP);			// Start Drawing Strips
-    glNormal3f( 0.0f, 1.0f, 0.0f);		// Normal Facing Up
+    glNormal3f(ZERO, ONE, ZERO);		// Normal Facing Up
     for(int j = 0; j <19; j++){
         glVertex3f(vertice[toppath[j]].x,  vertice[toppath[j]].y,  vertice[toppath[j]].z);
         //Log(" E[%d] = (%g,%g,%g) V[%d] = (%g,%g,%g)\n", i, face[i].x, face[i].y, face[i].z, j, vertice[j].x, vertice[j].y, vertice[j].z );
@@ -239,7 +239,7 @@ void Brick::solidRhombik(float side){
 
     // Bottom Face
 
-    glNormal3f( 0.0f,-1.0f, 0.0f);		// Normal Facing Down
+    glNormal3f(ZERO, -ONE, ZERO);		// Normal Facing Down
 
     for(int j = 0; j <19; j++){
         glVertex3f(vertice[botpath[j]].x,  vertice[botpath[j]].y,  vertice[botpath[j]].z);

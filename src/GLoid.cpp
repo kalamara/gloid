@@ -45,7 +45,7 @@
 //   // Try to toggle the screen mode
 //   screen = SDL_SetVideoMode(Screen_W, Screen_H, Screen_BPP,screen->flags ^ SDL_FULLSCREEN);
 
-//   if(screen == NULL)
+//   if(screen == nullptr)
 //   {
 //      screen = SDL_SetVideoMode(0, 0, 0, flags);
 //      Log("Unable to toggle fullscreen: %s\n", SDL_GetError());
@@ -382,9 +382,9 @@
 
 int main(int argc, char **argv)
 {
-    Game * game = new Game();
+    auto * game = new Game();
 //maybe useless    Loading * step = new Loading(game);
-    struct version sdlv = version(SDL_MAJOR_VERSION,
+    auto sdlv = version(SDL_MAJOR_VERSION,
                                   SDL_MINOR_VERSION,
                                   SDL_PATCHLEVEL);
     game = game->withSdlGlVideo(sdlv)

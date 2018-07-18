@@ -56,7 +56,7 @@ typedef struct mousecntl{
 
 // Sound buffer: SDL only works with double-buffering, so NUM_BUFFERS = 2
 typedef struct sbuffer{
-   unsigned char *data = NULL;
+   unsigned char *data = nullptr;
    unsigned int dlen = 0;
    sbuffer(){}
    sbuffer(unsigned char * d,
@@ -198,10 +198,10 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     float phi = ZERO;
     float theta = ZERO;
 
-    //any of those are NULL if initialization has failed
-    struct screen * sdlScreen = NULL;
-    TTF_Font *font = NULL;
-    SDL_AudioSpec *sdlAudio = NULL;
+    //any of those are nullptr if initialization has failed
+    struct screen * sdlScreen = nullptr;
+    TTF_Font *font = nullptr;
+    SDL_AudioSpec *sdlAudio = nullptr;
 
     screen_t testVmode(unsigned x, unsigned int y);
     void reshape(int width, int height);

@@ -57,7 +57,7 @@ SDL_VideoInfo MockDesktop = {
 1,/**< Flag: Accelerated color fill */
 0,
 2,/**< The total amount of video memory (in K) */
-NULL,/**< Value: The format of the video surface */
+nullptr,/**< Value: The format of the video surface */
 800,/**< Value: The current video mode width */
 600/**< Value: The current video mode height */
 };
@@ -72,7 +72,7 @@ const SDL_VideoInfo * SDL_GetVideoInfo(void){
 SDL_Surface * SDL_SetVideoMode
             (int width, int height, int bpp, Uint32 flags){
     mock().actualCall("SDL_SetVideoMode");
-    return (SDL_Surface * )NULL;/*(SDL_Surface * )mock().actualCall("SDL_SetVideoMode")
+    return (SDL_Surface * )nullptr;/*(SDL_Surface * )mock().actualCall("SDL_SetVideoMode")
                 .returnPointerValue();*/
 }
 
@@ -92,7 +92,7 @@ int SDL_ShowCursor(int toggle){
 
 SDL_RWops * SDL_RWFromFile(const char *file, const char *mode){
     mock().actualCall("SDL_RWFromFile");
-    return (SDL_RWops *)NULL;
+    return (SDL_RWops *)nullptr;
 }
 
 SDL_AudioSpec * SDL_LoadWAV_RW(SDL_RWops *src,
@@ -101,7 +101,7 @@ SDL_AudioSpec * SDL_LoadWAV_RW(SDL_RWops *src,
                                Uint8 **audio_buf,
                                Uint32 *audio_len){
     mock().actualCall("SDL_LoadWAV_RW");
-    return (SDL_AudioSpec *)NULL;
+    return (SDL_AudioSpec *)nullptr;
 }
 
 //TTF
@@ -113,7 +113,7 @@ int TTF_Init(void){
 
 TTF_Font * TTF_OpenFont(const char *file, int ptsize){
     mock().actualCall("TTF_OpenFont");
-    return (TTF_Font *)NULL;
+    return (TTF_Font *)nullptr;
         /*mock().actualCall("TTF_OpenFont")
                 .returnPointerValue();*/
 }
@@ -125,13 +125,13 @@ void TTF_SetFontStyle(TTF_Font *font, int style){
 SDL_Surface * TTF_RenderText_Shaded
 (TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg){
     mock().actualCall("TTF_RenderText_Shaded");
-    return (SDL_Surface * )NULL;
+    return (SDL_Surface * )nullptr;
 }
 
 SDL_Surface * TTF_RenderText_Blended
 (TTF_Font *font,const char *text, SDL_Color fg){
     mock().actualCall("TTF_RenderText_Blended");
-    return (SDL_Surface * )NULL;
+    return (SDL_Surface * )nullptr;
 }
 
 //audio

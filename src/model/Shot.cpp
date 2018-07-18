@@ -23,8 +23,8 @@ void Shot::display(){
     glPushMatrix();
     glTranslatef(place.x,place.y,place.z);
     glPushMatrix();
-    glScalef(1.0f, 1.0f, 4.0f);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glScalef(ONE, ONE, 4.0f);
+    glColor3f(ONE, ONE, ONE);
     gluSphere(base, 0.3f, 12, 12);
     glPopMatrix();
     glPopMatrix();

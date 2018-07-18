@@ -20,7 +20,7 @@ Game* Game::loop(){
         return handleEvent(evt);
     }else{
         if(!app.visible){
-            SDL_WaitEvent(NULL);
+            SDL_WaitEvent(nullptr);
             return this;
         }else{
             step = nextStep()->draw()
@@ -31,7 +31,7 @@ Game* Game::loop(){
 }
 
 Step* Game::nextStep(){
-    if(step==NULL){
+    if(step==nullptr){
         step = new Loading(this);
     }
     return step;

@@ -81,7 +81,7 @@ Play * Play::next(){
 }
 
 struct mousecntl MockMouse = mousecntl(400, 300, false);
-struct screen MockScreen = screen(800, 600, 32, NULL);
+struct screen MockScreen = screen(800, 600, 32, nullptr);
 
 template <> mousecntl_t Engine<Game>::getMouse() {
     mock().actualCall("Engine::getMouse");
@@ -115,12 +115,12 @@ unsigned int Play::levelType(){
 
 Ball * World::getActiveBall(){
     mock().actualCall("Play::getActiveBall");
-    return NULL;
+    return nullptr;
 }
 
 Brick * World::getBrickAt(Point3f &where){
     mock().actualCall("Play::getBrickAt");
-    return NULL;
+    return nullptr;
 }
 
 void Play::setBonusMode(int type){
@@ -393,7 +393,7 @@ TEST(ModelTestGroup, PillIsWhatUC){
 
     Game * gm = new Game();
     Play * pl = new Play();
-    screen_t scr = new screen(800, 600, 32, NULL);
+    screen_t scr = new screen(800, 600, 32, nullptr);
     mock().expectNCalls(1,"gluNewQuadric");
     mock().expectNCalls(1, "Engine::getScreen");
     Vaus *v = new Vaus(gm, pl);
@@ -415,7 +415,7 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().expectOneCall("SDL_UpperBlit");
     mock().expectOneCall("gluNewQuadric");
     mock().expectOneCall("Engine::getScreen");
-    Pill *p = new Pill(start_pos, gm, pl);
+    auto p = make_unique<Pill>(start_pos, gm, pl);
     //rand returned 1500 < RAND_MAX/20
     //and low scoring game => type should be L
     CHECK(p->active)
@@ -449,13 +449,8 @@ TEST(ModelTestGroup, PillIsWhatUC){
     p->setPlace(ONE, ONE, ZERO);
     //pill has reached vaus
     mock().expectOneCall("Play::setBonusMode");
-    *p = p->animate(0.01f);
+    p->animate(0.01f);
     CHECK(!p->active);
-
-    mock().expectNCalls(2, "SDL_FreeSurface");
-    mock().expectNCalls(1,"gluDeleteQuadric");
-    delete p;
-    mock().checkExpectations();
 
     mock().expectNCalls(1,"gluDeleteQuadric");
     delete scr;
@@ -463,6 +458,8 @@ TEST(ModelTestGroup, PillIsWhatUC){
     delete gm;
     delete pl;
     mock().checkExpectations();
+    mock().expectNCalls(2, "SDL_FreeSurface");
+    mock().expectNCalls(1,"gluDeleteQuadric");
 }
 
 TEST(ModelTestGroup, AlienIsWhatUC){
@@ -529,6 +526,7 @@ TEST(ModelTestGroup, ShotIsWhatUC){
     delete s;
     mock().checkExpectations();
 }
+
 int main(int ac, char** av)
 {
     return CommandLineTestRunner::RunAllTests(ac, av);

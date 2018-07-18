@@ -37,56 +37,52 @@ Vaus& Vaus::reset(){
 }
 
 void Vaus::display(){
-    int rot, dir;
-    Point3f paparia;
-
     gluQuadricDrawStyle(base, GLU_FILL);
     glPushMatrix();
-    glTranslatef(place.x,place.y,0.0f);
-    glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(place.x, place.y, ZERO);
+    glRotatef(45.0f, ZERO, ZERO, ONE);
 
     if(large){
         rad =  2*baseRad;
     }else{
         rad = baseRad;
     }
-    paparia.x = rad - 0.5f;
-    paparia.y = 0.625f;
-    paparia.z = 0.0f;
+    Point3f paparia(rad - 0.5f, 0.625f, ZERO);
 
     glPushMatrix();
     glEnable(GL_BLEND);
     glColor4f(0.3f, 0.3f, 0.3f, 0.3f);//black
-    glTranslatef(0.0f, 0.0f, 0.0f);
-    glScalef(1.0f, 1.0f, 0.25f);
+    glTranslatef(ZERO, ZERO, ZERO);
+    glScalef(ONE, ONE, 0.25f);
     gluSphere(base, baseRad, 48, 12);
     glDisable(GL_BLEND);
     glPopMatrix();
 
-    for(dir = 0; dir < 2; dir++){
-        for(rot = 0; rot < 2; rot++){
+    for(int dir = 0; dir < 2; dir++){
+        for(int rot = 0; rot < 2; rot++){
             glPushMatrix();
-            glColor3f(1.0f, 0.0f, 0.0f);
+            glColor3f(1.0f, ZERO, ZERO);
 
             if(rot){
-                glTranslatef(paparia.x * (1 - 2 * dir), paparia.y, 0.0f);
-                glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+                glTranslatef(paparia.x * (1 - 2 * dir), paparia.y, ZERO);
+                glRotatef(HALF_CIRCLE/2, ONE, ZERO, ZERO);
             }else{
-                glTranslatef(-paparia.y, paparia.x * (1 - 2 * dir), 0.0f);
-                glRotatef(90.0f, 0.0f, 0.1f, 0.0f);
+                glTranslatef(-paparia.y, paparia.x * (1 - 2 * dir), ZERO);
+                glRotatef(HALF_CIRCLE/2, ZERO, ONE, ZERO);
             }
 
             gluCylinder(base, 0.625f, 0.625f, 1.25f, 12, 12);
             glPopMatrix();
 
             glPushMatrix();
-            glTranslatef((1 - dir) * baseRad * (1 - 2 * rot), dir * baseRad * (1 - 2 * rot), 0.0f);
+            glTranslatef((1 - dir) * baseRad * (1 - 2 * rot),
+                         dir * baseRad * (1 - 2 * rot), ZERO);
 
             // If the fire button is down, light up the laser canons
             if(fire){
-                glColor3f(0.5f, 0.5f, 1.0f);
+                glColor3f(0.5f, 0.5f, ONE);
             }else{
-                glColor3f(0.0f, 0.0f, 1.0f);
+                glColor3f(ZERO, ZERO, ONE);
             }
             gluSphere(base, 0.3f, 12, 12);
             glPopMatrix();
@@ -97,9 +93,6 @@ void Vaus::display(){
 
 // Make Vaus follow the mouse
 Vaus& Vaus::animate(double secPerFrame){
-   //speedx = (prevx-place.x)/secPerFrame;
-   //speedy = (prevy-place.y)/secPerFrame;
-
    prevx = place.x;
    prevy = place.y;
    mousecntl_t m = game->getMouse();

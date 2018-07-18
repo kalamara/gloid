@@ -5,7 +5,7 @@ class Game: public Engine<class Game>{
 public:
     Game();
     ~Game();
-    class Step * step = NULL;
+    class Step * step = nullptr;
     int queryStep(){
 
             return step?(step->type):-1;
@@ -13,7 +13,7 @@ public:
     Game * loop();
     /*Game* start(class Step * at){
         step = at;
-    }*///this might merge with nextStep if at == NULL
+    }*///this might merge with nextStep if at == nullptr
     class Step * nextStep();
 
 

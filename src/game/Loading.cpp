@@ -8,8 +8,8 @@ Loading::Loading(class Game * g){
     type = STEP_LOADING;
 }
 Loading::~Loading(){
-    std::for_each(text.begin(),
-                  text.end(),
+    std::for_each(begin(text),
+                  end(text),
                   free);
     text.clear();
 }
@@ -25,13 +25,13 @@ void Loading::loadSounds(){
     game->info(msg);
     text2d ls(white,black);
     ls.print(msg);
-    SDL_Surface * s = game->print2d(ls);
+    auto s = game->print2d(ls);
     if(s){
         text.push_back(s);
     }
-    std::for_each(SoundFiles.begin(),
-                  SoundFiles.end(),
-                  [this](const std::string &f){
+    std::for_each(begin(SoundFiles),
+                  end(SoundFiles),
+                  [this](auto &f){
         game = game->loadSound(f);
     });
 }

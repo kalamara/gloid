@@ -24,7 +24,7 @@ template<> Engine<Game>::Engine(){
                     SDL_PATCHLEVEL).toString(),
             ": Initialized! ");
        // Set the window caption
-       SDL_WM_SetCaption(APP_NAME, NULL);
+       SDL_WM_SetCaption(APP_NAME, nullptr);
     }
     // Initialize timer
     tic = SDL_GetTicks();
@@ -52,32 +52,27 @@ template<> mousecntl_t Engine<Game>::getMouse()  {
 }
 
 template<> screen_t Engine<Game>::testVmode(unsigned x, unsigned int y){
-    unsigned char bpp = 32;
-    SDL_Surface *s = NULL;
-    for(; bpp > 8;  bpp -= 8){
-        s = SDL_SetVideoMode(x, y, bpp, vFlags);
-        if(s != NULL){
-              break;
+
+    for(unsigned char bpp = 32; bpp > 8;  bpp -= 8){
+        auto s = SDL_SetVideoMode(x, y, bpp, vFlags);
+        if(s){
+             return new screen(x, y, bpp, s);
          }
     }
-    if(s){
-        return new screen(x, y, bpp, s);
-    }else{
-        return NULL;
-    }
+    return nullptr;
 }
 
 template<> void Engine<Game>::mixer(void *udata, Uint8 *stream, int len){
-    std::vector<struct sbuffer> *buf = (std::vector<struct sbuffer> *)udata;
+    auto *buf = (std::vector<struct sbuffer> *)udata;
     if(buf){
-        std::transform(buf->begin(),
-                       buf->end(),
-                       buf->begin(),
+        std::transform(begin(*buf),
+                       end(*buf),
+                       begin(*buf),
                        [stream, len](struct sbuffer s) -> struct sbuffer{
             if(s.data){
                 // How much is left to play?
                 int amount = (s.dlen > len) ? len : s.dlen;
-                unsigned char * traf = (amount < s.dlen) ?
+                auto traf = (amount < s.dlen) ?
                                             &(s.data[amount]) :
                                             (unsigned char *)"";
                 SDL_MixAudio(stream,
@@ -116,7 +111,7 @@ template<> Game* Engine<Game>::addSound(unsigned char * data,
 template<> Game* Engine<Game>::loadSound(const std::string & name){
     Uint8 *data;
     Uint32 dlen;
-    std::string path = std::string(WORKPATH) +
+    auto path = std::string(WORKPATH) +
                        "/sounds/" + name + ".wav" ;
     if(SDL_LoadWAV(path.c_str(), getSdlAudio(), &data, &dlen)){
         info("Loaded ", path);
@@ -131,14 +126,14 @@ template<> Game* Engine<Game>::loadSound(const std::string & name){
 
 template<> bool Engine<Game>::playSound(const std::string & sound){
 
-   std::remove_if(soundBuffers.begin(),
-                  soundBuffers.end(),
-                  [](struct sbuffer s){
-                return s.data == NULL || s.dlen == 0;
+   std::remove_if(begin(soundBuffers),
+                  end(soundBuffers),
+                  [](auto s){
+                return !s.data || !s.dlen;
             });
 
-   std::map<std::string, SDL_AudioCVT>::iterator found = sounds.find(sound);
-   if(found != sounds.end()){
+   auto found = sounds.find(sound);
+   if(found != end(sounds)){
        soundBuffers.emplace_back(sbuffer(found->second.buf,
                                          found->second.len_cvt));
 
@@ -152,15 +147,15 @@ template<> Game* Engine<Game>::withSdlGlVideo(version &v){
         warning("libSDL ",
             v.toString(),
             " doesn't support SDL_GetVideoInfo(), testing video modes...");
-        pairs::const_iterator it = videoModes.begin();
-        while(it++ != videoModes.end() && sdlScreen == NULL){
+        auto it = begin(videoModes);
+        while(it++ != end(videoModes) && !sdlScreen){
             sdlScreen = testVmode(it->first, it->second);
         }
     }else{
         desktop = SDL_GetVideoInfo();
         sdlScreen = testVmode(desktop->current_w,desktop->current_h);
     }
-    if(sdlScreen == NULL){
+    if(!sdlScreen){
              error("Can't open an SDL Screen:",
                   SDL_GetError());
     }else{
@@ -189,7 +184,7 @@ template<> Game* Engine<Game>::withSdlTtf(std::string fontPath){
     }else{
         font = TTF_OpenFont(fontPath.c_str(),
                                   fontSize);
-        if(font == NULL){
+        if(font == nullptr){
             error("Unable to initialize SDL_ttf: ",
                   TTF_GetError());
         }else{
@@ -213,10 +208,10 @@ template<> Game* Engine<Game>::withSdlAudio(int freq,
     sdlAudio->userdata = (void *)&soundBuffers;
 
 // Open the audio device
-    if(SDL_OpenAudio(sdlAudio, NULL) < 0){
+    if(SDL_OpenAudio(sdlAudio, nullptr) < 0){
         error("Unable to open audio:",SDL_GetError());
         delete sdlAudio;
-        sdlAudio = NULL;
+        sdlAudio = nullptr;
     } else {// Start playing whatever is in the buffer
          info("Audio open!");
          SDL_PauseAudio(0);
@@ -271,7 +266,7 @@ template<> Game* Engine<Game>::withOpenGl(){
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
     struct screen scr;
-    if(sdlScreen == NULL){
+    if(sdlScreen == nullptr){
         warning("SDL desktop not initialized, falling back to screen defaults...");
         scr = screen();
     }else{
@@ -423,9 +418,9 @@ template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
 
         case SDL_KEYDOWN:{
                    // Take a snapshot of the keyboard
-            unsigned char * k = SDL_GetKeyState(NULL);
-            std::for_each(keys.begin(),
-                            keys.end(),
+            auto k = SDL_GetKeyState(nullptr);
+            std::for_each(begin(keys),
+                            end(keys),
                             [k](keypair &i){
                 i.second = k[i.first];
             });
