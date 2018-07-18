@@ -1,7 +1,14 @@
 #ifndef _TEXT_H_
 #define _TEXT_H_
+
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
+#include <SDL/SDL_audio.h>
+
+#include <iostream>
 #include <sstream>
 #include <string>
+
 class text2d{
     std::stringstream str;
     unsigned int timestamp = 0;//If timestamp is zero, the message is always on.

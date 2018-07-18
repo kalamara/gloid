@@ -63,7 +63,6 @@ Pill::~Pill(){
     SDL_FreeSurface(surf);
     SDL_FreeSurface(textSurf);
     gluDeleteQuadric(base);
-    //delete text;
 }
 
 void Pill::display(){

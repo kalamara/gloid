@@ -1,8 +1,28 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 // this is the BASE GAME ENGINE CORE.
+// Constants
 
+#define PI 3.141525f
+#define ROOT2 1.414213f
+#define ROOT3 1.732051f
 
+#define HALF_CIRCLE 180.0f
+
+#define GRAVITY	9.81f
+
+#define SCENE_MAX   17.5f // Up, right, in
+#define	SCENE_MIN  -17.5f // Down, left, out
+#define SCENE_AIR   11.7f // Camera distance
+
+/*
+#ifndef WIN32
+//TODO: can we use C++17 <filesystem> here?
+ #define WORKPATH "/usr/local/share/gloid"
+#else
+ #define WORKPATH "."
+#endif
+*/
 #define WORKPATH "."
 // Name of the log file
 #define LOG_FILE  "log.txt"
@@ -11,6 +31,36 @@
 /*SDL_MAJOR_VERSION * 0x10000
         + SDL_MINOR_VERSION * 0x100
         + SDL_PATCHLEVEL;*/
+
+// If we're under MSVC, tell the linker to look for these libraries.
+#ifdef WIN32
+ #pragma comment(lib, "OpenGL32.lib")
+ #pragma comment(lib, "GLu32.lib")
+ #pragma comment(lib, "SDLmain.lib")
+ #pragma comment(lib, "SDL.lib")
+#endif
+
+// Includes
+#ifdef WIN32
+ #include <windows.h>
+#else
+#include <stdarg.h>
+#include <ctype.h>
+#endif
+
+#ifndef __MACOSX__
+#include <GL/gl.h>
+#include <GL/glu.h>
+#else
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#endif
+
+#include <list>
+#include <vector>
+#include <map>
+#include <fstream>
+#include <memory>
 
 // Screen struct
 typedef struct screen{

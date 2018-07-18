@@ -3,6 +3,7 @@
 
 class Vaus;
 class Point3f;
+
 class World{
     Vaus * vaus = nullptr;
 public:

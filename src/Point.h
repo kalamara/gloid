@@ -1,6 +1,12 @@
 #ifndef _POINT_H
 #define _POINT_H
 
+#define ONE 1.0f
+#define ZERO 0.0f
+#define FLOAT_PRECISION 0.000001f
+
+#include <math.h>
+
 // 3 dimensional vectors
 class Point3f {
 public:
