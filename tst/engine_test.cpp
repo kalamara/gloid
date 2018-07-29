@@ -147,7 +147,7 @@ TEST(GameTestGroup, init_test){
 
     game->withSdlTtf("./DejaVuSans.ttf");
 
-    CHECK(game->getFont() == nullptr);
+    CHECK(!game->getFont());
     mock().checkExpectations();
 /*ttf_init succeeds, ttf_openfont fails*/
     mock().expectOneCall("TTF_Init").andReturnValue(0);
@@ -155,7 +155,7 @@ TEST(GameTestGroup, init_test){
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
     game->withSdlTtf("./DejaVuSans.ttf");
-    CHECK(game->getFont() == nullptr);
+    CHECK(!game->getFont());
     mock().checkExpectations();
 /*sdl audio*/
 /*openaudio fails*/
@@ -165,7 +165,7 @@ TEST(GameTestGroup, init_test){
     game->withSdlAudio(22050, 2, 0);
 
     mock().checkExpectations();
-    CHECK(game->getSdlAudio() == nullptr);
+    CHECK(!game->getSdlAudio());
 
 /*openaudio succeds*/
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
@@ -174,7 +174,7 @@ TEST(GameTestGroup, init_test){
     game->withSdlAudio(22050, 2, 512);
 
     mock().checkExpectations();
-    CHECK(game->getSdlAudio() != nullptr);
+    CHECK(game->getSdlAudio().has_value());
 
 /*OpenGL*/
     mock().expectOneCall("glClearColor");

@@ -64,6 +64,7 @@
 #include <map>
 #include <fstream>
 #include <memory>
+#include <optional>
 
 // Screen struct
 typedef struct screen{
@@ -161,6 +162,9 @@ typedef struct version {
 
 using pairs = std::list<std::pair<unsigned int, unsigned int>>;
 using keypair = std::pair<const unsigned char, bool>;
+using screenopt = std::optional<struct screen>;
+using audioopt = std::optional<SDL_AudioSpec>;
+using fontopt = std::optional<TTF_Font*>;
 
 template<class G> class Engine{ //base class: Engine, derived class: Game
 
@@ -250,13 +254,12 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     class Point3f camera;      // Camera coordinates
     float phi = ZERO;
     float theta = ZERO;
-//TODO: optional
-    //any of those are nullptr if initialization has failed
-    struct screen * sdlScreen = nullptr;
-    TTF_Font *font = nullptr;
-    SDL_AudioSpec *sdlAudio = nullptr;
+    //any of those are empty if initialization has failed
+    screenopt sdlScreen = {};
+    fontopt sdlFont = {};
+    audioopt sdlAudio = {};
 
-    screen_t testVmode(unsigned x, unsigned int y);
+    screenopt testVmode(unsigned x, unsigned int y);
     void reshape(int width, int height);
 
 public:
@@ -281,17 +284,17 @@ public:
         return keys[k];
     }
 
-    screen_t getScreen() const ;
+    screenopt getScreen() ;
     mousecntl_t getMouse();
 
-    SDL_AudioSpec * getSdlAudio() const {
+    audioopt getSdlAudio() {
         return sdlAudio;
     }
     unsigned int getFontSize() {
         return fontSize;
     }
-    TTF_Font *getFont() const{
-            return font;
+    fontopt getFont(){
+            return sdlFont;
     }
     //initialization builders
     G& withSdlGlVideo(struct version & v);

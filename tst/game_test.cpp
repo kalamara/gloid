@@ -45,9 +45,11 @@ TEST(GameTestGroup, loop_test){
     game->app.visible = true;
     mock().expectOneCall("SDL_PollEvent").andReturnValue(0);
     //from update
-    mock().expectOneCall("TTF_RenderText_Shaded");
-    mock().expectNCalls(11,"SDL_RWFromFile");
-    mock().expectNCalls(11,"SDL_LoadWAV_RW");
+    //font is not initialized yet
+    //mock().expectOneCall("TTF_RenderText_Shaded");
+    //audio is not initialized yet
+    //mock().expectNCalls(11,"SDL_RWFromFile");
+    //mock().expectNCalls(11,"SDL_LoadWAV_RW");
     mock().expectNCalls(11,"SDL_GetError");
     //from draw
     mock().expectOneCall("SDL_GL_SwapBuffers");

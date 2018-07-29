@@ -26,12 +26,14 @@ Pill::Pill(const Point3f &where,
     auto f = Palette[RGB_BLACK];
 
     label = PillLabels[type];
-
+    auto bpp = game->getScreen()
+                    .value_or(screen())
+                    .BPP;
     surf = SDL_CreateRGBSurface(
                 0,
                 game->getFontSize(),
                 game->getFontSize(),
-                game->getScreen()->BPP,
+                bpp,
                 0x00ff0000,
                 0x0000ff00,
                 0x000000ff,
@@ -41,7 +43,7 @@ Pill::Pill(const Point3f &where,
                 0,
                 game->getFontSize(),
                 game->getFontSize(),
-                game->getScreen()->BPP,
+                bpp,
                 0x00ff0000,
                 0x0000ff00,
                 0x000000ff,

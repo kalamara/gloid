@@ -88,9 +88,9 @@ template <> mousecntl_t Engine<Game>::getMouse() {
     return &MockMouse;
 }
 
-template <> screen_t Engine<Game>::getScreen() const{
+template <> screenopt Engine<Game>::getScreen(){
     mock().actualCall("Engine::getScreen");
-    return &MockScreen;
+    return MockScreen;
 }
 
 template <> bool Engine<Game>::playSound(const std::string & sound) {
@@ -381,7 +381,6 @@ TEST(ModelTestGroup, PillIsWhatUC){
     auto pl = Play();
 
     mock().expectNCalls(1,"gluNewQuadric");
-    mock().expectNCalls(1, "Engine::getScreen");
     auto v = Vaus(gm, pl);
     pl.setVaus(&v);
     Point3f start_pos = Point3f(ONE, ONE, -20.0f);

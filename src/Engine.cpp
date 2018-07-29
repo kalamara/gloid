@@ -33,17 +33,10 @@ template<> Engine<Game>::Engine(){
 }
 
 template<> Engine<Game>::~Engine(){
-    //logStream.flush();
     logStream.close();
-    if(sdlScreen){
-        delete sdlScreen;
-    }
-    if(sdlAudio){
-        delete sdlAudio;
-    }
 }
 
-template<> screen_t Engine<Game>::getScreen() const {
+template<> screenopt Engine<Game>::getScreen() {
     return sdlScreen;
 }
 
@@ -51,15 +44,16 @@ template<> mousecntl_t Engine<Game>::getMouse()  {
     return &mouse;
 }
 
-template<> screen_t Engine<Game>::testVmode(unsigned x, unsigned int y){
+template<> screenopt Engine<Game>::testVmode(unsigned x, unsigned int y){
 
     for(unsigned char bpp = 32; bpp > 8;  bpp -= 8){
         auto s = SDL_SetVideoMode(x, y, bpp, vFlags);
         if(s){
-             return new screen(x, y, bpp, s);
+
+             return screen(x, y, bpp, s);
          }
     }
-    return nullptr;
+    return {};
 }
 
 template<> void Engine<Game>::mixer(void *udata, Uint8 *stream, int len){
@@ -113,15 +107,17 @@ template<> Game* Engine<Game>::loadSound(const std::string & name){
     Uint32 dlen;
     auto path = std::string(WORKPATH) +
                        "/sounds/" + name + ".wav" ;
-    if(SDL_LoadWAV(path.c_str(), getSdlAudio(), &data, &dlen)){
-        info("Loaded ", path);
+    if(getSdlAudio()){
+        auto audio = getSdlAudio().value();
+        if(SDL_LoadWAV(path.c_str(), &audio, &data, &dlen)){
+            info("Loaded ", path);
 
-        return addSound(data, dlen, name);
-    }else{
-        error("Couldn't load ", path, ": ", SDL_GetError());
-
-        return dynamic_cast<Game*>(this);
+            return addSound(data, dlen, name);
+        }
     }
+    error("Couldn't load ", path, ": ", SDL_GetError());
+
+    return dynamic_cast<Game*>(this);
 }
 
 template<> bool Engine<Game>::playSound(const std::string & sound){
@@ -148,14 +144,14 @@ template<> Game& Engine<Game>::withSdlGlVideo(version &v){
             v.toString(),
             " doesn't support SDL_GetVideoInfo(), testing video modes...");
         auto it = begin(videoModes);
-        while(it++ != end(videoModes) && !sdlScreen){
+        while(it++ != end(videoModes) && !sdlScreen.has_value()){
             sdlScreen = testVmode(it->first, it->second);
         }
     }else{
         desktop = SDL_GetVideoInfo();
         sdlScreen = testVmode(desktop->current_w,desktop->current_h);
     }
-    if(!sdlScreen){
+    if(!sdlScreen.has_value()){
              error("Can't open an SDL Screen:",
                   SDL_GetError());
     }else{
@@ -182,13 +178,14 @@ template<> Game& Engine<Game>::withSdlTtf(std::string fontPath){
         error("Unable to initialize SDL_ttf: ",
               TTF_GetError());
     }else{
-        font = TTF_OpenFont(fontPath.c_str(),
-                                  fontSize);
-        if(font == nullptr){
+        auto font = TTF_OpenFont(fontPath.c_str(),
+                                 fontSize);
+        if(!font){
             error("Unable to initialize SDL_ttf: ",
                   TTF_GetError());
         }else{
             TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+            sdlFont = font;
             info("TTF font found!");
         }
     }
@@ -198,23 +195,22 @@ template<> Game& Engine<Game>::withSdlTtf(std::string fontPath){
 template<> Game& Engine<Game>::withSdlAudio(int freq,
                                             unsigned char channels,
                                             unsigned int samples){
-    sdlAudio = new SDL_AudioSpec();
+    auto audio = SDL_AudioSpec();
 
-    sdlAudio->freq = freq;
-    sdlAudio->format = AUDIO_S16;
-    sdlAudio->channels = channels;
-    sdlAudio->samples = samples;
-    sdlAudio->callback = Engine<Game>::mixer;
-    sdlAudio->userdata = (void *)&soundBuffers;
+    audio.freq = freq;
+    audio.format = AUDIO_S16;
+    audio.channels = channels;
+    audio.samples = samples;
+    audio.callback = Engine<Game>::mixer;
+    audio.userdata = (void *)&soundBuffers;
 
 // Open the audio device
-    if(SDL_OpenAudio(sdlAudio, nullptr) < 0){
+    if(SDL_OpenAudio(&audio, nullptr) < 0){
         error("Unable to open audio:",SDL_GetError());
-        delete sdlAudio;
-        sdlAudio = nullptr;
     } else {// Start playing whatever is in the buffer
          info("Audio open!");
          SDL_PauseAudio(0);
+         sdlAudio = audio;
     }
     return dynamic_cast<Game&>(*this);
 }
@@ -266,11 +262,14 @@ template<> Game& Engine<Game>::withOpenGl(){
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
     struct screen scr;
-    if(sdlScreen == nullptr){
+    if(!sdlScreen.has_value()){
         warning("SDL desktop not initialized, falling back to screen defaults...");
         scr = screen();
     }else{
-        scr = screen(sdlScreen->W, sdlScreen->H, sdlScreen->BPP, sdlScreen->S);
+        scr = screen(sdlScreen->W,
+                     sdlScreen->H,
+                     sdlScreen->BPP,
+                     sdlScreen->S);
     }
 //    info("Set up the OpenGL view");
     glViewport(0, 0, (GLsizei)(scr.W),(GLsizei)(scr.H));
@@ -326,25 +325,29 @@ template<> void Engine<Game>::reshape(int width, int height)
 }
 
 template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
-    if(text.blended){
+    if(sdlFont){
+        auto font = sdlFont.value();
+        if(text.blended){
 //TODO: trim
-        return TTF_RenderText_Shaded(font,
+            return TTF_RenderText_Shaded(font,
                                      text.msg().c_str(),
                                      text.foreground,
                                      text.background);
-    }else{
+        }else{
 
-        return TTF_RenderText_Blended(font,
+            return TTF_RenderText_Blended(font,
                                       text.msg().c_str(),
                                       text.foreground);
+        }
     }
+    return nullptr;
 }
 
 template<> void Engine<Game>::draw2d(
         SDL_Surface *surf,
          int x,
          int y){
-    if(surf && sdlScreen){
+    if(surf && sdlScreen.has_value()){
         unsigned int w = nextpoweroftwo(surf->w);
         unsigned int h = nextpoweroftwo(surf->h);
 
