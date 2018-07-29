@@ -5,8 +5,8 @@
 #include "Brick.h"
 
 
-Ball::Ball(Game *g){
-    game = g;
+Ball::Ball(Game &g){
+    game = &g;
     speed = Point3f();
     nextbounce = Point3f();
     nextspeed = Point3f();

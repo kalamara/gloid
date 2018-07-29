@@ -33,16 +33,13 @@ class Game: public Engine<class Game>{
 public:
     Game();
     ~Game();
-    class Step * step = nullptr;
+    std::unique_ptr<class Step> step = nullptr;
     int queryStep(){
 
-            return step?(step->type):-1;
+            return step->type;
     }
-    Game * loop();
-    /*Game* start(class Step * at){
-        step = at;
-    }*///this might merge with nextStep if at == nullptr
-    class Step * nextStep();
+    Game & loop();
+    class Step & nextStep();
 
 };
 #endif //_GAME_H

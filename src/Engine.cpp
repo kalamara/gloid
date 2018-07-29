@@ -142,7 +142,7 @@ template<> bool Engine<Game>::playSound(const std::string & sound){
    return false;
 }
 
-template<> Game* Engine<Game>::withSdlGlVideo(version &v){
+template<> Game& Engine<Game>::withSdlGlVideo(version &v){
     if(v.value() < 0x010209){
         warning("libSDL ",
             v.toString(),
@@ -174,10 +174,10 @@ template<> Game* Engine<Game>::withSdlGlVideo(version &v){
              sdlScreen->W, "x", sdlScreen->H,
              ")initialized!");
     }
-    return dynamic_cast<Game*>(this);
+    return dynamic_cast<Game&>(*this);
 }
 /*(std::string(WORKPATH)+ "/DejaVuSans.ttf").c_str()*/
-template<> Game* Engine<Game>::withSdlTtf(std::string fontPath){
+template<> Game& Engine<Game>::withSdlTtf(std::string fontPath){
     if(TTF_Init() < 0){
         error("Unable to initialize SDL_ttf: ",
               TTF_GetError());
@@ -192,10 +192,10 @@ template<> Game* Engine<Game>::withSdlTtf(std::string fontPath){
             info("TTF font found!");
         }
     }
-    return dynamic_cast<Game*>(this);
+    return dynamic_cast<Game&>(*this);
 }
 
-template<> Game* Engine<Game>::withSdlAudio(int freq,
+template<> Game& Engine<Game>::withSdlAudio(int freq,
                                             unsigned char channels,
                                             unsigned int samples){
     sdlAudio = new SDL_AudioSpec();
@@ -216,10 +216,10 @@ template<> Game* Engine<Game>::withSdlAudio(int freq,
          info("Audio open!");
          SDL_PauseAudio(0);
     }
-    return dynamic_cast<Game*>(this);
+    return dynamic_cast<Game&>(*this);
 }
 
-template<> Game* Engine<Game>::withOpenGl(){
+template<> Game& Engine<Game>::withOpenGl(){
 //initialize OpenGL
 
 //    info("Black background");
@@ -291,7 +291,7 @@ template<> Game* Engine<Game>::withOpenGl(){
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     info("OpenGL initialized!");
 
-    return dynamic_cast<Game*>(this);
+    return dynamic_cast<Game&>(*this);
 }
 
 template<> int Engine<Game>::toc(){
@@ -389,7 +389,7 @@ template<> void Engine<Game>::draw2d(
     }
 }
 
-template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
+template<> Game& Engine<Game>::handleEvent(SDL_Event & e){
     switch(e.type){
         case SDL_QUIT:
             app.looping = false;
@@ -421,7 +421,7 @@ template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
             auto k = SDL_GetKeyState(nullptr);
             std::for_each(begin(keys),
                             end(keys),
-                            [k](keypair &i){
+                            [k](auto &i){
                 i.second = k[i.first];
             });
         }   break;
@@ -441,5 +441,5 @@ template<> Game* Engine<Game>::handleEvent(SDL_Event & e){
 
         default: break;
     }
-    return dynamic_cast<Game*>(this);
+    return dynamic_cast<Game&>(*this);
 }

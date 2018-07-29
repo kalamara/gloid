@@ -3,8 +3,8 @@
 #include "GLoid.h"
 #include "Loading.h"
 
-Loading::Loading(class Game * g){
-    game = g;
+Loading::Loading(Game & g){
+    game = &g;
     type = STEP_LOADING;
 }
 Loading::~Loading(){
@@ -14,9 +14,9 @@ Loading::~Loading(){
     text.clear();
 }
 
-Loading * Loading::next(){
+Loading & Loading::next(){
 
-    return this;
+    return *this;
 }
 
 void Loading::loadSounds(){
@@ -32,11 +32,11 @@ void Loading::loadSounds(){
     std::for_each(begin(SoundFiles),
                   end(SoundFiles),
                   [this](auto &f){
-        game = game->loadSound(f);
+        game->loadSound(f);
     });
 }
 
-Loading * Loading::update(){
+Loading & Loading::update(){
     switch (phase) {
     case LOAD_SOUNDS:
         loadSounds();
@@ -45,16 +45,17 @@ Loading * Loading::update(){
         break;
     }
     phase++;
-    return this;
+    return *this;
 }
 
-Loading * Loading::draw(){
+Loading & Loading::draw(){
 
     for(int i = 0; i < text.size(); i++){
            game->draw2d(text[i], 0, -i*game->getFontSize());
     }
     SDL_GL_SwapBuffers();
-    return this;
+
+    return *this;
 }
 
 

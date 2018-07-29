@@ -48,6 +48,9 @@
 #include <ctype.h>
 #endif
 
+#include <SDL/SDL.h>
+#include <SDL/SDL_audio.h>
+
 #ifndef __MACOSX__
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -247,7 +250,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     class Point3f camera;      // Camera coordinates
     float phi = ZERO;
     float theta = ZERO;
-
+//TODO: optional
     //any of those are nullptr if initialization has failed
     struct screen * sdlScreen = nullptr;
     TTF_Font *font = nullptr;
@@ -291,15 +294,15 @@ public:
             return font;
     }
     //initialization builders
-    G* withSdlGlVideo(struct version & v);
-    G* withSdlTtf(std::string fontPath);
-    G* withSdlAudio(int freq, unsigned char channels, unsigned int samples);
-    G* withOpenGl();
-    G* handleEvent(SDL_Event & e);
+    G& withSdlGlVideo(struct version & v);
+    G& withSdlTtf(std::string fontPath);
+    G& withSdlAudio(int freq, unsigned char channels, unsigned int samples);
+    G& withOpenGl();
+    G& handleEvent(SDL_Event & e);
 
-    virtual G* loop()=0;
+    virtual G& loop()=0;
     //virtual G* start(class Step * at)=0;
-    virtual class Step* nextStep()=0;
+    virtual class Step& nextStep()=0;
 
     //variadic log
     /*TODO: add time*/

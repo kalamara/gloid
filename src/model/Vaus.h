@@ -19,7 +19,7 @@ public:
    float prevx;
    float prevy;
 //   particles explosion[VAUS_PARTICLES];
-   Vaus(Game *g, class Play *p);
+   Vaus(Game &g, class Play &p);
    ~Vaus();
 
    void display();

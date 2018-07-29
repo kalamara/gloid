@@ -26,7 +26,7 @@ public:
     Alien& animate(double secPerFrame);
     void die(void);
 
-    Alien(Game * g, Play * p);
+    Alien(Game & g, Play & p);
     ~Alien();
 private:
      GLUquadricObj * base;

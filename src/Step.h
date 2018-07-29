@@ -20,9 +20,9 @@ public:
     unsigned int type;
     Step(){}
     ~Step(){}
-    virtual Step* next()=0;
-    virtual Step* update()=0;
-    virtual Step* draw()=0;
+    virtual Step & next()=0;
+    virtual Step & update()=0;
+    virtual Step & draw()=0;
 };
 #endif //_STEP_H_
 

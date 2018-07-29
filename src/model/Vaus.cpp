@@ -4,9 +4,9 @@
 #include "Vaus.h"
 #include "Pill.h"
 
-Vaus::Vaus(Game *g, Play *p){
-   game = g;
-   gameplay = p;
+Vaus::Vaus(Game &g, Play &p){
+   game = &g;
+   gameplay = &p;
    rad = baseRad;
    setSize(2*baseRad, 2*baseRad, baseRad/2);
    base = gluNewQuadric();

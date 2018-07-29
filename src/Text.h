@@ -1,9 +1,8 @@
 #ifndef _TEXT_H_
 #define _TEXT_H_
 
-#include <SDL/SDL.h>
+#include <SDL/SDL_video.h>
 #include <SDL/SDL_ttf.h>
-#include <SDL/SDL_audio.h>
 
 #include <iostream>
 #include <sstream>

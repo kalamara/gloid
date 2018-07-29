@@ -31,11 +31,11 @@ class Loading: public Step{
     std::vector<SDL_Surface *> text;
     void loadSounds();
 public:
-    Loading(class Game  * g);
+    Loading(Game &g);
     ~Loading();
-    Loading * next();
-    Loading * update();
-    Loading * draw();
+    Loading & next();
+    Loading & update();
+    Loading & draw();
 };
 
 #endif //_LOADING_H

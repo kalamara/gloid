@@ -382,18 +382,18 @@
 
 int main(int argc, char **argv)
 {
-    auto * game = new Game();
+    auto game = Game();
 //maybe useless    Loading * step = new Loading(game);
     auto sdlv = version(SDL_MAJOR_VERSION,
                                   SDL_MINOR_VERSION,
                                   SDL_PATCHLEVEL);
-    game = game->withSdlGlVideo(sdlv)
-                ->withSdlTtf("./DejaVuSans.ttf")
-                ->withSdlAudio(22050, 2, 0)
-                ->withOpenGl();//->start(step);
+    game.withSdlGlVideo(sdlv)
+                .withSdlTtf("./DejaVuSans.ttf")
+                .withSdlAudio(22050, 2, 0)
+                .withOpenGl();
     int i = 0;
-    while(game->looping()){
-          game = game->loop();
+    while(game.looping()){
+          game.loop();
           i++;
      }
 //            switch(gamestep) --> to game
@@ -519,7 +519,6 @@ int main(int argc, char **argv)
 //   Deinitialize(); --> to dtors
 
    // exit() calls SDL_Quit()
-   delete game;
    exit(0);
 
    return 0;

@@ -26,7 +26,7 @@ public:
     Point3f rgb;
 
     int  hit();
-    Brick(class Game *g,
+    Brick(class Game &g,
           const Point3f& color,
           const Point3i& coords,
           int t);

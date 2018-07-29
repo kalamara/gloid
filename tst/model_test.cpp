@@ -53,10 +53,10 @@ Game::~Game(){
 
 }
 
-Game* Game::loop(){
+Game & Game::loop(){
 }
 
-Step* Game::nextStep(){
+Step & Game::nextStep(){
 }
 
 
@@ -68,15 +68,15 @@ Play::~Play(){
 
 }
 
-Play * Play::draw(){
+Play & Play::draw(){
 
 }
 
-Play * Play::update(){
+Play & Play::update(){
 
 }
 
-Play * Play::next(){
+Play & Play::next(){
 
 }
 
@@ -140,38 +140,38 @@ void Play::killVaus(){
 }
 
 TEST(ModelTestGroup, ParticleIsWhatUC){
-    Point3f start_pos = Point3f(ONE, ONE, ONE);
-    Point3f start_rot = Point3f(2*ONE, 2*ONE, 2*ONE);
-    Point3f start_speed = Point3f(3*ONE, 3*ONE, 3*ONE);
+    auto start_pos = Point3f(ONE, ONE, ONE);
+    auto start_rot = Point3f(2*ONE, 2*ONE, 2*ONE);
+    auto start_speed = Point3f(3*ONE, 3*ONE, 3*ONE);
 
     Point3f red = RED;
 
     mock().expectNCalls(10,"rand")
             .andReturnValue(15000499);
     //mock().expectNCalls(3,"Point3f::Point3f");
-    Particle *p = new Particle(start_pos, red, ONE);
+    auto p = Particle(start_pos, red, ONE);
 
     mock().checkExpectations();
 
-    CHECK_EQUAL(500, p->life_total);
-    DOUBLES_EQUAL(1.0f, p->life_fraction, FLOAT_PRECISION);
+    CHECK_EQUAL(500, p.life_total);
+    DOUBLES_EQUAL(1.0f, p.life_fraction, FLOAT_PRECISION);
 
     //should explode randomly
-    CHECK(p->active);
-    CHECK(p->place.eq(Point3f(ONE, ONE, ONE)));
+    CHECK(p.active);
+    CHECK(p.place.eq(Point3f(ONE, ONE, ONE)));
 
 //    CHECK(p->speed.eq(Point3f(3.0f, 3.0f, 3.0f)));
 //    CHECK(p->rotspeed.eq(Point3f(2.0f, 2.0f, 2.0f)));
 //    CHECK(p->rotation.eq(Point3f(ONE, ONE, ONE)));
 
-    DOUBLES_EQUAL(1.0f, p->side, FLOAT_PRECISION);
-    CHECK(p->rgb.eq(Point3f(ONE, ZERO, ZERO)));
+    DOUBLES_EQUAL(1.0f, p.side, FLOAT_PRECISION);
+    CHECK(p.rgb.eq(Point3f(ONE, ZERO, ZERO)));
 
     //should have setters implemented
-    *p = p->setSize(1.0f, 2.0f, 3.0f)
-            .setPlace(-1.0f, -2.0f, -3.0f);
-    CHECK(p->size.eq(Point3f(ONE, 2.0f, 3.0f)));
-    CHECK(p->place.eq(Point3f(-ONE, -2.0f, -3.0f)));
+    p.setSize(1.0f, 2.0f, 3.0f)
+     .setPlace(-1.0f, -2.0f, -3.0f);
+    CHECK(p.size.eq(Point3f(ONE, 2.0f, 3.0f)));
+    CHECK(p.place.eq(Point3f(-ONE, -2.0f, -3.0f)));
 
     //should have animate and mock display in place
     mock().expectOneCall("glPushMatrix");
@@ -183,7 +183,7 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     mock().expectOneCall("glEnd");
     mock().expectOneCall("glPopMatrix");
 
-    p->animate(0.01f).display();
+    p.animate(0.01f).display();
     mock().checkExpectations();
 
     //x, y should increment, z should decrement by speed
@@ -196,50 +196,46 @@ TEST(ModelTestGroup, ParticleIsWhatUC){
     DOUBLES_EQUAL(0.98f, p->rotation.z, FLOAT_PRECISION);
     //remaining life should decrease by x seconds
     */
-    DOUBLES_EQUAL(0.98f, p->life_fraction, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.98f, p.life_fraction, FLOAT_PRECISION);
     //when time expires particle is deactivated
-    *p = p->animate(0.49f);
-    CHECK_FALSE(p->active)
-    delete p;
+    p.animate(0.49f);
+    CHECK_FALSE(p.active)
     mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, BallIsWhatUC){
     mock().expectOneCall("gluNewQuadric");
-    Game * gm = new Game();
-    Ball *b = new Ball(gm);
-    CHECK_FALSE(b->active);
-    CHECK_FALSE(b->launched);
+    auto gm = Game();
+    auto b =  Ball(gm);
+    CHECK_FALSE(b.active);
+    CHECK_FALSE(b.launched);
 
-    CHECK(b->size.eq(Point3f(1.25f, 1.25f, 1.25f)));
-    CHECK(b->speed.eq(Point3f()));
-    CHECK(b->nextbounce.eq(Point3f()));
-    CHECK(b->nextspeed.eq(Point3f()));
-    CHECK(b->launchspeed.eq(Point3f(10.0f, 10.0f, 20.0f)));
+    CHECK(b.size.eq(Point3f(1.25f, 1.25f, 1.25f)));
+    CHECK(b.speed.eq(Point3f()));
+    CHECK(b.nextbounce.eq(Point3f()));
+    CHECK(b.nextspeed.eq(Point3f()));
+    CHECK(b.launchspeed.eq(Point3f(10.0f, 10.0f, 20.0f)));
 
     //should have animate and mock display in place
     //inactive, do nothing
-    b->animate(0.01f).display();
+    b.animate(0.01f).display();
     mock().expectOneCall("gluDeleteQuadric");
-    delete b;
-    delete gm;
-    mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, BallAnimation){
     mock().expectOneCall("gluNewQuadric");
-    Game * gm = new Game();
-    Ball *b = new Ball(gm);
+    auto gm = Game();
+    auto b = Ball(gm);
     //reinit inits
     Point3f init = {ONE, 2*ONE, 3*ONE};
-    *b = b->reinit(init);
+    b.reinit(init);
 
-    CHECK(b->active);
-    CHECK_FALSE(b->launched);
-    CHECK(b->speed.eq(Point3f()));
-    CHECK(b->nextbounce.eq(Point3f()));
-    CHECK(b->launchspeed.eq(Point3f(1.0f, 2.0f, 3.0f)));
-    CHECK(b->nextspeed.eq(Point3f(1.0f, 2.0f, 3.0f)));
+    CHECK(b.active);
+    CHECK_FALSE(b.launched);
+    CHECK(b.speed.eq(Point3f()));
+    CHECK(b.nextbounce.eq(Point3f()));
+    CHECK(b.launchspeed.eq(Point3f(1.0f, 2.0f, 3.0f)));
+    CHECK(b.nextspeed.eq(Point3f(1.0f, 2.0f, 3.0f)));
     //now it is displayable, but only animates following the vaus
 
     mock().expectNCalls(2,"glPushMatrix");
@@ -248,7 +244,7 @@ TEST(ModelTestGroup, BallAnimation){
     mock().expectOneCall("gluSphere");
     mock().expectNCalls(2,"glPopMatrix");
 
-    b->animate(0.01f).display();
+    b.animate(0.01f).display();
     mock().checkExpectations();
     //calculate projection (raycast) axis, speed and position
     //move following the vaus
@@ -257,10 +253,10 @@ TEST(ModelTestGroup, BallAnimation){
 
     mock().expectOneCall("Engine::playSound");
     // .withParameter("sound", WAV_LAUNCH);
-    *b = b->launch();
+    b.launch();
 
-    CHECK(b->launched);
-    CHECK(b->speed.eq(Point3f(1.0f, 2.0f, 3.0f)));
+    CHECK(b.launched);
+    CHECK(b.speed.eq(Point3f(1.0f, 2.0f, 3.0f)));
     mock().checkExpectations();
 
     //if it is trapped outside level, bring it back
@@ -271,26 +267,23 @@ TEST(ModelTestGroup, BallAnimation){
     //if on vaus, bounce
     //if on wall, bounce
     mock().expectOneCall("gluDeleteQuadric");
-    delete b;
-    delete gm;
-    mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, VausIsWhatUC){
-    Game * gm = new Game();
-    Play * pl = new Play();
+    auto gm = Game();
+    auto pl = Play();
     mock().expectOneCall("gluNewQuadric");
 
-    Vaus *v = new Vaus(gm, pl);
+    auto v = Vaus(gm, pl);
 
-    CHECK(v->active);
-    CHECK_FALSE(v->armed);
-    CHECK_FALSE(v->large);
-    CHECK_FALSE(v->warping);
+    CHECK(v.active);
+    CHECK_FALSE(v.armed);
+    CHECK_FALSE(v.large);
+    CHECK_FALSE(v.warping);
 
-    DOUBLES_EQUAL(5.0f, v->size.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(5.0f, v->size.y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(1.25f, v->size.z, FLOAT_PRECISION);
+    DOUBLES_EQUAL(5.0f, v.size.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(5.0f, v.size.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(1.25f, v.size.z, FLOAT_PRECISION);
 
 
     mock().expectOneCall("gluQuadricDrawStyle");
@@ -308,32 +301,32 @@ TEST(ModelTestGroup, VausIsWhatUC){
     mock().expectOneCall("Engine::getScreen");
     mock().expectNCalls(1,"Engine::getMouse");
 
-    v->animate(0.01f).display();
+    v.animate(0.01f).display();
 
-    DOUBLES_EQUAL(0.0f, v->place.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(30.0f, v->place.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(0.0f, v.place.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(30.0f, v.place.y, FLOAT_PRECISION);
     mock().checkExpectations();
     //enlarge should enlarge and play enlarge
-    pl->bonusMode = E;
+    pl.bonusMode = E;
     mock().expectOneCall("Engine::playSound");
     mock().expectOneCall("Engine::getScreen");
     mock().expectNCalls(1,"Engine::getMouse");
     //.withParameter("sound", WAV_ENLARGE);
 
-    *v = v->animate(0.01f);
+    v.animate(0.01f);
 
-    CHECK(v->large);
+    CHECK(v.large);
     mock().checkExpectations();
 
-    pl->bonusMode = L;
+    pl.bonusMode = L;
     mock().expectOneCall("Engine::getScreen");
     mock().expectNCalls(1,"Engine::getMouse");
 
-    *v = v->animate(0.01f);
+    v.animate(0.01f);
 
-    CHECK(v->armed);
+    CHECK(v.armed);
     mock().checkExpectations();
-    pl->bonusMode = B;
+    pl.bonusMode = B;
     MockMouse.X = 800;
     MockMouse.Y = -600;
 
@@ -341,34 +334,30 @@ TEST(ModelTestGroup, VausIsWhatUC){
     mock().expectOneCall("Engine::getScreen");
     mock().expectNCalls(1,"Engine::getMouse");
 
-    *v = v->animate(0.01f);
+    v.animate(0.01f);
 
-    DOUBLES_EQUAL(15.0f, v->place.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(-15.0f, v->place.y, FLOAT_PRECISION);
-    CHECK(v->warping);
+    DOUBLES_EQUAL(15.0f, v.place.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(-15.0f, v.place.y, FLOAT_PRECISION);
+    CHECK(v.warping);
     mock().checkExpectations();
 
     mock().expectOneCall("gluDeleteQuadric");
-    delete v;
-    delete gm;
-    delete pl;
-    mock().checkExpectations();
 }
 
 TEST(ModelTestGroup, BrickIsWhatUC){
     Point3f red = RED;
     Point3i coords = {1,2,3};
     int t = BRIK_NORMAL;
-    Game * gm = new Game();
+    auto gm = Game();
 
     mock().expectOneCall("Point3f::Point3f");
-    Brick * b = new Brick(gm, red, coords, t);
+    auto b = Brick(gm, red, coords, t);
     mock().checkExpectations();
-    CHECK(b->active);
-    CHECK(b->type == BRIK_NORMAL);
-    CHECK(b->hit_counter == 1);
-    DOUBLES_EQUAL(b->rgb.x, ONE, FLOAT_PRECISION);
-    CHECK(b->hit_effect == 0);
+    CHECK(b.active);
+    CHECK(b.type == BRIK_NORMAL);
+    CHECK(b.hit_counter == 1);
+    DOUBLES_EQUAL(b.rgb.x, ONE, FLOAT_PRECISION);
+    CHECK(b.hit_effect == 0);
 
     mock().expectOneCall("glEnable");
     mock().expectNCalls(2,"glDisable");
@@ -381,23 +370,20 @@ TEST(ModelTestGroup, BrickIsWhatUC){
     mock().expectNCalls(5, "glBegin");
     mock().expectNCalls(92,"glVertex3f");
     mock().expectNCalls(5,"glEnd");
-    b->animate(0.01f).display();
+    b.animate(0.01f).display();
     mock().checkExpectations();
-
-    delete b;
-    delete gm;
 }
 
 TEST(ModelTestGroup, PillIsWhatUC){
     extern struct SDL_Surface Surf;
 
-    Game * gm = new Game();
-    Play * pl = new Play();
-    screen_t scr = new screen(800, 600, 32, nullptr);
+    auto gm = Game();
+    auto pl = Play();
+
     mock().expectNCalls(1,"gluNewQuadric");
     mock().expectNCalls(1, "Engine::getScreen");
-    Vaus *v = new Vaus(gm, pl);
-    pl->setVaus(v);
+    auto v = Vaus(gm, pl);
+    pl.setVaus(&v);
     Point3f start_pos = Point3f(ONE, ONE, -20.0f);
 
     mock().expectOneCall("Play::isHiScoring")
@@ -453,25 +439,20 @@ TEST(ModelTestGroup, PillIsWhatUC){
     CHECK(!p->active);
 
     mock().expectNCalls(1,"gluDeleteQuadric");
-    delete scr;
-    delete v;
-    delete gm;
-    delete pl;
-    mock().checkExpectations();
     mock().expectNCalls(2, "SDL_FreeSurface");
     mock().expectNCalls(1,"gluDeleteQuadric");
 }
 
 TEST(ModelTestGroup, AlienIsWhatUC){
-    Game * gm = new Game();
-    Play * pl = new Play();
+    auto gm = Game();
+    auto pl = Play();
     mock().expectNCalls(2,"gluNewQuadric");
-    Vaus *v = new Vaus(gm, pl);
-    pl->setVaus(v);
-    Alien *a = new Alien(gm, pl);
-    CHECK(a->place.eq(Point3f(ZERO, ZERO, SCENE_MIN - SCENE_MAX + ALIENHOME)));
-    CHECK(a->size.eq(Point3f(4.0f, 4.0f, 4.0f)));
-    CHECK(a->active);
+    auto v = Vaus(gm, pl);
+    pl.setVaus(&v);
+    auto a = Alien(gm, pl);
+    CHECK(a.place.eq(Point3f(ZERO, ZERO, SCENE_MIN - SCENE_MAX + ALIENHOME)));
+    CHECK(a.size.eq(Point3f(4.0f, 4.0f, 4.0f)));
+    CHECK(a.active);
     mock().expectOneCall("Play::getActiveBall");
     mock().expectOneCall("Play::getBrickAt");
     mock().expectOneCall("Play::levelType");
@@ -486,18 +467,13 @@ TEST(ModelTestGroup, AlienIsWhatUC){
     mock().expectNCalls(4,"gluQuadricOrientation");
     mock().expectNCalls(3,"gluDisk");
 
-    a->animate(0.01f).display();
+    a.animate(0.01f).display();
     //no ball, speed is 0 on x, y, just rotate and approach player
-    CHECK(a->place.eq(Point3f(ZERO, ZERO,
+    CHECK(a.place.eq(Point3f(ZERO, ZERO,
                               SCENE_MIN - SCENE_MAX + ALIENHOME + 0.05f)));
-    DOUBLES_EQUAL(3.6f, a->roty,FLOAT_PRECISION);
+    DOUBLES_EQUAL(3.6f, a.roty,FLOAT_PRECISION);
 
     mock().expectNCalls(2,"gluDeleteQuadric");
-    delete v;
-    delete gm;
-    delete a;
-    delete pl;
-    mock().checkExpectations();
 }
 
 //TODO: more alien display and animation tests
@@ -505,9 +481,9 @@ TEST(ModelTestGroup, AlienIsWhatUC){
 
 TEST(ModelTestGroup, ShotIsWhatUC){
     mock().expectNCalls(1,"gluNewQuadric");
-    Game * gm = new Game();
-    Play * pl = new Play();
-    Shot * s = new Shot(pl, Point3f(ONE, ONE, ONE));
+    auto gm = Game();
+    auto pl = Play();
+    auto s = Shot(pl, Point3f(ONE, ONE, ONE));
 
     mock().expectNCalls(2,"glPushMatrix");
     mock().expectNCalls(2,"glPopMatrix");
@@ -517,14 +493,11 @@ TEST(ModelTestGroup, ShotIsWhatUC){
     mock().expectNCalls(1,"gluSphere");
 
     mock().expectOneCall("Play::getBrickAt");
-    s->animate(0.01f).display();
-    DOUBLES_EQUAL( 0.6, s->place.z, FLOAT_PRECISION);
+    s.animate(0.01f).display();
+    mock().checkExpectations();
+    DOUBLES_EQUAL( 0.6, s.place.z, FLOAT_PRECISION);
 
     mock().expectNCalls(1,"gluDeleteQuadric");
-    delete gm;
-    delete pl;
-    delete s;
-    mock().checkExpectations();
 }
 
 int main(int ac, char** av)

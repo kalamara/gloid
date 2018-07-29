@@ -20,7 +20,7 @@ public:
     Point3f launchspeed;
     Point3f initspeed;
 
-    Ball(class Game *g);
+    Ball(class Game &g);
     ~Ball();
 
     void display();

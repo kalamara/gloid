@@ -9,9 +9,9 @@ public:
     int level;
     Play();
     ~Play();
-    Play * draw();
-    Play * update();
-    Play * next();
+    Play & draw();
+    Play & update();
+    Play & next();
 
 //gameplay interface
     bool isHiScoring();

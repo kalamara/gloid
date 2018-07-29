@@ -2,18 +2,13 @@
 
 #include "game/Loading.h"
 
-
 Game::Game(){
-    //step = nextStep();
 }
 
 Game::~Game(){
-    if(step){
-        delete step;
-    }
 }
 
-Game* Game::loop(){
+Game& Game::loop(){
     SDL_Event evt;    // SDL event
     if(SDL_PollEvent(&evt)){
         //info("caught an event...");
@@ -21,18 +16,17 @@ Game* Game::loop(){
     }else{
         if(!app.visible){
             SDL_WaitEvent(nullptr);
-            return this;
+            return *this;
         }else{
-            step = nextStep()->draw()
-                             ->update();
-            return this;
+            step->draw().update();
+            return *this;
        }
     }
 }
 
-Step* Game::nextStep(){
-    if(step==nullptr){
-        step = new Loading(this);
+Step & Game::nextStep(){
+    if(step == nullptr){
+        step = std::make_unique<Loading>(*this);
     }
-    return step;
+    return *step;
 }

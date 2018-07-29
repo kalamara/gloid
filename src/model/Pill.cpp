@@ -7,10 +7,10 @@
 #include "Pill.h"
 
 Pill::Pill(const Point3f &where,
-           Game *g,
-           Play* p){
-    game = g;
-    gameplay = p;
+           Game & g,
+           Play & p){
+    game = &g;
+    gameplay = &p;
     setSize(5.0f, 2*rad, 2*rad);
     setPlace(where.x,
              where.y,

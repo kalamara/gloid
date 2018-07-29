@@ -14,15 +14,15 @@ Play::~Play(){
 
 }
 
-Play * Play::draw(){
-    return this;
+Play & Play::draw(){
+    return *this;
 }
 
-Play * Play::update(){
-    return this;
+Play & Play::update(){
+    return *this;
 }
 
-Play * Play::next(){
-    return this;
+Play & Play::next(){
+    return *this;
 }
 

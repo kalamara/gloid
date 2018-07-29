@@ -3,7 +3,7 @@
 #include "WhatUC.h"
 #include "Brick.h"
 
-Brick::Brick(Game *g,
+Brick::Brick(Game &g,
              const Point3f &color,
              const Point3i &coords,
              int t){

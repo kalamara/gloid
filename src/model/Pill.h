@@ -52,7 +52,7 @@ public:
     void display();
     Pill& animate(double secPerFrame);
 
-    Pill(const Point3f& where, class Game *g, class Play *p);
+    Pill(const Point3f& where, Game &g, Play &p);
     ~Pill();
 private:
     GLUquadricObj * base;

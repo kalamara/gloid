@@ -6,12 +6,12 @@
 #include "Alien.h"
 #include "Shot.h"
 
-Shot::Shot(Play * game, const Point3f &where){
+Shot::Shot(Play &game, const Point3f &where){
    setSize(0.3f, 0.3f, 1.2f);
    active=true;
    base = gluNewQuadric();
    setPlace(where.x, where.y, where.z);
-   gameplay = game;
+   gameplay = &game;
 }
 
 Shot::~Shot(){

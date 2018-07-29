@@ -10,7 +10,7 @@ public:
    int score;
    void display(void);
    Shot& animate(double secPerFrame);
-   Shot(class Play *game, const class Point3f &where);
+   Shot(class Play &game, const class Point3f &where);
    ~Shot();
 };
 #endif

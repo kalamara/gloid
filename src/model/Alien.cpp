@@ -7,15 +7,15 @@
 #include "Brick.h"
 #include "Alien.h"
 
-Alien::Alien(Game *g, Play * p){
+Alien::Alien(Game &g, Play &p){
     setPlace(ZERO, ZERO, SCENE_MIN - SCENE_MAX + ALIENHOME);
 
     /*for(i = 0; i< ALIEN_PARTICLES; i++){
             explosion[i] = particles();
         }*/
     speed = Point3f();
-    game = g;
-    gameplay = p;
+    game = &g;
+    gameplay = &p;
     setSize(4*baseRad, 4*baseRad, 4*baseRad);
     base = gluNewQuadric();
 }

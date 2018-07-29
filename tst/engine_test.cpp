@@ -15,7 +15,7 @@ void srand(unsigned int s) {
 }
 
 
-Loading::Loading(Game *g){
+Loading::Loading( class Game & g){
 
 }
 
@@ -23,26 +23,26 @@ Loading::~Loading(){
 
 }
 
-Loading * Loading::draw(){
+Loading & Loading::draw(){
 
 }
 
-Loading * Loading::update(){
+Loading & Loading::update(){
 
 }
 
-Loading * Loading::next(){
+Loading & Loading::next(){
 
 }
 
-Game * newGame(){
+std::unique_ptr<Game> newGame(){
    // mock().expectOneCall("Loading::Loading");
     mock().expectOneCall("SDL_WM_SetCaption");
     mock().expectOneCall("SDL_Init");
     mock().expectOneCall("SDL_GetTicks")
             .andReturnValue(123);
     mock().expectOneCall("srand");
-    return new Game();
+    return std::make_unique<Game>();
 }
 
 TEST_GROUP(GameTestGroup){
@@ -73,30 +73,26 @@ TEST(GameTestGroup, text_test){
 
     STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n", str.str().c_str());
 
-    text2d * text = new text2d();
-    text = text->print("ena =");
-    STRCMP_EQUAL("ena =\n", text->msg().c_str());
+    text2d text = text2d();
+    text.print("ena =");
+    STRCMP_EQUAL("ena =\n", text.msg().c_str());
 
-    text = text->clear()->print("ena = ", 1, ",~dyo ison ", 2.00001f);
+    text.clear()->print("ena = ", 1, ",~dyo ison ", 2.00001f);
 
-    STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n",  text->msg().c_str());
+    STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n",  text.msg().c_str());
 
     mock().expectOneCall("TTF_RenderText_Shaded");
-    Game * game = newGame();
-    SDL_Surface * s = game->print2d(*text);
+    auto game = newGame();
+    SDL_Surface * s = game->print2d(text);
 
     game->draw2d(s,0,0);
-    delete text;
-    delete game;
-
 }
 
 TEST(GameTestGroup, time_test){
-    Game * game = newGame();
+    auto game = newGame();
     mock().expectOneCall("SDL_GetTicks");
     game->toc();
     mock().checkExpectations();
-    delete game;
 }
 
 TEST(GameTestGroup, version_test){
@@ -115,13 +111,14 @@ TEST(GameTestGroup, version_test){
 }
 
 TEST(GameTestGroup, init_test){
-    mock().expectOneCall("SDL_Init");
+/*    mock().expectOneCall("SDL_Init");
     mock().expectOneCall("SDL_WM_SetCaption");
     mock().expectOneCall("SDL_GetTicks").andReturnValue(123);
     mock().expectOneCall("srand");
 
     Game * game = new Game();
-
+*/
+    auto game = newGame();
     mock().checkExpectations();
 //old sdl library -> go hunting for desktop setup
     struct version sdlv = version(1,2,8);
@@ -129,7 +126,7 @@ TEST(GameTestGroup, init_test){
     mock().expectNCalls(36, "SDL_SetVideoMode");
     mock().expectOneCall("SDL_GetError");
 
-    game = game->withSdlGlVideo(sdlv);
+    game->withSdlGlVideo(sdlv);
 
     mock().checkExpectations();
 
@@ -140,7 +137,7 @@ TEST(GameTestGroup, init_test){
     mock().expectNCalls(3, "SDL_SetVideoMode");
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
-    game = game->withSdlGlVideo(sdlv);
+    game->withSdlGlVideo(sdlv);
     mock().checkExpectations();
 
 /*ttf font*/
@@ -148,7 +145,7 @@ TEST(GameTestGroup, init_test){
     mock().expectOneCall("TTF_Init").andReturnValue(-1);
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
-    game = game->withSdlTtf("./DejaVuSans.ttf");
+    game->withSdlTtf("./DejaVuSans.ttf");
 
     CHECK(game->getFont() == nullptr);
     mock().checkExpectations();
@@ -157,7 +154,7 @@ TEST(GameTestGroup, init_test){
     mock().expectOneCall("TTF_OpenFont");
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
-    game = game->withSdlTtf("./DejaVuSans.ttf");
+    game->withSdlTtf("./DejaVuSans.ttf");
     CHECK(game->getFont() == nullptr);
     mock().checkExpectations();
 /*sdl audio*/
@@ -165,7 +162,7 @@ TEST(GameTestGroup, init_test){
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(-1);
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
-    game = game->withSdlAudio(22050, 2, 0);
+    game->withSdlAudio(22050, 2, 0);
 
     mock().checkExpectations();
     CHECK(game->getSdlAudio() == nullptr);
@@ -174,7 +171,7 @@ TEST(GameTestGroup, init_test){
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
     mock().expectOneCall("SDL_PauseAudio");
 
-    game = game->withSdlAudio(22050, 2, 512);
+    game->withSdlAudio(22050, 2, 512);
 
     mock().checkExpectations();
     CHECK(game->getSdlAudio() != nullptr);
@@ -196,10 +193,8 @@ TEST(GameTestGroup, init_test){
     mock().expectOneCall("gluLookAt");
     mock().expectOneCall("glClear");
 
-    game = game->withOpenGl();
+    game->withOpenGl();
     mock().checkExpectations();
-
-    delete game;
 }
 
 TEST(GameTestGroup, sound_test){
@@ -232,12 +227,12 @@ TEST(GameTestGroup, sound_test){
 
     /*we need an instance of game to actually play a sound*/
 
-    Game * game = newGame();
+    auto game = newGame();
 
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
     mock().expectOneCall("SDL_PauseAudio");
 
-    game = game->withSdlAudio(22050, 2, 512);
+    game->withSdlAudio(22050, 2, 512);
 
     mock().checkExpectations();
 
@@ -245,7 +240,7 @@ TEST(GameTestGroup, sound_test){
     unsigned char  loaded[8] = "1234567";
     mock().expectOneCall("SDL_BuildAudioCVT");
     mock().expectOneCall("SDL_ConvertAudio");
-    game = game->addSound(loaded, 8, "alien");
+    game->addSound(loaded, 8, "alien");
 
     bool succ = game->playSound("");
     CHECK_EQUAL(0, game->pendingSounds());
@@ -254,17 +249,15 @@ TEST(GameTestGroup, sound_test){
     succ = game->playSound("alien");
     CHECK(succ);
     CHECK_EQUAL(1, game->pendingSounds());
-
-    delete game;
 }
 
 TEST(GameTestGroup, events_test){
     extern unsigned char MockKeyboard[SDLK_LAST];
-    Game * game = newGame();
+    auto game = newGame();
     SDL_Event evt;
     evt.type = SDL_QUIT;
 
-    game = game->handleEvent(evt);
+    game->handleEvent(evt);
 
     CHECK(!game->looping());
 
@@ -272,7 +265,7 @@ TEST(GameTestGroup, events_test){
     evt.active.state = SDL_APPACTIVE | SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS;
     evt.active.gain = false;
 
-    game = game->handleEvent(evt);
+    game->handleEvent(evt);
 
     CHECK(!game->visible());
     CHECK(!game->mouseFocusing());
@@ -280,7 +273,7 @@ TEST(GameTestGroup, events_test){
 
     evt.active.gain = true;
 
-    game = game->handleEvent(evt);
+    game->handleEvent(evt);
 
     CHECK(game->visible());
     CHECK(game->mouseFocusing());
@@ -295,14 +288,14 @@ TEST(GameTestGroup, events_test){
     mock().expectOneCall("gluPerspective");
     mock().expectOneCall("gluLookAt");
 
-    game = game->handleEvent(evt);
+    game->handleEvent(evt);
 
     evt.type = SDL_KEYDOWN;
 
     MockKeyboard[SDLK_RETURN] = true;
     mock().expectOneCall("SDL_GetKeyState").andReturnValue(MockKeyboard);
 
-    game = game->handleEvent(evt);
+    game->handleEvent(evt);
 
     CHECK(game->keyPressed(SDLK_RETURN));
 
@@ -310,24 +303,22 @@ TEST(GameTestGroup, events_test){
     evt.motion.x = 15;
     evt.motion.y = 20;
 
-    game = game->handleEvent(evt);
+    game->handleEvent(evt);
 
     CHECK_EQUAL(15, game->getMouse()->X);
     CHECK_EQUAL(20, game->getMouse()->Y);
 
     evt.type = SDL_MOUSEBUTTONDOWN;
 
-    game = game->handleEvent(evt);
+    game->handleEvent(evt);
 
     CHECK(game->getMouse()->leftclick);
 
     evt.type = SDL_MOUSEBUTTONUP;
 
-    game = game->handleEvent(evt);
+    game->handleEvent(evt);
 
     CHECK(!game->getMouse()->leftclick);
-
-    delete game;
 }
 
 int main(int ac, char** av)

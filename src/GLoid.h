@@ -109,8 +109,9 @@ typedef struct hallentry
 #include "Point.h"
 #include "World.h"
 #include "Text.h"
-#include "Step.h"
+
 #include "Engine.h"
+#include "Step.h"
 #include "Game.h"
 
 #else
