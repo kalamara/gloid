@@ -35,6 +35,8 @@ void Loading::printText(std::string msg)
     }
 }
 
+//TODO: load stuff asynchronous
+
 void Loading::loadTextures(){
     printText("Loading textures...");
     int n_bmp = BmpFiles.size();
@@ -48,7 +50,6 @@ void Loading::loadTextures(){
 
 void Loading::loadSounds(){
     printText("Loading sounds...");
-    //TODO: load stuff asynchronous
     std::for_each(begin(SoundFiles),
                   end(SoundFiles),
                   [this](auto &f){

@@ -113,6 +113,7 @@ template<> Game* Engine<Game>::loadBmp(const std::string & name,
                     SDL_SRCCOLORKEY|SDL_RLEACCEL,
                     SDL_MapRGBA(p->format, 0, 0, 0, 0));
         textures.emplace(name, std::pair(id, *p));
+        info("Loaded ", path);
         if(!ispoweroftwo(p->h)){
             warning("Height of ", name, " is not a power fof two");
         }
@@ -349,16 +350,17 @@ template<> void Engine<Game>::reshape(int width, int height)
 template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
     if(sdlFont){
         auto font = sdlFont.value();
+
         if(text.blended){
-//TODO: trim
+
             return TTF_RenderText_Shaded(font,
-                                     text.msg().c_str(),
+                                     text.trim().c_str(),
                                      text.foreground,
                                      text.background);
         }else{
 
             return TTF_RenderText_Blended(font,
-                                      text.msg().c_str(),
+                                      text.trim().c_str(),
                                       text.foreground);
         }
     }

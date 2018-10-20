@@ -7,6 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 class text2d{
     std::stringstream str;
@@ -22,14 +23,23 @@ public:
 
         return str.str();
     }
+
+    std::string trim(){
+        std::string str = msg();
+        str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+        return str;
+    }
+
     text2d * clear(){
         str.str( std::string() );
         str.clear();
 
         return this;
     }
+
     text2d(){
     }
+
     text2d(const SDL_Color& fg,
            const SDL_Color& bg,
            int life = 0,
@@ -41,11 +51,13 @@ public:
         foreground = fg;
         background = bg;
     }
+
     template<typename T,typename... Args> text2d * print(T value, Args... args){
         log(&str, value, args...);
 
         return this;
     }
+
     template <typename T> static void log(std::ostream * to, T s){
         if (to) {
             *to << s << std::endl;
@@ -54,6 +66,7 @@ public:
 #endif
         }
     }
+
     template<typename T, typename... Args> static void log(std::ostream * to,
                                                            T value,
                                                            Args... args){

@@ -342,7 +342,8 @@ public:
     void draw2d(SDL_Surface *surf,
             int x,
             int y);
-//helper math function
+//helper math functions
+//convention: 0 is power of two (two to the minus inf)
     static unsigned int nextpoweroftwo(unsigned int x){
        double y = pow(2, ceil(log(x) / log(2)));
 

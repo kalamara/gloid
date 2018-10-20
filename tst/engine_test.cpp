@@ -84,11 +84,14 @@ TEST(GameTestGroup, text_test){
     str.clear();
     text2d::log(&str, "ena = ", 1, ",~dyo ison ", 2.00001f);
 
+
     STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n", str.str().c_str());
 
     text2d text = text2d();
     text.print("ena =");
     STRCMP_EQUAL("ena =\n", text.msg().c_str());
+
+    STRCMP_EQUAL("ena =", text.trim().c_str());
 
     text.clear()->print("ena = ", 1, ",~dyo ison ", 2.00001f);
 
