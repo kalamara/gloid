@@ -49,35 +49,7 @@ typedef enum{
    N_RGB_COLORS
 }RGB_COLORS;
 
-// Bitmaps
-enum{
-   BMP_BG_1,
-   BMP_BG_2,
-   BMP_BG_3,
-   BMP_BG_4,
-   BMP_LOGO,
-   BMP_VAUS,
-   BMP_TARGET,
-   BMP_CROSSHAIRS,
-   BMP_WARP,
-   N_BMP
-};
 
-// Sounds
-enum{
-   WAV_ALIEN,
-   WAV_BOUNCE0,
-   WAV_BOUNCE1,
-   WAV_ENLARGE,
-   WAV_GO,
-   WAV_INTRO,
-   WAV_KANONAKI,
-   WAV_LAUNCH,
-   WAV_LOSE,
-   WAV_SHOT,
-   WAV_WARP,
-   N_WAV 
-};
 
 // Parser tokens
 enum{

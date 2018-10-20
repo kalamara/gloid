@@ -197,6 +197,10 @@ Uint32 SDL_MapRGBA
     mock().actualCall("SDL_MapRGBA");
 }
 
+SDL_Surface * SDL_LoadBMP_RW(SDL_RWops *src, int freesrc){
+    mock().actualCall("SDL_LoadBMP_RW");
+}
+
 //OpenGL
 void glPushMatrix(){
     mock().actualCall("glPushMatrix");
@@ -321,6 +325,14 @@ void glTexCoord2f( GLfloat s, GLfloat t ){
     mock().actualCall("glTexCoord2f");
 }
 
+void glGenTextures( GLsizei n, GLuint *textures ){
+    if(textures &&
+    n > 0){
+        textures[n-1] = n;
+    }
+    mock().actualCall("glGenTextures");
+}
+
 //GLU extentions
 
 void gluPerspective
@@ -365,3 +377,4 @@ void gluQuadricOrientation(GLUquadric* quad, GLenum orientation){
 void gluDisk(GLUquadric* quad, GLdouble inner, GLdouble outer, GLint slices, GLint loops){
     mock().actualCall("gluDisk");
 }
+

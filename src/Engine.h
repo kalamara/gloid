@@ -250,6 +250,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     //audio
     std::vector<struct sbuffer> soundBuffers;
     std::map<std::string, SDL_AudioCVT> sounds;
+    std::map<std::string, std::pair<GLuint, SDL_Surface>> textures;
     //3d scene
     class Point3f camera;      // Camera coordinates
     float phi = ZERO;
@@ -321,6 +322,7 @@ public:
     //public SDL interface
     //audio
     static void mixer(void *udata, Uint8 *stream, int len);
+    G* loadBmp(const std::string & name, GLuint id);
     G* loadSound(const std::string & name);
     G* addSound(unsigned char * data,
                 unsigned int dlen,

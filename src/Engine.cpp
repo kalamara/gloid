@@ -102,11 +102,27 @@ template<> Game* Engine<Game>::addSound(unsigned char * data,
     return dynamic_cast<Game*>(this);
 }
 
+template<> Game* Engine<Game>::loadBmp(const std::string & name,
+                                       GLuint id){
+    auto path = std::string(WORKPATH) + "/textures/" + name + ".bmp" ;
+    auto p = SDL_LoadBMP(path.c_str());
+    if(p &&
+       p->h &&
+       p->w ){
+        SDL_SetColorKey(p,
+                    SDL_SRCCOLORKEY|SDL_RLEACCEL,
+                    SDL_MapRGBA(p->format, 0, 0, 0, 0));
+        textures.emplace(name, std::pair(id, *p));
+    }else{
+        error("Couldn't load ", path, ": ", SDL_GetError());
+    }
+    return dynamic_cast<Game*>(this);
+}
+
 template<> Game* Engine<Game>::loadSound(const std::string & name){
     Uint8 *data;
     Uint32 dlen;
-    auto path = std::string(WORKPATH) +
-                       "/sounds/" + name + ".wav" ;
+    auto path = std::string(WORKPATH) + "/sounds/" + name + ".wav" ;
     if(getSdlAudio()){
         auto audio = getSdlAudio().value();
         if(SDL_LoadWAV(path.c_str(), &audio, &data, &dlen)){
@@ -262,7 +278,7 @@ template<> Game& Engine<Game>::withOpenGl(){
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission);
 
     struct screen scr;
-    if(!sdlScreen.has_value()){
+    if(!sdlScreen){
         warning("SDL desktop not initialized, falling back to screen defaults...");
         scr = screen();
     }else{

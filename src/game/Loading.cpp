@@ -7,11 +7,16 @@ Loading::Loading(Game & g){
     game = &g;
     type = STEP_LOADING;
 }
+
 Loading::~Loading(){
     std::for_each(begin(text),
                   end(text),
                   free);
     text.clear();
+    if(textureIds){
+        free(textureIds);
+        textureIds = nullptr;
+    }
 }
 
 Loading & Loading::next(){
@@ -19,9 +24,8 @@ Loading & Loading::next(){
     return *this;
 }
 
-void Loading::loadSounds(){
-
-    std::string msg = "Loading sounds...";
+void Loading::printText(std::string msg)
+{
     game->info(msg);
     text2d ls(white,black);
     ls.print(msg);
@@ -29,6 +33,22 @@ void Loading::loadSounds(){
     if(s){
         text.push_back(s);
     }
+}
+
+void Loading::loadTextures(){
+    printText("Loading textures...");
+    int n_bmp = BmpFiles.size();
+    textureIds = (GLuint *)malloc(n_bmp*sizeof(GLuint));
+    memset(textureIds,0,n_bmp*sizeof(GLuint));
+    glGenTextures(n_bmp, textureIds);
+    for(int i = 0; i < BmpFiles.size(); i++){
+        game->loadBmp(BmpFiles[i], textureIds[i]);
+    }
+}
+
+void Loading::loadSounds(){
+    printText("Loading sounds...");
+    //TODO: load stuff asynchronous
     std::for_each(begin(SoundFiles),
                   end(SoundFiles),
                   [this](auto &f){
@@ -40,6 +60,9 @@ Loading & Loading::update(){
     switch (phase) {
     case LOAD_SOUNDS:
         loadSounds();
+        break;
+    case LOAD_TEXTURES:
+        loadTextures();
         break;
     default:
         break;
