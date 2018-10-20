@@ -59,6 +59,19 @@ TEST(GameTestGroup, pow_test){
     CHECK_EQUAL(256, Engine<Game>::nextpoweroftwo(129));
     CHECK_EQUAL(256, Engine<Game>::nextpoweroftwo(256));
 
+    CHECK(Engine<Game>::ispoweroftwo(0));
+    CHECK(Engine<Game>::ispoweroftwo(1));
+    CHECK(Engine<Game>::ispoweroftwo(2));
+    CHECK(Engine<Game>::ispoweroftwo(4));
+    CHECK(Engine<Game>::ispoweroftwo(8));
+    CHECK(Engine<Game>::ispoweroftwo(16));
+    CHECK(Engine<Game>::ispoweroftwo(64));
+    CHECK(Engine<Game>::ispoweroftwo(256));
+    CHECK(Engine<Game>::ispoweroftwo(1024));
+    CHECK(Engine<Game>::ispoweroftwo(4096));
+
+    CHECK_FALSE(Engine<Game>::ispoweroftwo(3));
+    CHECK_FALSE(Engine<Game>::ispoweroftwo(4098));
 }
 
 TEST(GameTestGroup, text_test){

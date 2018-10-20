@@ -349,5 +349,10 @@ public:
        return (unsigned int)y;
     }
 
+    static bool ispoweroftwo(unsigned int x){
+
+        return (x & (x - 1)) == 0;
+    }
+
 };
 #endif // ENGINE_H

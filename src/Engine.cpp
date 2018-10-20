@@ -113,6 +113,12 @@ template<> Game* Engine<Game>::loadBmp(const std::string & name,
                     SDL_SRCCOLORKEY|SDL_RLEACCEL,
                     SDL_MapRGBA(p->format, 0, 0, 0, 0));
         textures.emplace(name, std::pair(id, *p));
+        if(!ispoweroftwo(p->h)){
+            warning("Height of ", name, " is not a power fof two");
+        }
+        if(!ispoweroftwo(p->w)){
+            warning("Width of ", name, " is not a power fof two");
+        }
     }else{
         error("Couldn't load ", path, ": ", SDL_GetError());
     }
