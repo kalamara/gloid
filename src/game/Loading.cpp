@@ -75,7 +75,7 @@ Loading & Loading::update(){
 Loading & Loading::draw(){
 
     for(int i = 0; i < text.size(); i++){
-           game->draw2d(text[i], 0, -i*game->getFontSize());
+           game->draw2d(text[i], 0, -i*2*game->getFontSize());
     }
     SDL_GL_SwapBuffers();
 

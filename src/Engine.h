@@ -309,15 +309,14 @@ public:
     virtual class Step& nextStep()=0;
 
     //variadic log
-    /*TODO: add time*/
     template<typename T, typename... Args> void error(T value, Args... args){
-        text2d::log(&logStream,  "ERROR:", value,  args...);
+        text2d::log(&logStream,  toc(), ":ERROR:", value,  args...);
     }
     template<typename T,typename... Args> void info(T value, Args... args){
-        text2d::log(&logStream,  "INFO:",  value, args...);
+        text2d::log(&logStream,  toc(), ":INFO:",  value, args...);
     }
     template<typename T,typename... Args> void warning(T value, Args... args){
-        text2d::log(&logStream,  "WARNING:",  value, args...);
+        text2d::log(&logStream,  toc(), ":WARNING:",  value, args...);
     }
     //public SDL interface
     //audio

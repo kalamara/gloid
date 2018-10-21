@@ -48,6 +48,10 @@ std::unique_ptr<Game> newGame(){
     mock().expectOneCall("SDL_Init");
     mock().expectOneCall("SDL_GetTicks")
             .andReturnValue(123);
+    mock().expectOneCall("SDL_GetTicks")
+            .andReturnValue(123);
+    mock().expectOneCall("SDL_GetTicks")
+            .andReturnValue(123);
     mock().expectOneCall("srand");
     return std::make_unique<Game>();
 }
@@ -61,6 +65,7 @@ TEST_GROUP(GameTestGroup){
 TEST(GameTestGroup, loop_test){
 
     auto game = newGame();
+    mock().checkExpectations();
 
     mock().expectOneCall("SDL_PollEvent").andReturnValue(1);
     game->loop();
@@ -71,6 +76,8 @@ TEST(GameTestGroup, loop_test){
     mock().expectOneCall("SDL_WaitEvent");
     game->loop();
     mock().checkExpectations();
+    mock().expectNCalls(N_WAV,"SDL_GetTicks");
+    mock().expectNCalls(1,"SDL_GetTicks");
     //on visible, run next step update and draw
     game->app.visible = true;
     mock().expectOneCall("SDL_PollEvent").andReturnValue(0);
@@ -92,11 +99,14 @@ TEST(GameTestGroup, loop_test){
 
 TEST(GameTestGroup, loading_test){
     auto game = newGame();
+    mock().checkExpectations();
+
     auto loadStep = dynamic_cast<Loading *>(&(game->nextStep()));
     CHECK_EQUAL(STEP_LOADING,loadStep->type);
     CHECK_EQUAL(LOAD_SOUNDS,loadStep->phase);
     mock().expectNCalls(N_WAV,"SDL_GetError");
-
+    mock().expectNCalls(N_WAV,"SDL_GetTicks");
+    mock().expectNCalls(1,"SDL_GetTicks");
     loadStep->update();
 
     mock().checkExpectations();
@@ -108,7 +118,8 @@ TEST(GameTestGroup, loading_test){
 //    mock().expectNCalls(N_BMP,"SDL_SetColorKey");
 //    mock().expectNCalls(N_BMP,"SDL_MapRGBA");
     mock().expectNCalls(N_BMP,"SDL_GetError");
-
+    mock().expectNCalls(N_BMP,"SDL_GetTicks");
+    mock().expectNCalls(1,"SDL_GetTicks");
     loadStep->update();
 //should have allocated textureIds
     CHECK_EQUAL(N_BMP, loadStep->textureIds[N_BMP-1]);

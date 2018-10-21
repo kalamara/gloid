@@ -38,9 +38,13 @@ Loading & Loading::next(){
 std::unique_ptr<Game> newGame(){
    // mock().expectOneCall("Loading::Loading");
     mock().expectOneCall("SDL_WM_SetCaption");
-    mock().expectOneCall("SDL_Init");
     mock().expectOneCall("SDL_GetTicks")
             .andReturnValue(123);
+    mock().expectOneCall("SDL_GetTicks")
+            .andReturnValue(123);
+    mock().expectOneCall("SDL_GetTicks")
+            .andReturnValue(123);
+    mock().expectOneCall("SDL_Init");
     mock().expectOneCall("srand");
     return std::make_unique<Game>();
 }
@@ -82,6 +86,7 @@ TEST(GameTestGroup, text_test){
 
     str.str( std::string() );
     str.clear();
+    mock().expectNCalls(2, "SDL_GetTicks");
     text2d::log(&str, "ena = ", 1, ",~dyo ison ", 2.00001f);
 
 
@@ -127,18 +132,12 @@ TEST(GameTestGroup, version_test){
 }
 
 TEST(GameTestGroup, init_test){
-/*    mock().expectOneCall("SDL_Init");
-    mock().expectOneCall("SDL_WM_SetCaption");
-    mock().expectOneCall("SDL_GetTicks").andReturnValue(123);
-    mock().expectOneCall("srand");
 
-    Game * game = new Game();
-*/
     auto game = newGame();
     mock().checkExpectations();
 //old sdl library -> go hunting for desktop setup
     struct version sdlv = version(1,2,8);
-
+    mock().expectNCalls(2,"SDL_GetTicks");
     mock().expectNCalls(36, "SDL_SetVideoMode");
     mock().expectOneCall("SDL_GetError");
 
@@ -148,7 +147,7 @@ TEST(GameTestGroup, init_test){
 
 //newer sdl library -> call sdlgetvideoinfo
     sdlv = version(1,2,9);
-
+    mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("SDL_GetVideoInfo");
     mock().expectNCalls(3, "SDL_SetVideoMode");
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
@@ -158,6 +157,7 @@ TEST(GameTestGroup, init_test){
 
 /*ttf font*/
 /* ttf_init fails*/
+    mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("TTF_Init").andReturnValue(-1);
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
@@ -166,6 +166,7 @@ TEST(GameTestGroup, init_test){
     CHECK(!game->getFont());
     mock().checkExpectations();
 /*ttf_init succeeds, ttf_openfont fails*/
+    mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("TTF_Init").andReturnValue(0);
     mock().expectOneCall("TTF_OpenFont");
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
@@ -175,6 +176,7 @@ TEST(GameTestGroup, init_test){
     mock().checkExpectations();
 /*sdl audio*/
 /*openaudio fails*/
+    mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(-1);
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
 
@@ -184,6 +186,7 @@ TEST(GameTestGroup, init_test){
     CHECK(!game->getSdlAudio());
 
 /*openaudio succeds*/
+    mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
     mock().expectOneCall("SDL_PauseAudio");
 
@@ -193,6 +196,7 @@ TEST(GameTestGroup, init_test){
     CHECK(game->getSdlAudio().has_value());
 
 /*OpenGL*/
+    mock().expectNCalls(2,"SDL_GetTicks");
     mock().expectOneCall("glClearColor");
     mock().expectOneCall("glClearDepth");
     mock().expectOneCall("glDepthFunc");
@@ -224,6 +228,7 @@ TEST(GameTestGroup, sound_test){
     buffers.push_back(sbuffer(data1, 6));
     buffers.push_back(sbuffer(data2, 7));
 
+
     mock().expectNCalls(2, "SDL_MixAudio");
 
     Game::mixer((void *)&buffers, mix, 2);
@@ -244,7 +249,7 @@ TEST(GameTestGroup, sound_test){
     /*we need an instance of game to actually play a sound*/
 
     auto game = newGame();
-
+    mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
     mock().expectOneCall("SDL_PauseAudio");
 
@@ -272,7 +277,7 @@ TEST(GameTestGroup, events_test){
     auto game = newGame();
     SDL_Event evt;
     evt.type = SDL_QUIT;
-
+    mock().expectNCalls(2,"SDL_GetTicks");
     game->handleEvent(evt);
 
     CHECK(!game->looping());
@@ -298,6 +303,8 @@ TEST(GameTestGroup, events_test){
     evt.type = SDL_VIDEORESIZE;
     evt.resize.w = 800;
     evt.resize.h = 600;
+
+
     mock().expectOneCall("glViewport");
     mock().expectNCalls(2,"glLoadIdentity");
     mock().expectNCalls(2,"glMatrixMode");
