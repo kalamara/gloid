@@ -1,17 +1,7 @@
 // gloid_base.cpp : Defines the entry point for the application.
 
-/***********************************************
-*                                              *
-*    Jeff Molofee's Revised OpenGL Basecode    *
-*  Huge Thanks To Maxwell Sayles & Peter Puck  *
-*            http:// nehe.gamedev.net          *
-*                     2001                     *
-*                                              *
-***********************************************/
-
 #include "GLoid.h"
 #include "game/Loading.h"
-
 
 int main(int argc, char **argv)
 {

@@ -85,6 +85,7 @@ typedef struct hallentry
 #include "Engine.h"
 #include "Step.h"
 #include "Game.h"
+#include "model/WhatUC.h"
 
 #else
 

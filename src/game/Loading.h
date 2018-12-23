@@ -9,8 +9,6 @@ typedef enum{
     N_LOAD,
 }LOAD_PHASE;
 
-
-
 const std::vector<std::string> SoundFiles = {
         "alien",
         "bounce0",
@@ -36,13 +34,14 @@ const std::vector<std::string> SoundFiles = {
         "crosshairs",
         "warp"
      };
-
+class Point3i;
 class Loading: public Step{
     static constexpr SDL_Color white = {255, 255, 255, 128};
     static constexpr SDL_Color black = {0, 0, 0, 128};
     std::vector<SDL_Surface *> text;
     void loadSounds();
     void loadTextures();
+    std::vector<float> getElement(std::string line, std::string header);
 public:
     GLuint * textureIds = nullptr;
     int phase = LOAD_SOUNDS;
@@ -51,6 +50,11 @@ public:
     Loading & next();
     Loading & update();
     Loading & draw();
+    std::optional<Point3i> getPos(std::string line);
+    std::optional<Point3f> getColor(std::string line);
+    std::vector<std::string> getTokens(std::string ase,
+                                       std::vector<std::string> tokens);
+
 protected:
     void printText(std::string msg);
 };

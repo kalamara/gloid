@@ -30,3 +30,4 @@ Point3i::Point3i(const Point3f& other){
     Y = (int)round(0.2*other.y) + 3;
     Z = (int)round(0.4*other.z + 0.5);
 }
+
