@@ -28,15 +28,6 @@ int rand() {
     return mock().actualCall("rand")
             .returnIntValue();
 }
-//Functions
-
-Point3f::Point3f(const Point3i& other){
-    mock().actualCall("Point3f::Point3f");
-}
-
-Point3f Point3f::chase(const Point3f& other, float U){
-    mock().actualCall("Point3f::chase");
-}
 
 //Game
 template<> Engine<Game>::Engine(){
@@ -331,7 +322,6 @@ TEST(ModelTestGroup, BrickIsWhatUC){
     int t = BRIK_NORMAL;
     auto gm = Game();
 
-    mock().expectOneCall("Point3f::Point3f");
     auto b = Brick(gm, red, coords, t);
     mock().checkExpectations();
     CHECK(b.active);
@@ -473,6 +463,57 @@ TEST(ModelTestGroup, ShotIsWhatUC){
     DOUBLES_EQUAL( 0.6, s.place.z, FLOAT_PRECISION);
 
     mock().expectNCalls(1,"gluDeleteQuadric");
+}
+
+
+//parsing levels
+TEST(ModelTestGroup, parsing_test){
+
+    auto game = Game();
+    mock().checkExpectations();
+    auto pos = Brick::getPos(std::string());
+    CHECK(!pos);
+    pos = Brick::getPos("");
+    CHECK(!pos);
+    pos = Brick::getPos("lol");
+    CHECK(!pos);
+    pos = Brick::getPos("TM_POS ");
+    CHECK(!pos);
+    pos = Brick::getPos("TM_POST ");
+    CHECK(!pos);
+    pos = Brick::getPos("TM_POST ROCK");
+    CHECK(!pos);
+    pos = Brick::getPos("TM_POS\tl");
+    CHECK(!pos);
+    pos = Brick::getPos("TM_POS\tl\t0\tl");
+    CHECK(!pos);
+    pos = Brick::getPos("TM_POS\t1.0\t20.0 ");
+    CHECK(!pos);
+
+    pos = Brick::getPos("TM_POS  0.0	60.0	90.0");
+    CHECK(Point3f(0,60,90).eq(*pos));
+
+    auto col = Brick::getColor("WIREFRAME_COLOR  0.3	 0.3	 0.3");
+    CHECK(Point3f(0.3,0.3,0.3).eq(*col));
+
+    std::stringstream bad("*BAD*input*");
+
+    auto got = Brick::getBrick(bad, nullptr);
+    CHECK(!got);
+    std::string input = "\
+*GEOMOBJECT {\
+*TM_POS  0.0	 40.0	60.0\
+*WIREFRAME_COLOR  0.3	 0.3	 0.3\
+*GEOMOBJECT {\
+*TM_POS 10.0	 0.0	60.0\
+*WIREFRAME_COLOR  0.3	 0.3	 0.3\
+";
+
+
+    std::stringstream iss(input);
+
+    got = Brick::getBrick(iss, &game);
+    CHECK(got.has_value());
 }
 
 int main(int ac, char** av)

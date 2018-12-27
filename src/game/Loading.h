@@ -57,11 +57,12 @@ public:
     Loading & draw();
 
     std::pair<int,std::string> getScore(std::string line);
-    std::vector<float> getElement(std::string line, std::string header);
-    std::optional<Point3i> getPos(std::string line);
-    std::optional<Point3f> getColor(std::string line);
-    std::vector<std::string> getTokens(std::string ase,
-                                       std::vector<std::string> tokens);
+//    std::vector<float> getElement(std::string line, std::string header);
+//    std::optional<Point3i> getPos(std::string line);
+//    std::optional<Point3f> getColor(std::string line);
+//    Brick * getBrick(std::istream &ifs);
+    //std::vector<std::string> getTokens(std::string ase,
+      //                                 std::vector<std::string> tokens);
 
 protected:
     void printText(std::string msg);

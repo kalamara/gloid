@@ -247,3 +247,59 @@ void Brick::solidRhombik(float side){
     }
     glEnd();					// Done Drawing Strips
 }
+
+std::optional<Point3f>  Brick::getElement(std::string line, std::string header){
+
+    if(line.compare(0, header.length(), header)){
+        return {};
+    }
+    float x = ZERO;
+    float y = ZERO;
+    float z = ZERO;
+    try{
+        std::stringstream str(line.substr(header.length()));
+        std::string xstr;
+        std::string ystr;
+        std::string zstr;
+        str >> xstr >> ystr >> zstr;
+        x = std::stof(xstr);
+        y = std::stof(ystr);
+        z = std::stof(zstr);
+    }catch(...){
+        //std::cout << "exception:" << line << std::endl;
+        return {};
+    }
+    auto p = std::make_unique<Point3f>(x,y,z);
+    return *p;
+}
+
+std::optional<Point3f> Brick::getPos(std::string line){
+
+    return getElement(line, "TM_POS");
+}
+
+std::optional<Point3f> Brick::getColor(std::string line){
+
+    return getElement(line, "WIREFRAME_COLOR");
+}
+
+std::optional<Brick> Brick::getBrick(std::istream & ifs, Game * game){
+    std::string geom;
+    std::string posstr;
+    std::string colstr;
+
+    std::getline(ifs, geom, '*');
+    std::getline(ifs, geom, '*'); //GEOMOBJECT
+    std::getline(ifs, posstr, '*'); //TM_POS
+    auto pos = getElement(posstr, "TM_POS");;
+    std::getline(ifs, colstr, '*'); //WIREFRAME_COLOR
+    auto col = getElement(colstr, "WIREFRAME_COLOR");
+    if(!geom.compare(0, 10,"GEOMOBJECT")
+       && pos
+       && col){
+
+        return Brick(*game, *col, *pos, 0);
+    }
+    return {};
+}
+

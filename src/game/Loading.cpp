@@ -2,6 +2,7 @@
 
 #include "GLoid.h"
 #include "Loading.h"
+#include "model/Brick.h"
 
 Loading::Loading(Game & g){
     game = &g;
@@ -125,7 +126,8 @@ std::pair<int, std::string> Loading::getScore(std::string line){
 //read 3 floats
 //find first occurence of WIREFRAME_COLOR
 //read 3 floats
-//construct bricks
+//
+/*construct bricks
 
 std::vector<float> Loading::getElement(std::string line, std::string header){
     if(line.compare(0, header.length(), header)){
@@ -164,19 +166,26 @@ std::optional<Point3f> Loading::getColor(std::string line){
     }
     return Point3f(col[0],col[1],col[2]);
 }
-/*
-std::vector<std::string> Loading::getTokens(std::string ase,
-                                            std::vector<std::string> tokens){
-    std::stringstream check(ase);
-    std::string temp;
-    while(std::getline(check, temp, '*')){
-        if(!temp.empty()){
-            tokens.push_back(temp);
-        }
+
+Brick * Loading::getBrick(std::istream & ifs){
+    std::string geom;
+    std::getline(ifs, geom, '*');
+    std::getline(ifs, geom, '*'); //GEOMOBJECT
+    std::string posstr;
+    std::getline(ifs, posstr, '*'); //TM_POS
+    std::optional<Point3i> pos = getPos(posstr);
+    std::string colstr;
+    std::getline(ifs, colstr, '*'); //WIREFRAME_COLOR
+    std::optional<Point3f> col = getColor(colstr);
+    if(!geom.compare("GEOMOBJECT")
+       && pos.has_value()
+       && col.has_value()){
+
+        return new Brick(*game, col.value(), pos.value(), 0);
     }
-    return tokens;
-}
-*/
+    return nullptr;
+}*/
+
 Loading & Loading::update(){
     switch (phase) {
     case LOAD_SOUNDS:
