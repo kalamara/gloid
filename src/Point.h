@@ -21,8 +21,7 @@ public:
     }
     //default ctor returns {0,0,0} - see above
     Point3f(){}
-    //copy ctor
-    Point3f(const class Point3i& other);
+
     //construct random point with base magnitude
     Point3f(float base){
 
@@ -41,13 +40,15 @@ public:
             y = ZERO;
             z = ZERO;
         }
-    }
-    //convertor from integers
+    }    
+    //copy ctor
     Point3f(const Point3f& other){
         x = other.x;
         y = other.y;
         z = other.z;
     }
+    //convertor from integers
+    Point3f(const class Point3i& other);
     //equals
     bool eq(const Point3f other){
         return abs(x - other.x) <= FLOAT_PRECISION

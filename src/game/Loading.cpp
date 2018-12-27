@@ -57,6 +57,67 @@ void Loading::loadSounds(){
     });
 }
 
+void Loading::loadHalloFame(){
+    printText("Loading hall of fame...");
+    std::ifstream ifs;
+    ifs.open(HalloFame, std::ifstream::in);
+    int l = 0;
+    if(ifs.is_open()){
+        std::string line;
+        while(getline(ifs,line) && l++ < 10){
+            game->hiscore.insert(getScore(line));
+        }
+        ifs.close();
+    }
+    while(l++ < 10){
+        game->hiscore.insert({50000,"AAA"});
+    }
+    while(game->hiscore.size() > 10){
+        game->hiscore.erase(std::prev(game->hiscore.end()));
+    }
+}
+
+void Loading::loadLevel(){
+    std::stringstream msg;
+    msg << "Loading level " << game->level << "...";
+    printText(msg.str());
+    std::ifstream ifs;
+    std::stringstream path;
+    path << "levels/level" << game->level << ".ase";
+    ifs.open(path.str(),  std::ifstream::in);
+    if(ifs.is_open()){
+        std::string line;
+        game->levelAscii.clear();
+        while(getline(ifs,line)){
+            game->levelAscii.insert(game->levelAscii.end(),line);
+        }
+        ifs.close();
+    }
+}
+
+std::pair<int, std::string> Loading::getScore(std::string line){
+    std::string initials = "";
+    int score = 0;
+    try{
+        std::stringstream str(line);
+        std::string scorestr;
+        std::string initstr;
+        str >> initstr >> scorestr;
+
+        score = std::stoi(scorestr);
+        initials = initstr.substr(0,3);
+
+        std::transform(initials.begin(),
+                       initials.end(),
+                       initials.begin(),
+                       ::toupper);
+
+    }catch(...){
+        return {};
+    }
+    return {score,initials};
+}
+
 //load level
 //open file
 //tokenize by GEOMOBJECT -> list of strings
@@ -103,7 +164,7 @@ std::optional<Point3f> Loading::getColor(std::string line){
     }
     return Point3f(col[0],col[1],col[2]);
 }
-
+/*
 std::vector<std::string> Loading::getTokens(std::string ase,
                                             std::vector<std::string> tokens){
     std::stringstream check(ase);
@@ -115,7 +176,7 @@ std::vector<std::string> Loading::getTokens(std::string ase,
     }
     return tokens;
 }
-
+*/
 Loading & Loading::update(){
     switch (phase) {
     case LOAD_SOUNDS:
@@ -124,8 +185,14 @@ Loading & Loading::update(){
     case LOAD_TEXTURES:
         loadTextures();
         break;
-    default:
+    case LOAD_HALLOFAME:
+        loadHalloFame();
         break;
+    case LOAD_LEVEL:
+        loadLevel();
+        break;
+    default:
+        return *this;
     }
     phase++;
     return *this;

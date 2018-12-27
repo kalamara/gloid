@@ -4,8 +4,8 @@
 typedef enum{
     LOAD_SOUNDS,
     LOAD_TEXTURES,
-    LOAD_LEVEL,
     LOAD_HALLOFAME,
+    LOAD_LEVEL,
     N_LOAD,
 }LOAD_PHASE;
 
@@ -21,9 +21,9 @@ const std::vector<std::string> SoundFiles = {
         "lose",
         "shot",
         "warp"
-      };
+    };
 
- const std::vector<std::string> BmpFiles = {
+const std::vector<std::string> BmpFiles = {
         "arka1_hires",
         "arka2_hires",
         "arka3_hires",
@@ -33,7 +33,10 @@ const std::vector<std::string> SoundFiles = {
         "target",
         "crosshairs",
         "warp"
-     };
+    };
+
+const std::string HalloFame = "hallofame.txt";
+
 class Point3i;
 class Loading: public Step{
     static constexpr SDL_Color white = {255, 255, 255, 128};
@@ -41,7 +44,9 @@ class Loading: public Step{
     std::vector<SDL_Surface *> text;
     void loadSounds();
     void loadTextures();
-    std::vector<float> getElement(std::string line, std::string header);
+    void loadHalloFame();
+    void loadLevel();
+
 public:
     GLuint * textureIds = nullptr;
     int phase = LOAD_SOUNDS;
@@ -50,6 +55,9 @@ public:
     Loading & next();
     Loading & update();
     Loading & draw();
+
+    std::pair<int,std::string> getScore(std::string line);
+    std::vector<float> getElement(std::string line, std::string header);
     std::optional<Point3i> getPos(std::string line);
     std::optional<Point3f> getColor(std::string line);
     std::vector<std::string> getTokens(std::string ase,

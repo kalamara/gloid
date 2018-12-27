@@ -13,10 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(${PROJECT_NAME}
     "Step.h"
-    "game/Loading.h"
-    "game/Loading.cpp"
-    "game/Play.h"
-    "game/Play.cpp"
+    "World.h"
     "Game.h"
     "Game.cpp"
     "Engine.h"
@@ -24,7 +21,27 @@ add_executable(${PROJECT_NAME}
     "Text.h"
     "World.h"
     "Point.h"
+    "Point.cpp"
     "GLoid.h"
+    "game/Loading.h"
+    "game/Loading.cpp"
+    "game/Play.h"
+    "game/Play.cpp"
+    "model/WhatUC.h"
+    "model/Particle.h"
+    "model/Particle.cpp"
+    "model/Ball.h"
+    "model/Ball.cpp"
+    "model/Vaus.h"
+    "model/Vaus.cpp"
+    "model/Brick.h"
+    "model/Brick.cpp"
+    "model/Pill.h"
+    "model/Pill.cpp"
+    "model/Alien.h"
+    "model/Alien.cpp"
+    "model/Shot.h"
+    "model/Shot.cpp"
     "GLoid.cpp")
 
 target_link_libraries(gloid
@@ -40,4 +57,10 @@ file(COPY "${CMAKE_SOURCE_DIR}/sounds"
     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 file(COPY "${CMAKE_SOURCE_DIR}/textures"
+    DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
+file(COPY "${CMAKE_SOURCE_DIR}/levels"
+    DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
+file(COPY "${CMAKE_SOURCE_DIR}/hallofame.txt"
     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")

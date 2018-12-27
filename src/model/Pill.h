@@ -23,7 +23,6 @@ class Pill: public WhatUC<Pill>{
     static constexpr float len = 3.5f;
 
     class Game * game;
-    class Play * gameplay;
 
 public:
     // Pill color palette
@@ -52,7 +51,7 @@ public:
     void display();
     Pill& animate(double secPerFrame);
 
-    Pill(const Point3f& where, Game &g, Play &p);
+    Pill(const Point3f& where, Game &g);
     ~Pill();
 private:
     GLUquadricObj * base;

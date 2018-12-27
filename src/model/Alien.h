@@ -1,6 +1,8 @@
 #ifndef _ALIEN_H
 #define _ALIEN_H
 // ALIENS
+#define ALIEN_COLORS 3
+
 class Point3f;
 
 class Alien: public WhatUC<Alien>{	
@@ -10,7 +12,6 @@ class Alien: public WhatUC<Alien>{
     static constexpr float zSpeed = 5.0f;
 
     class Game * game;
-    class Play * gameplay;
 public:
     int type = 0;
     float roty = ZERO;
@@ -26,7 +27,7 @@ public:
     Alien& animate(double secPerFrame);
     void die(void);
 
-    Alien(Game & g, Play & p);
+    Alien(Game & g);
     ~Alien();
 private:
      GLUquadricObj * base;

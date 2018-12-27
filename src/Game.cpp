@@ -2,6 +2,15 @@
 
 #include "game/Loading.h"
 
+#include "model/WhatUC.h"
+#include "model/Particle.h"
+#include "model/Ball.h"
+#include "model/Vaus.h"
+#include "model/Brick.h"
+#include "model/Pill.h"
+#include "model/Alien.h"
+#include "model/Shot.h"
+
 Game::Game(){
 }
 
@@ -31,3 +40,8 @@ Step & Game::nextStep(){
     }
     return *step;
 }
+
+void Game::divideBalls(){}
+void Game::killVaus(){}
+class Ball * Game::getActiveBall(){return nullptr;}
+class Brick * Game::getBrickAt(Point3f& where){return nullptr;}

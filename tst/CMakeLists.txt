@@ -54,7 +54,25 @@ add_executable(engine_test
 
 add_executable(game_test
     ${SUT}/GLoid.h
+    ${SUT}/Point.h
+    ${SUT}/Point.cpp
     ${SUT}/Text.h
+    ${SUT}/World.h
+    ${SUT}/model/WhatUC.h
+    ${SUT}/model/Particle.h
+    ${SUT}/model/Particle.cpp
+    ${SUT}/model/Ball.h
+    ${SUT}/model/Ball.cpp
+    ${SUT}/model/Vaus.h
+    ${SUT}/model/Vaus.cpp
+    ${SUT}/model/Brick.h
+    ${SUT}/model/Brick.cpp
+    ${SUT}/model/Pill.h
+    ${SUT}/model/Pill.cpp
+    ${SUT}/model/Alien.h
+    ${SUT}/model/Alien.cpp
+    ${SUT}/model/Shot.h
+    ${SUT}/model/Shot.cpp
     ${SUT}/Game.h
     ${SUT}/Game.cpp
     ${SUT}/Engine.h

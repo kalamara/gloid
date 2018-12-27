@@ -1,12 +1,11 @@
 #include "GLoid.h"
 
-#include "game/Play.h"
 #include "WhatUC.h"
 #include "Brick.h"
 #include "Alien.h"
 #include "Shot.h"
 
-Shot::Shot(Play &game, const Point3f &where){
+Shot::Shot(Game &game, const Point3f &where){
    setSize(0.3f, 0.3f, 1.2f);
    active=true;
    base = gluNewQuadric();

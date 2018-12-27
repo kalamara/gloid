@@ -124,6 +124,58 @@ TEST(GameTestGroup, loading_test){
 //should have allocated textureIds
     CHECK_EQUAL(N_BMP, loadStep->textureIds[N_BMP-1]);
     mock().checkExpectations();
+    CHECK_EQUAL(LOAD_HALLOFAME, loadStep->phase);
+
+    mock().expectNCalls(1,"SDL_GetTicks");
+    loadStep->update();
+    CHECK_EQUAL(10, game->hiscore.size());
+    CHECK_EQUAL(50000,game->hiscore.begin()->first);
+    STRCMP_EQUAL("AAA",game->hiscore.begin()->second.c_str());
+    CHECK_EQUAL( 50000,std::prev(game->hiscore.end())->first);
+    STRCMP_EQUAL("AAA",std::prev(game->hiscore.end())->second.c_str());
+    mock().checkExpectations();
+    CHECK_EQUAL(LOAD_LEVEL, loadStep->phase);
+    mock().expectNCalls(1,"SDL_GetTicks");
+    loadStep->update();
+    mock().checkExpectations();
+    CHECK_EQUAL(N_LOAD, loadStep->phase);
+
+    //should not change any more
+
+    loadStep->update();
+    mock().checkExpectations();
+    CHECK_EQUAL(N_LOAD, loadStep->phase);
+}
+
+//parsing scores
+TEST(GameTestGroup, score_test){
+    auto game = newGame();
+    mock().checkExpectations();
+    Loading * load = new Loading(*game);
+    auto score = load->getScore(std::string());
+    CHECK(!score.second.size());
+    CHECK(!score.first);
+    score = load->getScore("");
+    CHECK(!score.second.size());
+    CHECK(!score.first);
+    score = load->getScore("lol");
+    CHECK(!score.second.size());
+    CHECK(!score.first);
+    score = load->getScore("lol ");
+    CHECK(!score.second.size());
+    CHECK(!score.first);
+    score = load->getScore("lol lol");
+    CHECK(!score.second.size());
+    CHECK(!score.first);
+    score = load->getScore("lol 123");
+    STRCMP_EQUAL("LOL", score.second.c_str());
+    CHECK_EQUAL(123, score.first);
+
+    score = load->getScore("lola 12345678.999");
+    STRCMP_EQUAL("LOL", score.second.c_str());
+    CHECK_EQUAL(12345678, score.first);
+
+    delete load;
 }
 
 //parsing levels
@@ -157,16 +209,16 @@ TEST(GameTestGroup, parsing_test){
     auto col = load->getColor("WIREFRAME_COLOR  0.3	 0.3	 0.3");
     CHECK(Point3f(0.3,0.3,0.3).eq(*col));
 
-    auto tokens = load->getTokens("*GEOMOBJECT {\
-                                      *TM_POS  0.0	 0.0	60.0\
-                                  *WIREFRAME_COLOR  0.3	 0.3	 0.3\
-                              *GEOMOBJECT {\
-                                      *TM_POS 10.0	 0.0	60.0\
-                                  *WIREFRAME_COLOR  0.3	 0.3	 0.3"
-                                      , {});
-    STRCMP_CONTAINS("GEOMOBJECT", tokens[0].c_str());
-    STRCMP_CONTAINS("TM_POS", tokens[1].c_str());
-    STRCMP_CONTAINS("WIREFRAME_COLOR", tokens[2].c_str());
+//    auto tokens = load->getTokens("*GEOMOBJECT {\
+//                                      *TM_POS  0.0	 0.0	60.0\
+//                                  *WIREFRAME_COLOR  0.3	 0.3	 0.3\
+//                              *GEOMOBJECT {\
+//                                      *TM_POS 10.0	 0.0	60.0\
+//                                  *WIREFRAME_COLOR  0.3	 0.3	 0.3"
+//                                      , {});
+//    STRCMP_CONTAINS("GEOMOBJECT", tokens[0].c_str());
+//    STRCMP_CONTAINS("TM_POS", tokens[1].c_str());
+//    STRCMP_CONTAINS("WIREFRAME_COLOR", tokens[2].c_str());
 
     delete load;
 }

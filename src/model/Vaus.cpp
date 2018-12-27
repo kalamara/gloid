@@ -4,9 +4,8 @@
 #include "Vaus.h"
 #include "Pill.h"
 
-Vaus::Vaus(Game &g, Play &p){
+Vaus::Vaus(Game &g){
    game = &g;
-   gameplay = &p;
    rad = baseRad;
    setSize(2*baseRad, 2*baseRad, baseRad/2);
    base = gluNewQuadric();
@@ -101,7 +100,7 @@ Vaus& Vaus::animate(double secPerFrame){
             (m->Y * (SCENE_MAX - SCENE_MIN - size.y))/s.H + SCENE_MAX - size.y/2,
             0.0f);
             
-   int bonusMode = gameplay->bonusMode;
+   int bonusMode = game->bonusMode;
    switch(bonusMode)
    {
       // If the portal is open and we touch it, warp to the next level

@@ -1,23 +1,20 @@
 #include "GLoid.h"
 
-#include "game/Play.h"
 #include "WhatUC.h"
 #include "Vaus.h"
 
 #include "Pill.h"
 
 Pill::Pill(const Point3f &where,
-           Game & g,
-           Play & p){
+           Game & g){
     game = &g;
-    gameplay = &p;
     setSize(5.0f, 2*rad, 2*rad);
     setPlace(where.x,
              where.y,
              where.z);
 
     base = gluNewQuadric();
-    type = roulette(gameplay->isHiScoring());
+    type = roulette(game->isHiScoring());
     col.x = Palette[type].b/255;
     col.y = Palette[type].g/255;
     col.z = Palette[type].r/255;
@@ -113,7 +110,7 @@ void Pill::display(){
 Pill& Pill::animate(double secPerFrame){
 
     if(active){
-        Vaus * v = gameplay->getVaus();
+        Vaus * v = game->getVaus();
         if((place.z >= v->size.z/2 - rad)
                 && collides(v->place.x - v->rad,
                             v->place.x + v->rad,
@@ -122,14 +119,14 @@ Pill& Pill::animate(double secPerFrame){
             score += SCOREBONUS;
             active = false;
             v->reset(); //maybe game->resetVaus();
-            gameplay->setBonusMode(type);
+            game->setBonusMode(type);
 
             if(type == P){
-                gameplay->incLives();
+                game->incLives();
                 game->playSound("kanonaki");//WAV_KANONAKI);
             }
             if(type == D){
-                gameplay->divideBalls();
+                game->divideBalls();
             }
         }else{
             if(place.z > 1.0f){

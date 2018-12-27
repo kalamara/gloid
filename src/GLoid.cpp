@@ -1,7 +1,6 @@
 // gloid_base.cpp : Defines the entry point for the application.
 
 #include "GLoid.h"
-#include "game/Loading.h"
 
 int main(int argc, char **argv)
 {

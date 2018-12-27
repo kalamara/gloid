@@ -1,13 +1,12 @@
 #include "GLoid.h"
 
-#include "game/Play.h"
 #include "WhatUC.h"
 #include "Vaus.h"
 #include "Ball.h"
 #include "Brick.h"
 #include "Alien.h"
 
-Alien::Alien(Game &g, Play &p){
+Alien::Alien(Game &g){
     setPlace(ZERO, ZERO, SCENE_MIN - SCENE_MAX + ALIENHOME);
 
     /*for(i = 0; i< ALIEN_PARTICLES; i++){
@@ -15,7 +14,6 @@ Alien::Alien(Game &g, Play &p){
         }*/
     speed = Point3f();
     game = &g;
-    gameplay = &p;
     setSize(4*baseRad, 4*baseRad, 4*baseRad);
     base = gluNewQuadric();
 }
@@ -25,7 +23,7 @@ Alien::~Alien(){
 }
 
 void Alien::display(){
-    type = gameplay->levelType();
+    type = game->levelType();
 
     if(active){
 
@@ -34,7 +32,7 @@ void Alien::display(){
 
         switch(type){
         // Alien 1
-        case 0:
+        case 1:
             glPushMatrix();
             glColor3f(ZERO, ZERO, ONE);
             glTranslatef(ZERO, ZERO, ZERO);
@@ -61,7 +59,7 @@ void Alien::display(){
             glPopMatrix();
             break;
             // Alien 2
-        case 1:
+        case 2:
             
             glPushMatrix();
             glRotatef(roty, ZERO, ONE, ZERO);
@@ -82,7 +80,7 @@ void Alien::display(){
             break;
 
             // Alien 3
-        case 2:
+        case 3:
             glPushMatrix();
             glRotatef(roty, ZERO, ONE, ZERO);
             glPushMatrix();
@@ -104,7 +102,7 @@ void Alien::display(){
             break;
 
             // Alien 4
-        case 3:
+        case 0:
             if((game->toc() % 4000) < 1000)
             {
                 glPushMatrix();
@@ -143,14 +141,14 @@ Alien &Alien::animate(double secPerFrame){
         // If the alien flies off the screen, it dies
         if(place.z > ZERO){
             die();
-            Vaus * v = gameplay->getVaus();
+            Vaus * v = game->getVaus();
             R = baseRad + v->rad;
             Point3f distance(place.x - v->place.x,
                             place.y - v->place.y,
                             ZERO);
             M = distance.res3f();//distance resultant
             if(M < R){
-                gameplay->killVaus();
+                game->killVaus();
                 /*vaus->active = false;
                 for(i = 0; i < VAUS_PARTICLES; i++){
                vaus->explosion[i].active = TRUE;
@@ -160,13 +158,13 @@ Alien &Alien::animate(double secPerFrame){
         }else{
             //FIXME: rel = Functions::coords(&place);
             int i = 0;
-            Ball * ball = gameplay->getActiveBall();
+            Ball * ball = game->getActiveBall();
             if(ball){
                 float ballspeed = ball->speed.res3f();
                 alienspeed = place.chase(ball->place,ballspeed);
             }
             speed = speed.deepcopy(alienspeed);
-            Brick * brick = gameplay->getBrickAt(place);
+            Brick * brick = game->getBrickAt(place);
             if(brick){
                 speed.x = -speed.x;
                 speed.y = -speed.y;
