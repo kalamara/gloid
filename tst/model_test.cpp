@@ -67,8 +67,8 @@ Play & Play::update(){
 
 }
 
-Play & Play::next(){
-
+int Play::next(){
+    return STEP_PLAY;
 }
 
 struct mousecntl MockMouse = mousecntl(400, 300, false);

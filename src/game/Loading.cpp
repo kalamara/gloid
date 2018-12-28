@@ -20,15 +20,18 @@ Loading::~Loading(){
     }
 }
 
-Loading & Loading::next(){
+int Loading::next(){
 
-    return *this;
+   if(phase == N_LOAD){
+        return STEP_WAITING;
+    }
+    return STEP_LOADING;
 }
 
 void Loading::printText(std::string msg)
 {
     game->info(msg);
-    text2d ls(white,black);
+    text2d ls(White,Black);
     ls.print(msg);
     auto s = game->print2d(ls);
     if(s){
@@ -87,9 +90,12 @@ void Loading::loadLevel(){
     path << "levels/level" << game->level << ".ase";
     ifs.open(path.str(),  std::ifstream::in);
     if(ifs.is_open()){
-        std::string line;
-        game->levelAscii.clear();
-
+        while(ifs.peek() != EOF){
+            auto b = Brick::getBrick(ifs, game);
+            if(b){
+                game->bricks.push_back(b.value());
+            }
+        }
         ifs.close();
     }
 }

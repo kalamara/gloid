@@ -20,7 +20,7 @@ public:
     unsigned int type;
     Step(){}
     ~Step(){}
-    virtual Step & next()=0;
+    virtual int next()=0;
     virtual Step & update()=0;
     virtual Step & draw()=0;
 };

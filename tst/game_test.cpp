@@ -83,6 +83,9 @@ Brick::~Brick(){}
 
 void Brick::display(void){}
 Brick& Brick::animate(double secPerFrame){}
+std::optional<Brick> Brick::getBrick(std::istream & ifs, Game * game){
+    return {};
+}
 
 Particle::Particle(const Point3f & where,
                const Point3f & color,
@@ -148,6 +151,17 @@ TEST(GameTestGroup, loop_test){
     game->loop();
     CHECK_EQUAL(STEP_LOADING, game->queryStep());
     mock().checkExpectations();
+
+//    mock().expectNCalls(4,"SDL_PollEvent").andReturnValue(0);
+//    //from draw
+//    mock().expectNCalls(4,"SDL_GL_SwapBuffers");
+//    mock().expectNCalls(4,"SDL_GetTicks");
+//    game->loop();
+//    game->loop();
+//    game->loop();
+//    game->loop();
+//    CHECK_EQUAL(STEP_WAITING, game->queryStep());
+//    mock().checkExpectations();
 }
 
 TEST(GameTestGroup, loading_test){
@@ -198,6 +212,7 @@ TEST(GameTestGroup, loading_test){
     loadStep->update();
     mock().checkExpectations();
     CHECK_EQUAL(N_LOAD, loadStep->phase);
+    CHECK_EQUAL(STEP_WAITING, loadStep->next());
 }
 
 //parsing scores

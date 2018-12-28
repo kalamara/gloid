@@ -31,8 +31,8 @@ public:
     unsigned int bonusMode = 0;
     unsigned int lives = LIVES;
     unsigned int score = 0;
-    std::unique_ptr<class Step> step = nullptr;
-    std::vector<std::string> levelAscii;
+    class Step * step = nullptr;
+    std::map<int, std::unique_ptr<class Step>> steps;
     unsigned int level = 1;
     std::multimap<int, std::string, std::greater<int>> hiscore;
 

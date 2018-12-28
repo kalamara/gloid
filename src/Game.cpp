@@ -1,7 +1,7 @@
 #include "GLoid.h"
 
 #include "game/Loading.h"
-
+#include "game/Waiting.h"
 #include "model/WhatUC.h"
 #include "model/Particle.h"
 #include "model/Ball.h"
@@ -12,6 +12,9 @@
 #include "model/Shot.h"
 
 Game::Game(){
+    steps.insert({STEP_LOADING, std::make_unique<Loading>(*this)});
+    steps.insert({STEP_WAITING, std::make_unique<Waiting>(*this)});
+    step = steps[STEP_LOADING].get();
 }
 
 Game::~Game(){
@@ -35,11 +38,8 @@ Game& Game::loop(){
     }
 }
 
-Step & Game::nextStep(){
-    if(step == nullptr){
-        step = std::make_unique<Loading>(*this);
-    }
-    return *step;
+Step & Game::nextStep(){ 
+    return *steps[step->next()];
 }
 
 void Game::divideBalls(){}

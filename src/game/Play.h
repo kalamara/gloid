@@ -9,7 +9,7 @@ public:
     ~Play();
     Play & draw();
     Play & update();
-    Play & next();
+    int next();
 
 
 

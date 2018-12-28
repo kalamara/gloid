@@ -39,8 +39,6 @@ const std::string HalloFame = "hallofame.txt";
 
 class Point3i;
 class Loading: public Step{
-    static constexpr SDL_Color white = {255, 255, 255, 128};
-    static constexpr SDL_Color black = {0, 0, 0, 128};
     std::vector<SDL_Surface *> text;
     void loadSounds();
     void loadTextures();
@@ -52,7 +50,7 @@ public:
     int phase = LOAD_SOUNDS;
     Loading(Game &g);
     ~Loading();
-    Loading & next();
+    int next();
     Loading & update();
     Loading & draw();
 
