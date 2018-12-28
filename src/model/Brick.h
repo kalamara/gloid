@@ -37,7 +37,7 @@ public:
     Brick& animate(double secPerFrame);
 
     static std::optional<Point3f> getElement(std::string line, std::string header);
-    static std::optional<Point3f> getPos(std::string line);
+    static std::optional<Point3i> getPos(std::string line);
     static std::optional<Point3f> getColor(std::string line);
     static std::optional<Brick> getBrick(std::istream & ifs, Game * game);
 

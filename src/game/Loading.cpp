@@ -89,9 +89,7 @@ void Loading::loadLevel(){
     if(ifs.is_open()){
         std::string line;
         game->levelAscii.clear();
-        while(getline(ifs,line)){
-            game->levelAscii.insert(game->levelAscii.end(),line);
-        }
+
         ifs.close();
     }
 }
@@ -118,73 +116,6 @@ std::pair<int, std::string> Loading::getScore(std::string line){
     }
     return {score,initials};
 }
-
-//load level
-//open file
-//tokenize by GEOMOBJECT -> list of strings
-//find first occurence of TM_POS
-//read 3 floats
-//find first occurence of WIREFRAME_COLOR
-//read 3 floats
-//
-/*construct bricks
-
-std::vector<float> Loading::getElement(std::string line, std::string header){
-    if(line.compare(0, header.length(), header)){
-        return {};
-    }
-    float x = ZERO;
-    float y = ZERO;
-    float z = ZERO;
-    try{
-        std::stringstream str(line.substr(header.length()));
-        std::string xstr;
-        std::string ystr;
-        std::string zstr;
-        str >> xstr >> ystr >> zstr;
-        x = std::stof(xstr);
-        y = std::stof(ystr);
-        z = std::stof(zstr);
-    }catch(...){
-        return {};
-    }
-    return {x,y,z};
-}
-
-std::optional<Point3i> Loading::getPos(std::string line){
-    std::vector<float> pos = getElement(line, "TM_POS");
-    if(pos.size()!=3){
-        return {};
-    }
-    return Point3i(pos[0],pos[1],pos[2]);
-}
-
-std::optional<Point3f> Loading::getColor(std::string line){
-    std::vector<float> col = getElement(line, "WIREFRAME_COLOR");
-    if(col.size()!=3){
-        return {};
-    }
-    return Point3f(col[0],col[1],col[2]);
-}
-
-Brick * Loading::getBrick(std::istream & ifs){
-    std::string geom;
-    std::getline(ifs, geom, '*');
-    std::getline(ifs, geom, '*'); //GEOMOBJECT
-    std::string posstr;
-    std::getline(ifs, posstr, '*'); //TM_POS
-    std::optional<Point3i> pos = getPos(posstr);
-    std::string colstr;
-    std::getline(ifs, colstr, '*'); //WIREFRAME_COLOR
-    std::optional<Point3f> col = getColor(colstr);
-    if(!geom.compare("GEOMOBJECT")
-       && pos.has_value()
-       && col.has_value()){
-
-        return new Brick(*game, col.value(), pos.value(), 0);
-    }
-    return nullptr;
-}*/
 
 Loading & Loading::update(){
     switch (phase) {

@@ -5,7 +5,14 @@
 #include "CppUTest/CommandLineTestRunner.h"
 
 #include "game/Loading.h"
+
+#include "model/Alien.h"
+#include "model/Ball.h"
 #include "model/Brick.h"
+#include "model/Particle.h"
+#include "model/Pill.h"
+#include "model/Vaus.h"
+
 //C++ libraries
 // Bitmaps
 
@@ -55,6 +62,52 @@ std::unique_ptr<Game> newGame(){
     mock().expectOneCall("srand");
     return std::make_unique<Game>();
 }
+
+Alien::Alien(Game & g){}
+Alien::~Alien(){}
+
+void Alien::display(void){}
+Alien& Alien::animate(double secPerFrame){}
+
+Ball::Ball(class Game &g){}
+Ball::~Ball(){}
+
+void Ball::display(void){}
+Ball& Ball::animate(double secPerFrame){}
+
+Brick::Brick(class Game &g,
+             const Point3f& color,
+             const Point3i& coords,
+             int t){}
+Brick::~Brick(){}
+
+void Brick::display(void){}
+Brick& Brick::animate(double secPerFrame){}
+
+Particle::Particle(const Point3f & where,
+               const Point3f & color,
+               float len){}
+Particle::~Particle(){}
+
+void Particle::display(void){}
+Particle& Particle::animate(double secPerFrame){}
+
+Pill::Pill(const Point3f& where, Game &g){}
+Pill::~Pill(){}
+
+void Pill::display(void){}
+Pill& Pill::animate(double secPerFrame){}
+
+bool Pill::collides(float left,
+              float right,
+              float up,
+              float down){}
+
+Vaus::Vaus(class Game &g){}
+Vaus::~Vaus(){}
+
+void Vaus::display(void){}
+Vaus& Vaus::animate(double secPerFrame){}
 
 TEST_GROUP(GameTestGroup){
     void teardown(){

@@ -273,9 +273,17 @@ std::optional<Point3f>  Brick::getElement(std::string line, std::string header){
     return *p;
 }
 
-std::optional<Point3f> Brick::getPos(std::string line){
+std::optional<Point3i> Brick::getPos(std::string line){
 
-    return getElement(line, "TM_POS");
+    std::optional<Point3f> fl = getElement(line, "TM_POS");
+    if(fl){
+
+        return Point3i((int)fl.value().x,
+                       (int)fl.value().y,
+                       (int)fl.value().z);
+    }else{
+        return {};
+    }
 }
 
 std::optional<Point3f> Brick::getColor(std::string line){
@@ -284,21 +292,28 @@ std::optional<Point3f> Brick::getColor(std::string line){
 }
 
 std::optional<Brick> Brick::getBrick(std::istream & ifs, Game * game){
-    std::string geom;
-    std::string posstr;
-    std::string colstr;
+    std::string geom    = "";
+    std::string posstr  = "";
+    std::string colstr  = "";
 
-    std::getline(ifs, geom, '*');
-    std::getline(ifs, geom, '*'); //GEOMOBJECT
+    while(geom.compare(0, 10,"GEOMOBJECT")
+    && std::getline(ifs, geom, '*'));
+
     std::getline(ifs, posstr, '*'); //TM_POS
-    auto pos = getElement(posstr, "TM_POS");;
+    auto pos = getPos(posstr);
     std::getline(ifs, colstr, '*'); //WIREFRAME_COLOR
-    auto col = getElement(colstr, "WIREFRAME_COLOR");
-    if(!geom.compare(0, 10,"GEOMOBJECT")
-       && pos
-       && col){
+    auto col = getColor(colstr);
 
-        return Brick(*game, *col, *pos, 0);
+    if(pos
+    && col){
+        unsigned int type  = BRIK_NORMAL;
+        if(col.value().eq(Point3f(0.3,0.3,0.3))){
+            type = BRIK_SILVER;
+        }
+        if(col.value().eq(Point3f(0.4,0.4,0.0))){
+            type = BRIK_GOLDEN;
+        }
+        return Brick(*game, col.value(), pos.value(), type);
     }
     return {};
 }

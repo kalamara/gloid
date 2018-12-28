@@ -7,55 +7,55 @@
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
 #include "game/Loading.h"
-
+#include "mock_sdl_opengl.h"
 //C++ libraries
 
-void srand(unsigned int s) {
-    mock().actualCall("srand");
-}
+//void srand(unsigned int s) {
+//    mock().actualCall("srand");
+//}
 
 
-Loading::Loading( class Game & g){
+//Loading::Loading( class Game & g){
 
-}
+//}
 
-Loading::~Loading(){
+//Loading::~Loading(){
 
-}
+//}
 
-Loading & Loading::draw(){
+//Loading & Loading::draw(){
 
-}
+//}
 
-Loading & Loading::update(){
+//Loading & Loading::update(){
 
-}
+//}
 
-Loading & Loading::next(){
+//Loading & Loading::next(){
 
-}
+//}
 
-std::unique_ptr<Game> newGame(){
-   // mock().expectOneCall("Loading::Loading");
-    mock().expectOneCall("SDL_WM_SetCaption");
-    mock().expectOneCall("SDL_GetTicks")
-            .andReturnValue(123);
-    mock().expectOneCall("SDL_GetTicks")
-            .andReturnValue(123);
-    mock().expectOneCall("SDL_GetTicks")
-            .andReturnValue(123);
-    mock().expectOneCall("SDL_Init");
-    mock().expectOneCall("srand");
-    return std::make_unique<Game>();
-}
+//std::unique_ptr<Game> newGame(){
+//   // mock().expectOneCall("Loading::Loading");
+//    mock().expectOneCall("SDL_WM_SetCaption");
+//    mock().expectOneCall("SDL_GetTicks")
+//            .andReturnValue(123);
+//    mock().expectOneCall("SDL_GetTicks")
+//            .andReturnValue(123);
+//    mock().expectOneCall("SDL_GetTicks")
+//            .andReturnValue(123);
+//    mock().expectOneCall("SDL_Init");
+//    mock().expectOneCall("srand");
+//    return std::make_unique<Game>();
+//}
 
-TEST_GROUP(GameTestGroup){
+TEST_GROUP(EngineTestGroup){
     void teardown(){
             mock().clear();
     }
 };
 
-TEST(GameTestGroup, pow_test){
+TEST(EngineTestGroup, pow_test){
     CHECK_EQUAL(0, Engine<Game>::nextpoweroftwo(0));
     CHECK_EQUAL(1, Engine<Game>::nextpoweroftwo(1));
     CHECK_EQUAL(2, Engine<Game>::nextpoweroftwo(2));
@@ -78,7 +78,7 @@ TEST(GameTestGroup, pow_test){
     CHECK_FALSE(Engine<Game>::ispoweroftwo(4098));
 }
 
-TEST(GameTestGroup, text_test){
+TEST(EngineTestGroup, text_test){
     std::stringstream str;
     text2d::log(&str, "ena =");
 
@@ -109,14 +109,14 @@ TEST(GameTestGroup, text_test){
     game->draw2d(s,0,0);
 }
 
-TEST(GameTestGroup, time_test){
+TEST(EngineTestGroup, time_test){
     auto game = newGame();
     mock().expectOneCall("SDL_GetTicks");
     game->toc();
     mock().checkExpectations();
 }
 
-TEST(GameTestGroup, version_test){
+TEST(EngineTestGroup, version_test){
     CHECK_EQUAL(0, version().value());
     STRCMP_EQUAL("V0.0.0", version().toString().c_str());
 
@@ -131,7 +131,7 @@ TEST(GameTestGroup, version_test){
     STRCMP_EQUAL("V1.2.3", version(ver).toString().c_str());
 }
 
-TEST(GameTestGroup, init_test){
+TEST(EngineTestGroup, init_test){
 
     auto game = newGame();
     mock().checkExpectations();
@@ -217,7 +217,7 @@ TEST(GameTestGroup, init_test){
     mock().checkExpectations();
 }
 
-TEST(GameTestGroup, sound_test){
+TEST(EngineTestGroup, sound_test){
     Game::mixer(nullptr, nullptr, 0);
     unsigned char mix[6] = {0};
     unsigned char data1[6] = "12345";
@@ -272,7 +272,7 @@ TEST(GameTestGroup, sound_test){
     CHECK_EQUAL(1, game->pendingSounds());
 }
 
-TEST(GameTestGroup, events_test){
+TEST(EngineTestGroup, events_test){
     extern unsigned char MockKeyboard[SDLK_LAST];
     auto game = newGame();
     SDL_Event evt;
@@ -344,7 +344,7 @@ TEST(GameTestGroup, events_test){
     CHECK(!game->getMouse()->leftclick);
 }
 
-int main(int ac, char** av)
-{
-    return CommandLineTestRunner::RunAllTests(ac, av);
-}
+//int main(int ac, char** av)
+//{
+//    return CommandLineTestRunner::RunAllTests(ac, av);
+//}

@@ -19,6 +19,7 @@ Game::~Game(){
 
 Game& Game::loop(){
     SDL_Event evt;    // SDL event
+    memset(&evt,0,sizeof(SDL_Event));
     if(SDL_PollEvent(&evt)){
         //info("caught an event...");
         return handleEvent(evt);

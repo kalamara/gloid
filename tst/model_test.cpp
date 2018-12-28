@@ -491,7 +491,7 @@ TEST(ModelTestGroup, parsing_test){
     CHECK(!pos);
 
     pos = Brick::getPos("TM_POS  0.0	60.0	90.0");
-    CHECK(Point3f(0,60,90).eq(*pos));
+    CHECK(Point3i(0,60,90).eq(*pos));
 
     auto col = Brick::getColor("WIREFRAME_COLOR  0.3	 0.3	 0.3");
     CHECK(Point3f(0.3,0.3,0.3).eq(*col));
@@ -506,14 +506,31 @@ TEST(ModelTestGroup, parsing_test){
 *WIREFRAME_COLOR  0.3	 0.3	 0.3\
 *GEOMOBJECT {\
 *TM_POS 10.0	 0.0	60.0\
-*WIREFRAME_COLOR  0.3	 0.3	 0.3\
+*WIREFRAME_COLOR  0.4	 0.4	 0.0\
+*GEOMOBJECT {\
+*TM_POS 10.0333	 1.234	60.00001\
+*WIREFRAME_COLOR  0.1	 0.0	 0.0\
 ";
-
 
     std::stringstream iss(input);
 
     got = Brick::getBrick(iss, &game);
     CHECK(got.has_value());
+    CHECK(got.value().place.eq(Point3i(0,40,60)));
+    CHECK(got.value().rgb.eq(Point3f(SILVER)));
+    CHECK(got.value().type == BRIK_SILVER);
+
+    got = Brick::getBrick(iss, &game);
+    CHECK(got.has_value());
+    CHECK(got.value().place.eq(Point3i(10,0,60)));
+    CHECK(got.value().rgb.eq(Point3f(GOLD)));
+    CHECK(got.value().type == BRIK_GOLDEN);
+
+    got = Brick::getBrick(iss, &game);
+    CHECK(got.has_value());
+    CHECK(got.value().place.eq(Point3i(10,1,60)));
+    CHECK(got.value().rgb.eq(Point3f(0.1,0,0)));
+    CHECK(got.value().type == BRIK_NORMAL);
 }
 
 int main(int ac, char** av)

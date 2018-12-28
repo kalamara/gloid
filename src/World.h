@@ -17,11 +17,11 @@ class Pill;
 
 class World{
     Vaus * vaus = nullptr;
-    std::vector<Brick *> bricks;
-    std::list<Ball *> balls;
-    std::list<Alien *> aliens;
-    std::vector<Particle *> particles;
-    std::list<Pill *> pills;
+    std::vector<Brick> bricks;
+    std::list<Ball> balls;
+    std::list<Alien> aliens;
+    std::vector<Particle> particles;
+    std::list<Pill> pills;
 public:
     Vaus * getVaus() const{
          return vaus;
