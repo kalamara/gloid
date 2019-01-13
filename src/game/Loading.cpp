@@ -10,10 +10,7 @@ Loading::Loading(Game & g){
 }
 
 Loading::~Loading(){
-    std::for_each(begin(text),
-                  end(text),
-                  free);
-    text.clear();
+
     if(textureIds){
         free(textureIds);
         textureIds = nullptr;
@@ -28,16 +25,16 @@ int Loading::next(){
     return STEP_LOADING;
 }
 
-void Loading::printText(std::string msg)
-{
-    game->info(msg);
-    text2d ls(White,Black);
-    ls.print(msg);
-    auto s = game->print2d(ls);
-    if(s){
-        text.push_back(s);
-    }
-}
+//void Loading::printText(std::string msg)
+//{
+//    game->info(msg);
+//    text2d ls(White,Black);
+//    ls.print(msg);
+//    auto s = game->print2d(ls);
+//    if(s){
+//        text.push_back(s);
+//    }
+//}
 
 //TODO: load stuff asynchronous
 

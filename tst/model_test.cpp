@@ -47,7 +47,7 @@ Game::~Game(){
 Game & Game::loop(){
 }
 
-Step & Game::nextStep(){
+Step * Game::nextStep(){
 }
 
 

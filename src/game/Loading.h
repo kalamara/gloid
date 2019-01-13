@@ -39,7 +39,7 @@ const std::string HalloFame = "hallofame.txt";
 
 class Point3i;
 class Loading: public Step{
-    std::vector<SDL_Surface *> text;
+
     void loadSounds();
     void loadTextures();
     void loadHalloFame();
@@ -55,9 +55,6 @@ public:
     Loading & draw();
 
     std::pair<int,std::string> getScore(std::string line);
-
-protected:
-    void printText(std::string msg);
 };
 
 #endif //_LOADING_H

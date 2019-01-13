@@ -18,14 +18,23 @@ int Intro::next(){
 }
 
 Intro & Intro::update(){
-
+    if(phase == INTRO_STARTING){
+        //TODO: print letters one by one
+        printText("intro...");
+        phase++;
+        //start playing audio
+    }
     return *this;
 }
 
 Intro & Intro::draw(){
-
-    for(int i = 0; i < text.size(); i++){
-           game->draw2d(text[i], 0, -i*2*game->getFontSize());
+    if(phase == INTRO_STARTING){
+        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        SDL_GL_SwapBuffers();
+        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    if(text.size()){
+        game->draw2d(text[0], 0, 0);
     }
     SDL_GL_SwapBuffers();
 

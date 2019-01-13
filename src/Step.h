@@ -15,11 +15,20 @@ typedef enum{
 //Game step base class
 class Step{
 protected:
+    std::vector<SDL_Surface *> text;
     class Game * game;
+protected:
+    void printText(std::string msg);
+
 public:
     unsigned int type;
     Step(){}
-    ~Step(){}
+    ~Step(){
+        std::for_each(begin(text),
+                      end(text),
+                      free);
+        text.clear();
+    }
     virtual int next()=0;
     virtual Step & update()=0;
     virtual Step & draw()=0;

@@ -13,31 +13,30 @@ Waiting::~Waiting(){
 }
 
 int Waiting::next(){
-    printText("NEXT bitches");
+    if(game->keyPressed(ANY_KEY_PRESSED)){
+        return STEP_INTRO;
+    }
     return STEP_WAITING;
 }
 
-void Waiting::printText(std::string msg)
-{
-    game->info(msg);
-    text2d ls(White,Black);
-    ls.print(msg);
-    auto s = game->print2d(ls);
-    if(s){
-        text.push_back(s);
-    }
-}
-
 Waiting & Waiting::update(){
-
+    if(!waiting){
+        printText("Press any key...");
+    }
+    waiting = true;
     return *this;
 }
 
 Waiting & Waiting::draw(){
+    if(!waiting){
+        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        SDL_GL_SwapBuffers();
+        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    if(text.size()){
+        game->draw2d(text[0], 0, 0);
+    }
 
-//    for(int i = 0; i < text.size(); i++){
-//           game->draw2d(text[i], 0, -i*2*game->getFontSize());
-//    }
     SDL_GL_SwapBuffers();
 
     return *this;

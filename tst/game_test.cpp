@@ -5,6 +5,7 @@
 #include "CppUTest/CommandLineTestRunner.h"
 
 #include "game/Loading.h"
+#include "game/Waiting.h"
 
 #include "model/Alien.h"
 #include "model/Ball.h"
@@ -151,24 +152,13 @@ TEST(GameTestGroup, loop_test){
     game->loop();
     CHECK_EQUAL(STEP_LOADING, game->queryStep());
     mock().checkExpectations();
-
-//    mock().expectNCalls(4,"SDL_PollEvent").andReturnValue(0);
-//    //from draw
-//    mock().expectNCalls(4,"SDL_GL_SwapBuffers");
-//    mock().expectNCalls(4,"SDL_GetTicks");
-//    game->loop();
-//    game->loop();
-//    game->loop();
-//    game->loop();
-//    CHECK_EQUAL(STEP_WAITING, game->queryStep());
-//    mock().checkExpectations();
 }
 
 TEST(GameTestGroup, loading_test){
     auto game = newGame();
     mock().checkExpectations();
 
-    auto loadStep = dynamic_cast<Loading *>(&(game->nextStep()));
+    auto loadStep = dynamic_cast<Loading *>(game->nextStep());
     CHECK_EQUAL(STEP_LOADING,loadStep->type);
     CHECK_EQUAL(LOAD_SOUNDS,loadStep->phase);
     mock().expectNCalls(N_WAV,"SDL_GetError");
@@ -213,6 +203,15 @@ TEST(GameTestGroup, loading_test){
     mock().checkExpectations();
     CHECK_EQUAL(N_LOAD, loadStep->phase);
     CHECK_EQUAL(STEP_WAITING, loadStep->next());
+}
+
+TEST(GameTestGroup, waiting_test){
+    auto game = newGame();
+    mock().checkExpectations();
+
+    auto waitStep = new Waiting(*game);
+    CHECK_EQUAL(STEP_WAITING,waitStep->type);
+    delete waitStep;
 }
 
 //parsing scores

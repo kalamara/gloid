@@ -59,13 +59,14 @@
 #include <OpenGL/glu.h>
 #endif
 
-
 #include <list>
 #include <vector>
 #include <map>
 #include <fstream>
 #include <memory>
 #include <optional>
+//#include <functional>
+//#include <numeric>
 
 // Screen struct
 typedef struct screen{
@@ -160,12 +161,14 @@ typedef struct version {
             + std::to_string(int(patch));
     }
 } * version_t;
-
+typedef std::map<const unsigned char, bool> keymap;
 using pairs = std::list<std::pair<unsigned int, unsigned int>>;
 using keypair = std::pair<const unsigned char, bool>;
 using screenopt = std::optional<struct screen>;
 using audioopt = std::optional<SDL_AudioSpec>;
 using fontopt = std::optional<TTF_Font*>;
+
+#define ANY_KEY_PRESSED 0xff
 
 template<class G> class Engine{ //base class: Engine, derived class: Game
 
@@ -282,9 +285,7 @@ public:
     bool kbdFocusing(){
         return app.keyboard_focus;
     }
-    bool keyPressed(unsigned char k){
-        return keys[k];
-    }
+    bool keyPressed(unsigned char k);
 
     screenopt getScreen() ;
     mousecntl_t getMouse();
@@ -307,7 +308,7 @@ public:
 
     virtual G& loop()=0;
     //virtual G* start(class Step * at)=0;
-    virtual class Step& nextStep()=0;
+    virtual class Step * nextStep()=0;
 
     //variadic log
     template<typename T, typename... Args> void error(T value, Args... args){

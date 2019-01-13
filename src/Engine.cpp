@@ -416,6 +416,17 @@ template<> void Engine<Game>::draw2d(
     }
 }
 
+template<> bool Engine<Game>::keyPressed(unsigned char k){
+        if(k==ANY_KEY_PRESSED){
+            bool acc = false;
+            for(auto i : keys){
+                acc = acc || i.second ;
+            }
+            return acc;
+        }
+        return keys[k];
+}
+
 template<> Game& Engine<Game>::handleEvent(SDL_Event & e){
     switch(e.type){
         case SDL_QUIT:

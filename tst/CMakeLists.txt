@@ -62,10 +62,14 @@ add_executable(game_test
     ${SUT}/Game.cpp
     ${SUT}/Engine.h
     ${SUT}/Engine.cpp
+    ${SUT}/Step.h
+    ${SUT}/Step.cpp
     ${SUT}/game/Loading.h
     ${SUT}/game/Loading.cpp
     ${SUT}/game/Waiting.h
     ${SUT}/game/Waiting.cpp
+    ${SUT}/game/Intro.h
+    ${SUT}/game/Intro.cpp
     ${SUT}/World.h
     mock_sdl_opengl.h
     mock_sdl_opengl.cpp

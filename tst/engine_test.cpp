@@ -8,46 +8,6 @@
 #include "CppUTest/CommandLineTestRunner.h"
 #include "game/Loading.h"
 #include "mock_sdl_opengl.h"
-//C++ libraries
-
-//void srand(unsigned int s) {
-//    mock().actualCall("srand");
-//}
-
-
-//Loading::Loading( class Game & g){
-
-//}
-
-//Loading::~Loading(){
-
-//}
-
-//Loading & Loading::draw(){
-
-//}
-
-//Loading & Loading::update(){
-
-//}
-
-//Loading & Loading::next(){
-
-//}
-
-//std::unique_ptr<Game> newGame(){
-//   // mock().expectOneCall("Loading::Loading");
-//    mock().expectOneCall("SDL_WM_SetCaption");
-//    mock().expectOneCall("SDL_GetTicks")
-//            .andReturnValue(123);
-//    mock().expectOneCall("SDL_GetTicks")
-//            .andReturnValue(123);
-//    mock().expectOneCall("SDL_GetTicks")
-//            .andReturnValue(123);
-//    mock().expectOneCall("SDL_Init");
-//    mock().expectOneCall("srand");
-//    return std::make_unique<Game>();
-//}
 
 TEST_GROUP(EngineTestGroup){
     void teardown(){
@@ -313,6 +273,7 @@ TEST(EngineTestGroup, events_test){
 
     game->handleEvent(evt);
 
+    CHECK(!game->keyPressed(ANY_KEY_PRESSED));
     evt.type = SDL_KEYDOWN;
 
     MockKeyboard[SDLK_RETURN] = true;
@@ -321,7 +282,7 @@ TEST(EngineTestGroup, events_test){
     game->handleEvent(evt);
 
     CHECK(game->keyPressed(SDLK_RETURN));
-
+    CHECK(game->keyPressed(ANY_KEY_PRESSED));
     evt.type = SDL_MOUSEMOTION;
     evt.motion.x = 15;
     evt.motion.y = 20;

@@ -2,6 +2,7 @@
 
 #include "game/Loading.h"
 #include "game/Waiting.h"
+#include "game/Intro.h"
 #include "model/WhatUC.h"
 #include "model/Particle.h"
 #include "model/Ball.h"
@@ -14,6 +15,7 @@
 Game::Game(){
     steps.insert({STEP_LOADING, std::make_unique<Loading>(*this)});
     steps.insert({STEP_WAITING, std::make_unique<Waiting>(*this)});
+    steps.insert({STEP_INTRO, std::make_unique<Intro>(*this)});
     step = steps[STEP_LOADING].get();
 }
 
@@ -31,15 +33,15 @@ Game& Game::loop(){
             SDL_WaitEvent(nullptr);
             return *this;
         }else{
-            *step = nextStep().draw()
-                              .update();
+            *step = step->draw().update();
+            step = nextStep();
             return *this;
        }
     }
 }
 
-Step & Game::nextStep(){ 
-    return *steps[step->next()];
+Step *Game::nextStep(){
+    return steps[step->next()].get();
 }
 
 void Game::divideBalls(){}

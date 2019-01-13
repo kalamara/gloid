@@ -40,7 +40,7 @@ public:
             return step->type;
     }
     Game & loop();
-    class Step & nextStep();
+    class Step * nextStep();
 
     //gameplay interface
     bool isHiScoring(){

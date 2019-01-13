@@ -2,11 +2,13 @@
 #define _INTRO_H
 
 typedef enum{
-
+    INTRO_STARTING,
+    INTRO_STARTED,
+    INTRO_DONE
 } INTRO_PHASE;
 
 class Intro: public Step{
-    std::vector<SDL_Surface *> text;
+    int phase = INTRO_STARTING;
 public:
 
     Intro(Game &g);
