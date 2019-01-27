@@ -238,6 +238,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
         {SDLK_DELETE,   false},
         {SDLK_BACKSPACE,false},
         {SDLK_ESCAPE,   false},
+        {SDLK_SPACE,    false},
         {SDLK_RIGHT,    false},
         {SDLK_LEFT,     false},
         {SDLK_UP,       false},
@@ -247,8 +248,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     };
     //text
     unsigned int fontSize = 22;
-    //time
-    unsigned int tic;
+
     //video
     const SDL_VideoInfo* desktop;
     //audio
@@ -334,7 +334,9 @@ public:
         return soundBuffers.size();
     }
     //time
-    static int toc();
+    unsigned int tic;
+    //time
+    static unsigned int toc();
 
     //printing
     SDL_Surface * print2d(text2d & text);

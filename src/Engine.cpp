@@ -316,7 +316,7 @@ template<> Game& Engine<Game>::withOpenGl(){
     return dynamic_cast<Game&>(*this);
 }
 
-template<> int Engine<Game>::toc(){
+template<> unsigned int Engine<Game>::toc(){
         return SDL_GetTicks();
 }
 

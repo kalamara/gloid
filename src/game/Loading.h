@@ -35,6 +35,10 @@ const std::vector<std::string> BmpFiles = {
         "warp"
     };
 
+#define HISCORE 50000 //initial high score
+#define HOF_LEN 10 //length of hall of fame
+#define INITIALS "AAA" //default initials
+
 const std::string HalloFame = "hallofame.txt";
 
 class Point3i;

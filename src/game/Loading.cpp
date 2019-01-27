@@ -25,17 +25,6 @@ int Loading::next(){
     return STEP_LOADING;
 }
 
-//void Loading::printText(std::string msg)
-//{
-//    game->info(msg);
-//    text2d ls(White,Black);
-//    ls.print(msg);
-//    auto s = game->print2d(ls);
-//    if(s){
-//        text.push_back(s);
-//    }
-//}
-
 //TODO: load stuff asynchronous
 
 void Loading::loadTextures(){
@@ -71,7 +60,7 @@ void Loading::loadHalloFame(){
         ifs.close();
     }
     while(l++ < 10){
-        game->hiscore.insert({50000,"AAA"});
+        game->hiscore.insert({HISCORE,INITIALS});
     }
     while(game->hiscore.size() > 10){
         game->hiscore.erase(std::prev(game->hiscore.end()));
@@ -143,11 +132,8 @@ Loading & Loading::update(){
 
 Loading & Loading::draw(){
 
-    for(int i = 0; i < text.size(); i++){
-           game->draw2d(text[i], 0, -i*2*game->getFontSize());
-    }
-    SDL_GL_SwapBuffers();
-
+    drawText();
+    clearText();
     return *this;
 }
 

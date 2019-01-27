@@ -19,16 +19,13 @@ protected:
     class Game * game;
 protected:
     void printText(std::string msg);
+    void clearText();
+    void drawText();
 
 public:
     unsigned int type;
     Step(){}
-    ~Step(){
-        std::for_each(begin(text),
-                      end(text),
-                      free);
-        text.clear();
-    }
+    ~Step();
     virtual int next()=0;
     virtual Step & update()=0;
     virtual Step & draw()=0;

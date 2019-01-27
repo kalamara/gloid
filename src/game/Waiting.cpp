@@ -13,31 +13,45 @@ Waiting::~Waiting(){
 }
 
 int Waiting::next(){
-    if(game->keyPressed(ANY_KEY_PRESSED)){
+    if(game->keyPressed(SDLK_SPACE)
+    || game->getMouse()->leftclick){
         return STEP_INTRO;
     }
     return STEP_WAITING;
 }
 
-Waiting & Waiting::update(){
-    if(!waiting){
-        printText("Press any key...");
+int Waiting::flip(unsigned int millis){
+    if((millis % (2 * FLIP_PHASE)) >= FLIP_PHASE){
+        return WAIT_HOF;
     }
-    waiting = true;
+    return WAIT_RDY;
+}
+
+Waiting & Waiting::update(){
+    const std::string rdy = "Press fire to play...";
+    int newphase = flip(game->toc() - game->tic);
+    if(newphase != phase){
+        phase = newphase;
+        clearText();
+    }
+    if(text.empty()){
+        if(phase == WAIT_RDY){
+            printText(rdy);
+        }else{
+            std::for_each(begin(game->hiscore),
+                          end(game->hiscore),
+                          [this](auto line){
+                std::stringstream str;
+                str << line.first << "    " << line.second;
+                printText(str.str());
+            });
+        }
+    }
     return *this;
 }
 
 Waiting & Waiting::draw(){
-    if(!waiting){
-        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        SDL_GL_SwapBuffers();
-        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-    if(text.size()){
-        game->draw2d(text[0], 0, 0);
-    }
-
-    SDL_GL_SwapBuffers();
+    drawText();
 
     return *this;
 }

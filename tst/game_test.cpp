@@ -61,6 +61,7 @@ std::unique_ptr<Game> newGame(){
     mock().expectOneCall("SDL_GetTicks")
             .andReturnValue(123);
     mock().expectOneCall("srand");
+
     return std::make_unique<Game>();
 }
 
@@ -203,6 +204,7 @@ TEST(GameTestGroup, loading_test){
     mock().checkExpectations();
     CHECK_EQUAL(N_LOAD, loadStep->phase);
     CHECK_EQUAL(STEP_WAITING, loadStep->next());
+    mock().checkExpectations();
 }
 
 TEST(GameTestGroup, waiting_test){
@@ -211,6 +213,15 @@ TEST(GameTestGroup, waiting_test){
 
     auto waitStep = new Waiting(*game);
     CHECK_EQUAL(STEP_WAITING,waitStep->type);
+
+    CHECK_EQUAL(WAIT_RDY,waitStep->flip(0));
+    CHECK_EQUAL(WAIT_RDY,waitStep->flip(1));
+    CHECK_EQUAL(WAIT_HOF,waitStep->flip(FLIP_PHASE));
+    CHECK_EQUAL(WAIT_HOF,waitStep->flip(FLIP_PHASE + 1));
+    CHECK_EQUAL(WAIT_RDY,waitStep->flip(2 * FLIP_PHASE));
+    CHECK_EQUAL(WAIT_RDY,waitStep->flip(2 * FLIP_PHASE + 1));
+    CHECK_EQUAL(WAIT_HOF,waitStep->flip(3 * FLIP_PHASE));
+//    mock().checkExpectations();
     delete waitStep;
 }
 
@@ -241,7 +252,9 @@ TEST(GameTestGroup, score_test){
     score = load->getScore("lola 12345678.999");
     STRCMP_EQUAL("LOL", score.second.c_str());
     CHECK_EQUAL(12345678, score.first);
-
+//    mock().expectNCalls(2,"glClear");
+//    mock().expectNCalls(1, "SDL_GL_SwapBuffers");
+//    mock().checkExpectations();
     delete load;
 }
 

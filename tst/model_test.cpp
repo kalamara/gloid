@@ -51,6 +51,10 @@ Step * Game::nextStep(){
 }
 
 
+Step::~Step(){
+
+}
+
 Play::Play(){
 
 }
@@ -89,7 +93,7 @@ template <> bool Engine<Game>::playSound(const std::string & sound) {
     //  .withParameter("sound", WAV_LAUNCH);
 }
 
-template <> int Engine<Game>::toc() {
+template <> unsigned int Engine<Game>::toc() {
     mock().actualCall("Engine::now");
 }
 
