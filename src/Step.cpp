@@ -26,9 +26,26 @@ void Step::clearText(){
     text.clear();
 }
 
+//calculate margin = screen center - text length /2
+
 void Step::drawText(){
+    int pixels = (game->getFontSize() * textSpacingPercent) / 100 ;
+    int margin = textMargin;
+
     for(int i = 0; i < text.size(); i++){
-           game->draw2d(text[i], 0, -i*2*game->getFontSize());
+        switch(align){
+            case ALIGN_CENTER:
+                margin = ((game->getScreen()->W) - (text[i]->w))/2;
+            break;
+            case ALIGN_RIGHT:
+                margin = (game->getScreen()->W) - (text[i]->w);
+            break;
+            default:case ALIGN_LEFT:
+            break;
+        }
+        game->draw2d(text[i],
+                     margin,
+                     - (textOffset + i) * pixels);
     }
     SDL_GL_SwapBuffers();
 }

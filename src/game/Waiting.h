@@ -10,7 +10,8 @@ typedef enum{
 #define FLIP_PHASE 5000 //lip phase every 5 sec
 
 class Waiting: public Step{
-    int phase = WAIT_RDY;
+    int phase = N_WAIT;
+    std::pair<GLuint, SDL_Surface> logo;
 public:
     Waiting(Game &g);
     ~Waiting();
@@ -19,6 +20,7 @@ public:
     Waiting & draw();
 
     int flip(unsigned int millis);
+    void drawLogo();
 };
 
 #endif //_WAITING_H

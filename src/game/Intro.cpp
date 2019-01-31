@@ -29,9 +29,7 @@ Intro & Intro::update(){
 
 Intro & Intro::draw(){
     if(phase == INTRO_STARTING){
-        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        SDL_GL_SwapBuffers();
-        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        clearText();
     }
     if(text.size()){
         game->draw2d(text[0], 0, 0);

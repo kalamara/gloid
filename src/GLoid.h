@@ -49,8 +49,6 @@ typedef enum{
    N_RGB_COLORS
 }RGB_COLORS;
 
-
-
 // Parser tokens
 enum{
    PARSE_BRIK,

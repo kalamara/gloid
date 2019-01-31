@@ -161,6 +161,7 @@ typedef struct version {
             + std::to_string(int(patch));
     }
 } * version_t;
+
 typedef std::map<const unsigned char, bool> keymap;
 using pairs = std::list<std::pair<unsigned int, unsigned int>>;
 using keypair = std::pair<const unsigned char, bool>;
@@ -273,6 +274,9 @@ public:
     Engine();
     ~Engine();
 
+    const std::pair<GLuint, SDL_Surface> & getTexture(std::string name){
+        return textures[name];
+    }
     bool looping(){
         return app.looping;
     }

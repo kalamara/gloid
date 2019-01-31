@@ -9,15 +9,25 @@ typedef enum{
    STEP_GO,
    STEP_PLAY,
    STEP_WIN,
-   N_STEPS,
+   N_STEPS
 }STEP_TYPE;
+
+typedef enum{
+    ALIGN_LEFT,
+    ALIGN_RIGHT,
+    ALIGN_CENTER,
+    N_ALIGN
+}TEXT_ALIGN;
 
 //Game step base class
 class Step{
 protected:
     std::vector<SDL_Surface *> text;
     class Game * game;
-protected:
+    int align = ALIGN_CENTER;
+    int textOffset = 0;
+    int textMargin = 0;
+    int textSpacingPercent = 200;
     void printText(std::string msg);
     void clearText();
     void drawText();

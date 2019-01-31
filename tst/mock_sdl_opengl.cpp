@@ -333,6 +333,10 @@ void glGenTextures( GLsizei n, GLuint *textures ){
     mock().actualCall("glGenTextures");
 }
 
+void glBindTexture( GLenum target, GLuint texture ){
+    mock().actualCall("glBindTexture");
+}
+
 //GLU extentions
 
 void gluPerspective

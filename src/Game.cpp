@@ -33,7 +33,7 @@ Game& Game::loop(){
             SDL_WaitEvent(nullptr);
             return *this;
         }else{
-            *step = step->draw().update();
+            step->draw().update();
             step = nextStep();
             return *this;
        }

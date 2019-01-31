@@ -133,7 +133,10 @@ Loading & Loading::update(){
 Loading & Loading::draw(){
 
     drawText();
-    clearText();
+    if(phase == N_LOAD
+    || phase == LOAD_SOUNDS){
+        clearText();
+    }
     return *this;
 }
 

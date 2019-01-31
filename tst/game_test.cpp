@@ -14,10 +14,8 @@
 #include "model/Pill.h"
 #include "model/Vaus.h"
 
-//C++ libraries
 // Bitmaps
-
-enum{
+typedef enum{
    BMP_BG_1,
    BMP_BG_2,
    BMP_BG_3,
@@ -28,10 +26,10 @@ enum{
    BMP_CROSSHAIRS,
    BMP_WARP,
    N_BMP
-};
+}BMP_IDS;
 
 // Sounds
-enum{
+typedef enum{
    WAV_ALIEN,
    WAV_BOUNCE0,
    WAV_BOUNCE1,
@@ -44,7 +42,9 @@ enum{
    WAV_SHOT,
    WAV_WARP,
    N_WAV
-};
+}WAV_IDS;
+
+//C++ libraries
 
 void srand(unsigned int s) {
     mock().actualCall("srand");

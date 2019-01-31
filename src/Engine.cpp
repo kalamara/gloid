@@ -397,17 +397,17 @@ template<> void Engine<Game>::draw2d(
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, s->pixels);
 
-        glColor3f(1.0f, 1.0f, 1.0f);
+        glColor3f(ONE, ONE, ONE);
 
         glBegin(GL_QUADS);
-        glTexCoord2f(1.0f, 1.0f);
+        glTexCoord2f(ONE, ONE);
         glVertex3f(xx + fontSize * w / sdlScreen->W,
                    yy - fontSize * h / sdlScreen->H, -SCENE_AIR);
-        glTexCoord2f(1.0f, 0.0f);
+        glTexCoord2f(ONE, ZERO);
         glVertex3f(xx + fontSize * w / sdlScreen->W, yy, -SCENE_AIR);
-        glTexCoord2f(0.0f, 0.0f);
+        glTexCoord2f(ZERO, ZERO);
         glVertex3f(xx, yy, -SCENE_AIR);
-        glTexCoord2f(0.0f, 1.0f);
+        glTexCoord2f(ZERO, ONE);
         glVertex3f(xx, yy - fontSize * h / sdlScreen->H, -SCENE_AIR);
         glEnd();
 
