@@ -8,14 +8,18 @@ Step::~Step(){
     text.clear();
 }
 
-void Step::printText(std::string msg)
+void Step::printText(std::string msg, int line)
 {
     game->info(msg);
     text2d ls(White,Black);
     ls.print(msg);
     auto s = game->print2d(ls);
     if(s){
-        text.push_back(s);
+        if(line == NEWLINE || line >= text.size()){
+            text.push_back(s);
+        }else{
+            text[line] = s;
+        }
     }
 }
 
@@ -26,26 +30,23 @@ void Step::clearText(){
     text.clear();
 }
 
-//calculate margin = screen center - text length /2
-
-void Step::drawText(){
+void Step::drawText(int line){
     int pixels = (game->getFontSize() * textSpacingPercent) / 100 ;
     int margin = textMargin;
 
-    for(int i = 0; i < text.size(); i++){
-        switch(align){
-            case ALIGN_CENTER:
-                margin = ((game->getScreen()->W) - (text[i]->w))/2;
-            break;
-            case ALIGN_RIGHT:
-                margin = (game->getScreen()->W) - (text[i]->w);
-            break;
-            default:case ALIGN_LEFT:
-            break;
-        }
-        game->draw2d(text[i],
-                     margin,
-                     - (textOffset + i) * pixels);
+    switch(textAlignment){
+    case ALIGN_CENTER://screen center - text length /2
+        margin = ((game->getScreen()->W) - (text[line]->w))/2;
+        break;
+    case ALIGN_RIGHT://screen edge - text length - margin
+        margin = (game->getScreen()->W) - (text[line]->w) - textMargin;
+        break;
+    default:case ALIGN_LEFT:
+        break;
     }
-    SDL_GL_SwapBuffers();
+    game->draw2d(text[line],
+                 margin,
+                 - (textOffset + line) * pixels);
+
 }
+

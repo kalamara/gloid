@@ -19,7 +19,7 @@ Loading::~Loading(){
 
 int Loading::next(){
 
-   if(phase == N_LOAD){
+   if(phase == LOAD_DONE){
         return STEP_WAITING;
     }
     return STEP_LOADING;
@@ -132,11 +132,14 @@ Loading & Loading::update(){
 
 Loading & Loading::draw(){
 
-    drawText();
-    if(phase == N_LOAD
+    if(phase == LOAD_DONE
     || phase == LOAD_SOUNDS){
         clearText();
     }
+    if(text.size() > phase){
+        drawText(phase);
+    }
+    SDL_GL_SwapBuffers();
     return *this;
 }
 

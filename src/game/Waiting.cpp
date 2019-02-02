@@ -55,8 +55,7 @@ Waiting & Waiting::update(){
 }
 
 // Draw GLoid logo
-void Waiting::drawLogo()
-{
+void Waiting::drawLogo(){
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glEnable(GL_TEXTURE_2D);
    glBindTexture(GL_TEXTURE_2D, logo.first);
@@ -83,10 +82,17 @@ void Waiting::drawLogo()
 
 
 Waiting & Waiting::draw(){
+
     if(phase == WAIT_RDY){
         drawLogo();
+        drawText(0);
+    }else{
+        int lines = text.size();
+        for(int i  = 0; i < lines; i++){
+            drawText(i);
+        }
     }
-    drawText();
+    SDL_GL_SwapBuffers();
     return *this;
 }
 

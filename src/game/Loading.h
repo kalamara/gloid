@@ -6,7 +6,7 @@ typedef enum{
     LOAD_TEXTURES,
     LOAD_HALLOFAME,
     LOAD_LEVEL,
-    N_LOAD,
+    LOAD_DONE,
 }LOAD_PHASE;
 
 const std::vector<std::string> SoundFiles = {

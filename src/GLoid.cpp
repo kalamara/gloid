@@ -10,7 +10,7 @@ int main(int argc, char **argv)
                                   SDL_PATCHLEVEL);
     game.withSdlGlVideo(sdlv)
                 .withSdlTtf("./DejaVuSans.ttf")
-                .withSdlAudio(22050, 2, 0)
+                .withSdlAudio(44100, 2, 0)
                 .withOpenGl();
 
     while(game.looping()){

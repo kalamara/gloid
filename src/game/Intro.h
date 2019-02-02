@@ -9,6 +9,8 @@ typedef enum{
 
 class Intro: public Step{
     int phase = INTRO_STARTING;
+    unsigned int cursor = 0;
+    unsigned int tic = 0;
 public:
 
     Intro(Game &g);
@@ -16,6 +18,8 @@ public:
     int next();
     Intro & update();
     Intro & draw();
+
+    std::pair<int, std::string> readLine(unsigned int cursor);
 
 };
 

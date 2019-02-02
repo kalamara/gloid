@@ -19,18 +19,21 @@ typedef enum{
     N_ALIGN
 }TEXT_ALIGN;
 
+#define NEWLINE -1
+
 //Game step base class
 class Step{
 protected:
     std::vector<SDL_Surface *> text;
     class Game * game;
-    int align = ALIGN_CENTER;
+    int textAlignment = ALIGN_CENTER;
     int textOffset = 0;
-    int textMargin = 0;
-    int textSpacingPercent = 200;
-    void printText(std::string msg);
+    int textMargin = 50;
+    int textSpacingPercent = 150;
+
+    void printText(std::string msg, int line = NEWLINE);
     void clearText();
-    void drawText();
+    void drawText(int line);
 
 public:
     unsigned int type;

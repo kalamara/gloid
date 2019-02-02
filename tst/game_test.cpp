@@ -6,6 +6,7 @@
 
 #include "game/Loading.h"
 #include "game/Waiting.h"
+#include "game/Intro.h"
 
 #include "model/Alien.h"
 #include "model/Ball.h"
@@ -51,7 +52,7 @@ void srand(unsigned int s) {
 }
 
 std::unique_ptr<Game> newGame(){
-    // mock().expectOneCall("Loading::Loading");
+
     mock().expectOneCall("SDL_WM_SetCaption");
     mock().expectOneCall("SDL_Init");
     mock().expectOneCall("SDL_GetTicks")
@@ -148,7 +149,8 @@ TEST(GameTestGroup, loop_test){
 
     mock().expectNCalls(N_WAV,"SDL_GetError");
     //from draw
-    mock().expectOneCall("SDL_GL_SwapBuffers");
+    mock().expectNCalls(2,"SDL_GL_SwapBuffers");
+    mock().expectNCalls(2,"glClear");
     //first step should be loading
     game->loop();
     CHECK_EQUAL(STEP_LOADING, game->queryStep());
@@ -196,33 +198,15 @@ TEST(GameTestGroup, loading_test){
     mock().expectNCalls(1,"SDL_GetTicks");
     loadStep->update();
     mock().checkExpectations();
-    CHECK_EQUAL(N_LOAD, loadStep->phase);
+    CHECK_EQUAL(LOAD_DONE, loadStep->phase);
 
     //should not change any more
 
     loadStep->update();
     mock().checkExpectations();
-    CHECK_EQUAL(N_LOAD, loadStep->phase);
+    CHECK_EQUAL(LOAD_DONE, loadStep->phase);
     CHECK_EQUAL(STEP_WAITING, loadStep->next());
     mock().checkExpectations();
-}
-
-TEST(GameTestGroup, waiting_test){
-    auto game = newGame();
-    mock().checkExpectations();
-
-    auto waitStep = new Waiting(*game);
-    CHECK_EQUAL(STEP_WAITING,waitStep->type);
-
-    CHECK_EQUAL(WAIT_RDY,waitStep->flip(0));
-    CHECK_EQUAL(WAIT_RDY,waitStep->flip(1));
-    CHECK_EQUAL(WAIT_HOF,waitStep->flip(FLIP_PHASE));
-    CHECK_EQUAL(WAIT_HOF,waitStep->flip(FLIP_PHASE + 1));
-    CHECK_EQUAL(WAIT_RDY,waitStep->flip(2 * FLIP_PHASE));
-    CHECK_EQUAL(WAIT_RDY,waitStep->flip(2 * FLIP_PHASE + 1));
-    CHECK_EQUAL(WAIT_HOF,waitStep->flip(3 * FLIP_PHASE));
-//    mock().checkExpectations();
-    delete waitStep;
 }
 
 //parsing scores
@@ -252,10 +236,66 @@ TEST(GameTestGroup, score_test){
     score = load->getScore("lola 12345678.999");
     STRCMP_EQUAL("LOL", score.second.c_str());
     CHECK_EQUAL(12345678, score.first);
-//    mock().expectNCalls(2,"glClear");
-//    mock().expectNCalls(1, "SDL_GL_SwapBuffers");
-//    mock().checkExpectations();
+
     delete load;
+}
+
+
+TEST(GameTestGroup, waiting_test){
+    auto game = newGame();
+    mock().checkExpectations();
+
+    auto waitStep = new Waiting(*game);
+    CHECK_EQUAL(STEP_WAITING,waitStep->type);
+
+    CHECK_EQUAL(WAIT_RDY,waitStep->flip(0));
+    CHECK_EQUAL(WAIT_RDY,waitStep->flip(1));
+    CHECK_EQUAL(WAIT_HOF,waitStep->flip(FLIP_PHASE));
+    CHECK_EQUAL(WAIT_HOF,waitStep->flip(FLIP_PHASE + 1));
+    CHECK_EQUAL(WAIT_RDY,waitStep->flip(2 * FLIP_PHASE));
+    CHECK_EQUAL(WAIT_RDY,waitStep->flip(2 * FLIP_PHASE + 1));
+    CHECK_EQUAL(WAIT_HOF,waitStep->flip(3 * FLIP_PHASE));
+
+    delete waitStep;
+}
+
+
+TEST(GameTestGroup, intro_test){
+    auto game = newGame();
+    mock().checkExpectations();
+    auto introStep = new Intro(*game);
+    CHECK_EQUAL(STEP_INTRO,introStep->type);
+
+    std::pair<unsigned int, std::string> newLine = {};
+
+    newLine = introStep->readLine(0);
+
+    CHECK_EQUAL(0,newLine.first);
+    CHECK_EQUAL(0,newLine.second.size());
+
+    newLine = introStep->readLine(1); //read up to line 0 char 1 (excl.)
+
+    CHECK_EQUAL(0,newLine.first);
+    STRCMP_EQUAL("T", newLine.second.c_str());
+
+    newLine = introStep->readLine(20);
+
+    CHECK_EQUAL(0,newLine.first);
+    STRCMP_EQUAL("THE ERA AND TIME OF ", newLine.second.c_str());
+
+    newLine = introStep->readLine(21);
+
+    CHECK_EQUAL(1,newLine.first);
+    STRCMP_EQUAL("T", newLine.second.c_str());
+
+
+    newLine = introStep->readLine(0xFFFF);
+
+    CHECK_EQUAL(8,newLine.first);
+    STRCMP_EQUAL("BY SOMEONE...", newLine.second.c_str());
+
+
+    delete introStep;
 }
 
 

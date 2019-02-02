@@ -89,7 +89,9 @@ template<> Game* Engine<Game>::addSound(unsigned char * data,
             sdlAudio->format,
             sdlAudio->channels,
             sdlAudio->freq,
-            AUDIO_S16, 2, 22050);
+            AUDIO_S16,
+            sdlAudio->channels,
+            sdlAudio->freq);
 
           wave.buf = (unsigned char *)malloc(dlen * wave.len_mult);
 
