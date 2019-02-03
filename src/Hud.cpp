@@ -1,14 +1,14 @@
 #include "GLoid.h"
-#include "Step.h"
+#include "Hud.h"
 
-Step::~Step(){
+Hud::~Hud(){
     std::for_each(begin(text),
                   end(text),
                   free);
     text.clear();
 }
 
-void Step::printText(std::string msg, int line)
+void Hud::printText(std::string msg, int line)
 {
     game->info(msg);
     text2d ls(White,Black);
@@ -23,14 +23,14 @@ void Step::printText(std::string msg, int line)
     }
 }
 
-void Step::clearText(){
+void Hud::clearText(){
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     SDL_GL_SwapBuffers();
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     text.clear();
 }
 
-void Step::drawText(int line){
+void Hud::drawText(int line){
     int pixels = (game->getFontSize() * textSpacingPercent) / 100 ;
     int margin = textMargin;
 

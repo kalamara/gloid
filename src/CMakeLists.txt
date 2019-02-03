@@ -13,7 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(${PROJECT_NAME}
     "Step.h"
-    "Step.cpp"
+    "Hud.h"
+    "Hud.cpp"
     "World.h"
     "Game.h"
     "Game.cpp"

@@ -2,7 +2,7 @@
 #define _GO_H
 
 class Go:
-        public Step{
+        public Step, public Hud{
 public:
 
     Go();

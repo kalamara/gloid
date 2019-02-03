@@ -51,7 +51,7 @@ Step * Game::nextStep(){
 }
 
 
-Step::~Step(){
+Hud::~Hud(){
 
 }
 

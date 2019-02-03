@@ -2,7 +2,7 @@
 #define _PLAY_H
 
 class Play:
-        public Step{
+        public Step,  public Hud{
 public:
 
     Play();

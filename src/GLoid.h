@@ -4,7 +4,8 @@
 
 #ifndef _GLOID_H
 #define _GLOID_H
-#define DEBUG 1
+
+//DEFINE DEBUG 1
 
 #define APP_NAME     "GLoid II is SDL/OpenGL Arkanoid " // The App Name And Caption
 #define APP_VERSION  0x020500
@@ -27,7 +28,7 @@
  18. Thomas also fixed some other bugs                                    OK
  19. Transparent and 3d fonts (for pills)                                 OK
  **********GLOID 2.1: *****************************************************
- 1. massive rewrite and unit tests                                        OK
+ 1. massive C++17 rewrite and unit tests                                        OK
  2. cmake build system                                                    OK
  3. bugs and glitches fixed
 ****************************************************************************/
@@ -80,6 +81,7 @@ typedef struct hallentry
 #include "Point.h"
 #include "Text.h"
 #include "Engine.h"
+#include "Hud.h"
 #include "Step.h"
 #include "World.h"
 #include "Game.h"

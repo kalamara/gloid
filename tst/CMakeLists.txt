@@ -63,7 +63,8 @@ add_executable(game_test
     ${SUT}/Engine.h
     ${SUT}/Engine.cpp
     ${SUT}/Step.h
-    ${SUT}/Step.cpp
+    ${SUT}/Hud.h
+    ${SUT}/Hud.cpp
     ${SUT}/game/Loading.h
     ${SUT}/game/Loading.cpp
     ${SUT}/game/Waiting.h

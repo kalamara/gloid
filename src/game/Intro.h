@@ -7,7 +7,7 @@ typedef enum{
     INTRO_DONE
 } INTRO_PHASE;
 
-class Intro: public Step{
+class Intro: public Step, public Hud{
     int phase = INTRO_STARTING;
     unsigned int cursor = 0;
     unsigned int tic = 0;

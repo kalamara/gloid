@@ -68,6 +68,15 @@
 //#include <functional>
 //#include <numeric>
 
+#define LOG_INFO 0
+#define LOG_WARNING 1
+#define LOG_ERROR 2
+#define NO_LOG    3
+
+#ifndef LOGLEVEL
+#define LOGLEVEL LOG_INFO
+#endif
+
 // Screen struct
 typedef struct screen{
     int W=800;
@@ -316,13 +325,20 @@ public:
 
     //variadic log
     template<typename T, typename... Args> void error(T value, Args... args){
+
+#if(LOGLEVEL < LOG_ERROR + 1)
         text2d::log(&logStream,  toc(), ":ERROR:", value,  args...);
+#endif //LOG
     }
     template<typename T,typename... Args> void info(T value, Args... args){
+#if(LOGLEVEL < LOG_INFO + 1)
         text2d::log(&logStream,  toc(), ":INFO:",  value, args...);
+#endif
     }
     template<typename T,typename... Args> void warning(T value, Args... args){
+#if(LOGLEVEL < LOG_WARNING + 1)
         text2d::log(&logStream,  toc(), ":WARNING:",  value, args...);
+#endif
     }
     //public SDL interface
     //audio

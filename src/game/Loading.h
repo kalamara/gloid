@@ -42,7 +42,7 @@ const std::vector<std::string> BmpFiles = {
 const std::string HalloFame = "hallofame.txt";
 
 class Point3i;
-class Loading: public Step{
+class Loading: public Step,  public Hud{
 
     void loadSounds();
     void loadTextures();

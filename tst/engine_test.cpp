@@ -1,3 +1,5 @@
+
+#define LOGLEVEL LOG_WARNING
 #include "GLoid.h"
 #include <sstream>
 

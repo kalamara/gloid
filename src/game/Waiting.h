@@ -7,9 +7,9 @@ typedef enum{
     N_WAIT,
 }WAIT_PHASE;
 
-#define FLIP_PHASE 5000 //lip phase every 5 sec
+#define FLIP_PHASE 5000 //flip phase every 5 sec
 
-class Waiting: public Step{
+class Waiting: public Step,  public Hud{
     int phase = N_WAIT;
     std::pair<GLuint, SDL_Surface> logo;
 public:

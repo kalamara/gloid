@@ -2,7 +2,7 @@
 #define _WIN_H
 
 class Win:
-        public Step{
+        public Step,  public Hud{
 public:
 
     Win();
