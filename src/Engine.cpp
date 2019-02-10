@@ -483,3 +483,18 @@ template<> Game& Engine<Game>::handleEvent(SDL_Event & e){
     }
     return dynamic_cast<Game&>(*this);
 }
+
+// Terminate application
+template<> void Engine<Game>:: terminate(void)
+{
+   static SDL_Event Q;
+
+   Q.type = SDL_QUIT;
+
+   // Push an SDL_QUIT event into the event queue
+   if(SDL_PushEvent(&Q) == -1)
+   {
+      error("SDL_QUIT event can't be pushed: ", SDL_GetError());
+      exit(1);
+   }
+}

@@ -35,6 +35,12 @@ int SDL_WaitEvent(SDL_Event *event){
     return mock().actualCall("SDL_WaitEvent")
                 .returnIntValue();
 }
+
+int SDL_PushEvent(SDL_Event *event){
+    return mock().actualCall("SDL_PushEvent")
+                .returnIntValue();
+}
+
 unsigned char MockKeyboard[SDLK_LAST] = {0};
 
 unsigned char * SDL_GetKeyState(int *numkeys){

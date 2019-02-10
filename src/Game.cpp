@@ -33,6 +33,9 @@ Game& Game::loop(){
             SDL_WaitEvent(nullptr);
             return *this;
         }else{
+            if(keyPressed(SDLK_ESCAPE)){
+                terminate();
+            }
             step->draw().update();
             step = nextStep();
             return *this;

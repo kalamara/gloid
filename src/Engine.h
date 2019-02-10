@@ -318,7 +318,7 @@ public:
     G& withSdlAudio(int freq, unsigned char channels, unsigned int samples);
     G& withOpenGl();
     G& handleEvent(SDL_Event & e);
-
+    void terminate(void);
     virtual G& loop()=0;
     //virtual G* start(class Step * at)=0;
     virtual class Step * nextStep()=0;
