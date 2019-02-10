@@ -18,6 +18,11 @@ TEST_GROUP(EngineTestGroup){
 };
 
 TEST(EngineTestGroup, pow_test){
+    CHECK_EQUAL(0, Engine<Game>::log2n(0));
+    CHECK_EQUAL(0, Engine<Game>::log2n(1));
+    CHECK_EQUAL(1, Engine<Game>::log2n(2));
+    CHECK_EQUAL(7, Engine<Game>::log2n(129));
+
     CHECK_EQUAL(0, Engine<Game>::nextpoweroftwo(0));
     CHECK_EQUAL(1, Engine<Game>::nextpoweroftwo(1));
     CHECK_EQUAL(2, Engine<Game>::nextpoweroftwo(2));

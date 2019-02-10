@@ -366,17 +366,19 @@ public:
             int x,
             int y);
 //helper math functions
-//convention: 0 is power of two (two to the minus inf)
-    static unsigned int nextpoweroftwo(unsigned int x){
-       double y = pow(2, ceil(log(x) / log(2)));
+    static unsigned int log2n(unsigned int x){
 
-       return (unsigned int)y;
+        return (x>1) ? (1 + log2n(x>>1)) : 0;
     }
-
+//convention: 0 is power of two (two to the minus inf)
     static bool ispoweroftwo(unsigned int x){
 
         return (x & (x - 1)) == 0;
     }
 
+    static unsigned int nextpoweroftwo(unsigned int x){
+
+        return ispoweroftwo(x) ? x : 1 << (1 + log2n(x));
+    }
 };
 #endif // ENGINE_H
