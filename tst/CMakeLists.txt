@@ -57,8 +57,6 @@ add_executable(game_test
     ${SUT}/model/Alien.h
     ${SUT}/model/Shot.h
     ${SUT}/Text.h
-#    ${SUT}/TextBody.h
-#    ${SUT}/TextBody.cpp
     ${SUT}/World.h
     ${SUT}/Game.h
     ${SUT}/Game.cpp
