@@ -16,7 +16,7 @@ typedef enum{
 class Step{
 protected:
 
- //   class Game * game;
+class Game * game;
 public:
     unsigned int type;
     Step(){}

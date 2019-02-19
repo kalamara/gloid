@@ -55,7 +55,7 @@ Hud::~Hud(){
 
 }
 
-Play::Play(){
+Play::Play(Game & g){
 
 }
 
@@ -96,7 +96,7 @@ template <> bool Engine<Game>::playSound(const std::string & sound) {
 template <> unsigned int Engine<Game>::toc() {
     mock().actualCall("Engine::now");
 }
-
+/*
 Ball * Game::getActiveBall(){
     mock().actualCall("Game::getActiveBall");
     return nullptr;
@@ -114,7 +114,7 @@ void Game::divideBalls(){
 void Game::killVaus(){
     mock().actualCall("Game::killVaus");
 }
-
+*/
 TEST(ModelTestGroup, ParticleIsWhatUC){
     auto start_pos = Point3f(ONE, ONE, ONE);
     auto start_rot = Point3f(2*ONE, 2*ONE, 2*ONE);
@@ -350,7 +350,7 @@ TEST(ModelTestGroup, BrickIsWhatUC){
 }
 
 TEST(ModelTestGroup, PillIsWhatUC){
-    extern struct SDL_Surface Surf;
+    extern struct SDL_Surface MockSurf;
 
     auto gm = Game();
 
@@ -362,9 +362,9 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().expectOneCall("rand")
             .andReturnValue(1500);
 
-    memset(&Surf, 0, sizeof(struct SDL_Surface));
+    memset(&MockSurf, 0, sizeof(struct SDL_Surface));
     mock().expectNCalls(2, "SDL_CreateRGBSurface")
-            .andReturnValue(&Surf);
+            .andReturnValue(&MockSurf);
 
     mock().expectNCalls(2, "SDL_MapRGBA");
     mock().expectOneCall("SDL_SetColorKey");

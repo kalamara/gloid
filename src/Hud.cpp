@@ -1,25 +1,22 @@
 #include "GLoid.h"
 #include "Hud.h"
 
-Hud::~Hud(){
-    std::for_each(begin(text),
-                  end(text),
-                  free);
-    text.clear();
-}
+Hud::~Hud(){}
 
-void Hud::printText(std::string msg, int line)
+void Hud::printText(std::string msg, class TextBody & text, int line)
 {
-    game->info(msg);
-    text2d ls(White,Black);
+    if(!_game){
+        return;
+    }
+    _game->debug(msg);
+    auto ls = text2d(White,Black);
     ls.print(msg);
-    auto s = game->print2d(ls);
-    if(s){
-        if(line == NEWLINE || line >= text.size()){
-            text.push_back(s);
-        }else{
-            text[line] = s;
-        }
+    auto s = _game->print2d(ls);
+    if(line == NEWLINE || line >= text.body.size()){
+        text.body.push_back(s);
+    }else{
+        auto begin = text.body.begin();
+        text.body.at(line) = s;
     }
 }
 
@@ -27,26 +24,33 @@ void Hud::clearText(){
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     SDL_GL_SwapBuffers();
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    text.clear();
 }
 
-void Hud::drawText(int line){
-    int pixels = (game->getFontSize() * textSpacingPercent) / 100 ;
-    int margin = textMargin;
+void Hud::drawText(class TextBody & text){
+    int line = 0;
+    for(auto surf: text.body){
+        if(!surf){
+            return;
+        }
+        int pixels = (_game->getFontSize() * text.spacingPercent) / 100 ;
+        int margin = text.margin;
 
-    switch(textAlignment){
-    case ALIGN_CENTER://screen center - text length /2
-        margin = ((game->getScreen()->W) - (text[line]->w))/2;
-        break;
-    case ALIGN_RIGHT://screen edge - text length - margin
-        margin = (game->getScreen()->W) - (text[line]->w) - textMargin;
-        break;
-    default:case ALIGN_LEFT:
-        break;
+        switch(text.alignment){
+        case ALIGN_CENTER://screen center - text length /2
+            margin = ((_game->getScreen()->W) - (surf->w))/2;
+            break;
+        case ALIGN_RIGHT://screen edge - text length - margin
+            margin = (_game->getScreen()->W) - (surf->w) - text.margin;
+            break;
+        default:case ALIGN_LEFT:
+            break;
+        }
+        if(!text.splash){
+            _game->draw2d(surf,margin, - (text.offset + line) * pixels);
+        }else{
+            _game->draw2d(surf,margin, - _game->getScreen()->H/2);
+        }
+        line++;
     }
-    game->draw2d(text[line],
-                 margin,
-                 - (textOffset + line) * pixels);
-
 }
 

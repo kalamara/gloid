@@ -68,10 +68,11 @@
 //#include <functional>
 //#include <numeric>
 
-#define LOG_INFO 0
-#define LOG_WARNING 1
-#define LOG_ERROR 2
-#define NO_LOG    3
+#define LOG_DEBUG   0
+#define LOG_INFO    1
+#define LOG_WARNING 2
+#define LOG_ERROR   3
+#define NO_LOG      4
 
 #ifndef LOGLEVEL
 #define LOGLEVEL LOG_INFO
@@ -312,6 +313,9 @@ public:
     fontopt getFont(){
             return sdlFont;
     }
+    void setFont(TTF_Font* font){
+        sdlFont = {font};
+    }
     //initialization builders
     G& withSdlGlVideo(struct version & v);
     G& withSdlTtf(std::string fontPath);
@@ -330,14 +334,20 @@ public:
         text2d::log(&logStream,  toc(), ":ERROR:", value,  args...);
 #endif //LOG
     }
+
+    template<typename T,typename... Args> void warning(T value, Args... args){
+#if(LOGLEVEL < LOG_WARNING + 1)
+        text2d::log(&logStream,  toc(), ":WARNING:",  value, args...);
+#endif
+    }
     template<typename T,typename... Args> void info(T value, Args... args){
 #if(LOGLEVEL < LOG_INFO + 1)
         text2d::log(&logStream,  toc(), ":INFO:",  value, args...);
 #endif
     }
-    template<typename T,typename... Args> void warning(T value, Args... args){
-#if(LOGLEVEL < LOG_WARNING + 1)
-        text2d::log(&logStream,  toc(), ":WARNING:",  value, args...);
+    template<typename T,typename... Args> void debug(T value, Args... args){
+#if(LOGLEVEL < LOG_DEBUG + 1)
+        text2d::log(&logStream,  toc(), ":INFO:",  value, args...);
 #endif
     }
     //public SDL interface

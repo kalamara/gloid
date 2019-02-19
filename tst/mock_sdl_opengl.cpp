@@ -4,7 +4,7 @@
 
 
 //SDL
-
+struct SDL_Surface MockSurf;
 int SDL_Init(Uint32 flags){
     return mock().actualCall("SDL_Init")
                 .returnIntValue();
@@ -116,6 +116,7 @@ int TTF_Init(void){
     return mock().actualCall("TTF_Init")
                 .returnIntValue();
 }
+TTF_Font * MockFont = (TTF_Font *)nullptr;
 
 TTF_Font * TTF_OpenFont(const char *file, int ptsize){
     mock().actualCall("TTF_OpenFont");
@@ -131,13 +132,13 @@ void TTF_SetFontStyle(TTF_Font *font, int style){
 SDL_Surface * TTF_RenderText_Shaded
 (TTF_Font *font, const char *text, SDL_Color fg, SDL_Color bg){
     mock().actualCall("TTF_RenderText_Shaded");
-    return (SDL_Surface * )nullptr;
+    return &MockSurf;
 }
 
 SDL_Surface * TTF_RenderText_Blended
 (TTF_Font *font,const char *text, SDL_Color fg){
     mock().actualCall("TTF_RenderText_Blended");
-    return (SDL_Surface * )nullptr;
+    return &MockSurf;
 }
 
 //audio
@@ -169,13 +170,13 @@ int SDL_ConvertAudio(SDL_AudioCVT *cvt){
     return 0;
 }
 
-struct SDL_Surface Surf;
+
 
 SDL_Surface * SDL_CreateRGBSurface
 (Uint32 flags, int width, int height, int depth,
  Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask){
     return (SDL_Surface *)mock().actualCall("SDL_CreateRGBSurface")
-            .returnPointerValueOrDefault(&Surf);
+            .returnPointerValueOrDefault(&MockSurf);
 }
 
 int SDL_SetColorKey

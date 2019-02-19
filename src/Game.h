@@ -56,10 +56,6 @@ public:
     void incLives(){
         lives++;
     }
-//TODO: these should be moved to world.h
-    class Ball * getActiveBall();
-    class Brick * getBrickAt(Point3f& where);
-    void divideBalls();
-    void killVaus();
+
 };
 #endif //_GAME_H

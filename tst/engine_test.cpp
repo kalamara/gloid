@@ -53,9 +53,7 @@ TEST(EngineTestGroup, text_test){
 
     str.str( std::string() );
     str.clear();
-    mock().expectNCalls(2, "SDL_GetTicks");
     text2d::log(&str, "ena = ", 1, ",~dyo ison ", 2.00001f);
-
 
     STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n", str.str().c_str());
 
@@ -69,11 +67,11 @@ TEST(EngineTestGroup, text_test){
 
     STRCMP_EQUAL("ena = 1,~dyo ison 2.00001\n",  text.msg().c_str());
 
-    mock().expectOneCall("TTF_RenderText_Shaded");
+    //mock().expectOneCall("TTF_RenderText_Shaded");
     auto game = newGame();
-    SDL_Surface * s = game->print2d(text);
+    auto surf = game->print2d(text);
 
-    game->draw2d(s,0,0);
+    game->draw2d(surf,0,0);
 }
 
 TEST(EngineTestGroup, time_test){
@@ -97,6 +95,7 @@ TEST(EngineTestGroup, version_test){
 
     STRCMP_EQUAL("V1.2.3", version(ver).toString().c_str());
 }
+
 
 TEST(EngineTestGroup, init_test){
 
@@ -122,8 +121,8 @@ TEST(EngineTestGroup, init_test){
     game->withSdlGlVideo(sdlv);
     mock().checkExpectations();
 
-/*ttf font*/
-/* ttf_init fails*/
+//ttf font
+// ttf_init fails
     mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("TTF_Init").andReturnValue(-1);
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
@@ -132,7 +131,7 @@ TEST(EngineTestGroup, init_test){
 
     CHECK(!game->getFont());
     mock().checkExpectations();
-/*ttf_init succeeds, ttf_openfont fails*/
+//ttf_init succeeds, ttf_openfont fails
     mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("TTF_Init").andReturnValue(0);
     mock().expectOneCall("TTF_OpenFont");
@@ -141,8 +140,8 @@ TEST(EngineTestGroup, init_test){
     game->withSdlTtf("./DejaVuSans.ttf");
     CHECK(!game->getFont());
     mock().checkExpectations();
-/*sdl audio*/
-/*openaudio fails*/
+//sdl audio
+//openaudio fails
     mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(-1);
     mock().expectOneCall("SDL_GetError").andReturnValue("error");
@@ -152,7 +151,7 @@ TEST(EngineTestGroup, init_test){
     mock().checkExpectations();
     CHECK(!game->getSdlAudio());
 
-/*openaudio succeds*/
+//openaudio succeds
     mock().expectNCalls(1,"SDL_GetTicks");
     mock().expectOneCall("SDL_OpenAudio").andReturnValue(0);
     mock().expectOneCall("SDL_PauseAudio");
@@ -162,7 +161,7 @@ TEST(EngineTestGroup, init_test){
     mock().checkExpectations();
     CHECK(game->getSdlAudio().has_value());
 
-/*OpenGL*/
+//OpenGL
     mock().expectNCalls(2,"SDL_GetTicks");
     mock().expectOneCall("glClearColor");
     mock().expectOneCall("glClearDepth");
@@ -213,7 +212,7 @@ TEST(EngineTestGroup, sound_test){
     STRCMP_EQUAL("", (const char *)buffers[1].data);
     mock().checkExpectations();
 
-    /*we need an instance of game to actually play a sound*/
+//we need an instance of game to actually play a sound
 
     auto game = newGame();
     mock().expectNCalls(1,"SDL_GetTicks");

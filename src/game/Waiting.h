@@ -12,6 +12,8 @@ typedef enum{
 class Waiting: public Step,  public Hud{
     int phase = N_WAIT;
     std::pair<GLuint, SDL_Surface> logo;
+    class TextBody hallOfame;
+    class TextBody prompt;
 public:
     Waiting(Game &g);
     ~Waiting();

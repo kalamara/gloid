@@ -353,20 +353,20 @@ template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
     if(sdlFont){
         auto font = sdlFont.value();
 
-        if(text.blended){
+        if(!text.blended){
 
-            return TTF_RenderText_Shaded(font,
+            return  TTF_RenderText_Shaded(font,
                                      text.trim().c_str(),
                                      text.foreground,
                                      text.background);
         }else{
-
-            return TTF_RenderText_Blended(font,
+//FIXME: why this doesnt work?
+            return  TTF_RenderText_Blended(font,
                                       text.trim().c_str(),
                                       text.foreground);
         }
     }
-    return nullptr;
+    return (SDL_Surface *)nullptr;
 }
 
 template<> void Engine<Game>::draw2d(
@@ -492,8 +492,7 @@ template<> void Engine<Game>:: terminate(void)
    Q.type = SDL_QUIT;
 
    // Push an SDL_QUIT event into the event queue
-   if(SDL_PushEvent(&Q) == -1)
-   {
+   if(SDL_PushEvent(&Q) == -1){
       error("SDL_QUIT event can't be pushed: ", SDL_GetError());
       exit(1);
    }

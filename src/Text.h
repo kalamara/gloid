@@ -8,16 +8,28 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include <vector>
+#include <memory>
+
+typedef enum{
+    ALIGN_LEFT,
+    ALIGN_RIGHT,
+    ALIGN_CENTER,
+    N_ALIGN
+}TEXT_ALIGN;
+
+static constexpr SDL_Color White = {255, 255, 255, 128};
+static constexpr SDL_Color Black = {0, 0, 0, 128};
 
 class text2d{
     std::stringstream str;
-    unsigned int timestamp = 0;//If timestamp is zero, the message is always on.
-    unsigned int lifetime = 0; //If (ticks - timestamp) > lifetime, the popup dies.
 
 public:
     bool blended = true;
-    SDL_Color foreground = {0};
-    SDL_Color background = {0};
+
+
+    SDL_Color foreground = White;
+    SDL_Color background = Black;
 
     std::string msg(){
 
@@ -42,15 +54,13 @@ public:
 
     text2d(const SDL_Color& fg,
            const SDL_Color& bg,
-           int life = 0,
-           int toc = 0,
-           bool blend = true){
-        lifetime = (unsigned int)life;
-        timestamp = life >= 0 ? toc : 0;
+           bool blend = false){
+
         blended = blend;
         foreground = fg;
         background = bg;
     }
+    ~text2d(){}
 
     template<typename T,typename... Args> text2d * print(T value, Args... args){
         log(&str, value, args...);
@@ -81,4 +91,27 @@ public:
          *to << value << std::endl;
     }
 };
+
+class TextBody{
+public:
+    unsigned int timestamp = 0;//If timestamp is zero, the message is always on.
+    unsigned int lifetime = 0; //If (ticks - timestamp) > lifetime, the popup dies.
+    int alignment = ALIGN_CENTER;
+    int offset = 0;
+    int margin = 0;
+    int spacingPercent = 150;
+
+    std::vector<SDL_Surface *> body;
+    bool splash = false;
+    TextBody(int life = 0,
+             int toc = 0){
+        lifetime = (unsigned int)life;
+        timestamp = life >= 0 ? toc : 0;
+    }
+    ~TextBody(){
+
+        body.clear();
+    }
+};
+
 #endif //_TEXT_H_

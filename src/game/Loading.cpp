@@ -7,6 +7,7 @@
 Loading::Loading(Game & g){
     game = &g;
     type = STEP_LOADING;
+    Hud::setGame(g);
 }
 
 Loading::~Loading(){
@@ -18,8 +19,8 @@ Loading::~Loading(){
 }
 
 int Loading::next(){
+    if(phase == LOAD_DONE){
 
-   if(phase == LOAD_DONE){
         return STEP_WAITING;
     }
     return STEP_LOADING;
@@ -28,7 +29,7 @@ int Loading::next(){
 //TODO: load stuff asynchronous
 
 void Loading::loadTextures(){
-    printText("Loading textures...");
+    printText("Loading textures...", console);
     int n_bmp = BmpFiles.size();
     textureIds = (GLuint *)malloc(n_bmp*sizeof(GLuint));
     memset(textureIds,0,n_bmp*sizeof(GLuint));
@@ -39,7 +40,7 @@ void Loading::loadTextures(){
 }
 
 void Loading::loadSounds(){
-    printText("Loading sounds...");
+    printText("Loading sounds...", console);
     std::for_each(begin(SoundFiles),
                   end(SoundFiles),
                   [this](auto &f){
@@ -48,7 +49,7 @@ void Loading::loadSounds(){
 }
 
 void Loading::loadHalloFame(){
-    printText("Loading hall of fame...");
+    printText("Loading hall of fame...", console);
     std::ifstream ifs;
     ifs.open(HalloFame, std::ifstream::in);
     int l = 0;
@@ -70,7 +71,7 @@ void Loading::loadHalloFame(){
 void Loading::loadLevel(){
     std::stringstream msg;
     msg << "Loading level " << game->level << "...";
-    printText(msg.str());
+    printText(msg.str(), console);
     std::ifstream ifs;
     std::stringstream path;
     path << "levels/level" << game->level << ".ase";
@@ -110,6 +111,7 @@ std::pair<int, std::string> Loading::getScore(std::string line){
 }
 
 Loading & Loading::update(){
+
     switch (phase) {
     case LOAD_SOUNDS:
         loadSounds();
@@ -136,9 +138,12 @@ Loading & Loading::draw(){
     || phase == LOAD_SOUNDS){
         clearText();
     }
-    if(text.size() > phase){
-        drawText(phase);
-    }
+    setGame(*game);
+    drawText(console);
+//auto ls = text2d(White,Black);
+//ls.print("test");
+//auto surf = game->print2d(ls);
+//game->draw2d(surf,0, - game->getScreen()->H/2);
     SDL_GL_SwapBuffers();
     return *this;
 }

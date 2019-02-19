@@ -57,19 +57,6 @@ enum{
    PARSE_COL
 };
 
-// Messages
-enum{
-   HUD_1UP,
-   HUD_SCORE,
-   HUD_HILABEL,
-   HUD_HISCORE,
-   HUD_LEVEL,
-   HUD_GO,
-   HUD_PAWS,
-   HUD_FPS,
-   N_HUD
-};
-
 typedef struct hallentry
 {
    char* initials;

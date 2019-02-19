@@ -14,8 +14,7 @@ class Point3f;
 class Alien;
 class Particle;
 class Pill;
-static constexpr SDL_Color White = {255, 255, 255, 128};
-static constexpr SDL_Color Black = {0, 0, 0, 128};
+
 class World{
     Vaus * vaus = nullptr;
 
@@ -31,5 +30,9 @@ public:
     void setVaus(Vaus *value){
         vaus = value;
     }
+    void divideBalls(){}
+    void killVaus(){}
+    Ball * getActiveBall(){return nullptr;}
+    Brick * getBrickAt(Point3f& where){return nullptr;}
 };
 #endif // WORLD_H

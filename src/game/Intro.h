@@ -11,6 +11,7 @@ class Intro: public Step, public Hud{
     int phase = INTRO_STARTING;
     unsigned int cursor = 0;
     unsigned int tic = 0;
+    class TextBody console;
 public:
 
     Intro(Game &g);

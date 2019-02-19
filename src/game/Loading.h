@@ -42,13 +42,14 @@ const std::vector<std::string> BmpFiles = {
 const std::string HalloFame = "hallofame.txt";
 
 class Point3i;
+class TextBody;
 class Loading: public Step,  public Hud{
 
     void loadSounds();
     void loadTextures();
     void loadHalloFame();
     void loadLevel();
-
+    TextBody console;
 public:
     GLuint * textureIds = nullptr;
     int phase = LOAD_SOUNDS;

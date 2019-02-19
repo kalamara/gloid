@@ -3,6 +3,7 @@
 #include "game/Loading.h"
 #include "game/Waiting.h"
 #include "game/Intro.h"
+#include "game/Play.h"
 #include "model/WhatUC.h"
 #include "model/Particle.h"
 #include "model/Ball.h"
@@ -13,9 +14,11 @@
 #include "model/Shot.h"
 
 Game::Game(){
+
     steps.insert({STEP_LOADING, std::make_unique<Loading>(*this)});
     steps.insert({STEP_WAITING, std::make_unique<Waiting>(*this)});
     steps.insert({STEP_INTRO, std::make_unique<Intro>(*this)});
+    steps.insert({STEP_PLAY, std::make_unique<Play>(*this)});
     step = steps[STEP_LOADING].get();
 }
 
@@ -47,7 +50,4 @@ Step *Game::nextStep(){
     return steps[step->next()].get();
 }
 
-void Game::divideBalls(){}
-void Game::killVaus(){}
-class Ball * Game::getActiveBall(){return nullptr;}
-class Brick * Game::getBrickAt(Point3f& where){return nullptr;}
+

@@ -2,11 +2,12 @@
 
 #include "GLoid.h"
 #include "Waiting.h"
-
+#define WAITING_HALLOFAME 0
+#define WAITING_PROMPT 1
 Waiting::Waiting(Game & g){
     game = &g;
     type = STEP_WAITING;
-    textSpacingPercent = 150;
+    Hud::setGame(g);
 }
 
 Waiting::~Waiting(){
@@ -35,21 +36,20 @@ Waiting & Waiting::update(){
         phase = newphase;
         clearText();
     }
-    if(text.empty()){
-        if(phase == WAIT_RDY){
-            textOffset = 8;
-            logo = game->getTexture("gloid");
-            printText("Press fire to play...");
-        }else{
-            textOffset = 0;
-            std::for_each(begin(game->hiscore),
-                          end(game->hiscore),
-                          [this](auto line){
-                std::stringstream str;
-                str << line.first << "    " << line.second;
-                printText(str.str());
-            });
-        }
+
+    if(phase == WAIT_RDY){
+
+        logo = game->getTexture("gloid");
+        printText("Press fire to play...", prompt, 0);
+    }else{
+
+        std::for_each(begin(game->hiscore),
+                      end(game->hiscore),
+                      [this](auto line){
+            std::stringstream str;
+            str << line.first << "    " << line.second;
+            printText(str.str(), hallOfame);
+        });
     }
     return *this;
 }
@@ -85,12 +85,10 @@ Waiting & Waiting::draw(){
 
     if(phase == WAIT_RDY){
         drawLogo();
-        drawText(0);
+        //draw all text
+        drawText(prompt);
     }else{
-        int lines = text.size();
-        for(int i  = 0; i < lines; i++){
-            drawText(i);
-        }
+        drawText(hallOfame);
     }
     SDL_GL_SwapBuffers();
     return *this;

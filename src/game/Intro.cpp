@@ -3,6 +3,8 @@
 #include "GLoid.h"
 #include "Intro.h"
 #define INTRO_DURATION 7000 //ms
+#define INTRO_CONSOLE 0
+
 
 static const std::string introStr ="\
 THE ERA AND TIME OF \n\
@@ -18,6 +20,7 @@ BY SOMEONE...";
 Intro::Intro(Game & g){
     game = &g;
     type = STEP_INTRO;
+    Hud::setGame(g);
 }
 
 Intro::~Intro(){
@@ -27,8 +30,9 @@ Intro::~Intro(){
 int Intro::next(){
     if(game->keyPressed(SDLK_SPACE)
     || game->getMouse()->leftclick){
-        if (phase == INTRO_DONE){
-            return STEP_GO;
+        if (phase >= INTRO_STARTED
+            && game->toc() - tic > 500){
+            return STEP_PLAY;
         }
     }
     return STEP_INTRO;
@@ -41,11 +45,10 @@ Intro & Intro::update(){
         game->playSound("intro");
         //play audio
         phase++;
-        //start playing audio
     }else if (phase == INTRO_STARTED){
         unsigned int toc = game->toc() - tic;
         auto read = readLine(toc/char_life);
-        printText(read.second, read.first);
+        printText(read.second, console, read.first);
         if(toc > INTRO_DURATION){
             phase++;
         }
@@ -55,11 +58,7 @@ Intro & Intro::update(){
 
 Intro & Intro::draw(){
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    int lines = text.size();
-    for(int i  = 0; i < lines; i++){
-        drawText(i);
-    }
+    drawText(console);
     if(phase == INTRO_DONE
     || phase == INTRO_STARTING){
         clearText();

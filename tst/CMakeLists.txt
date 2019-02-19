@@ -57,6 +57,8 @@ add_executable(game_test
     ${SUT}/model/Alien.h
     ${SUT}/model/Shot.h
     ${SUT}/Text.h
+#    ${SUT}/TextBody.h
+#    ${SUT}/TextBody.cpp
     ${SUT}/World.h
     ${SUT}/Game.h
     ${SUT}/Game.cpp
@@ -67,6 +69,8 @@ add_executable(game_test
     ${SUT}/Hud.cpp
     ${SUT}/game/Loading.h
     ${SUT}/game/Loading.cpp
+    ${SUT}/game/Play.h
+    ${SUT}/game/Play.cpp
     ${SUT}/game/Waiting.h
     ${SUT}/game/Waiting.cpp
     ${SUT}/game/Intro.h
