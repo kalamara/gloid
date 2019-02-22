@@ -3,7 +3,7 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
-
+#include "Hud.h"
 #include "game/Loading.h"
 #include "game/Waiting.h"
 #include "game/Intro.h"

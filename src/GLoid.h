@@ -68,7 +68,6 @@ typedef struct hallentry
 #include "Point.h"
 #include "Text.h"
 #include "Engine.h"
-#include "Hud.h"
 #include "Step.h"
 #include "World.h"
 #include "Game.h"

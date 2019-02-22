@@ -4,7 +4,7 @@
 
 
 //SDL
-struct SDL_Surface MockSurf;
+struct SDL_Surface  MockSurf;
 int SDL_Init(Uint32 flags){
     return mock().actualCall("SDL_Init")
                 .returnIntValue();

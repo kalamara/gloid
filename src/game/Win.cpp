@@ -1,5 +1,5 @@
 #include "GLoid.h"
-
+#include "Hud.h"
 #include "Win.h"
 
 Win::Win(){

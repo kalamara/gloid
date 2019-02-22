@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "GLoid.h"
+#include "Hud.h"
 #include "Waiting.h"
 #define WAITING_HALLOFAME 0
 #define WAITING_PROMPT 1
@@ -34,22 +35,24 @@ Waiting & Waiting::update(){
     int newphase = flip(game->toc() - game->tic);
     if(newphase != phase){
         phase = newphase;
+
         clearText();
-    }
 
-    if(phase == WAIT_RDY){
 
-        logo = game->getTexture("gloid");
-        printText("Press fire to play...", prompt, 0);
-    }else{
+        if(phase == WAIT_RDY){
 
-        std::for_each(begin(game->hiscore),
-                      end(game->hiscore),
-                      [this](auto line){
-            std::stringstream str;
-            str << line.first << "    " << line.second;
-            printText(str.str(), hallOfame);
-        });
+            logo = game->getTexture("gloid");
+            printText("Press fire to play...", prompt, 0);
+        }else{
+
+            std::for_each(begin(game->hiscore),
+                          end(game->hiscore),
+                          [this](auto line){
+                std::stringstream str;
+                str << line.first << "    " << line.second;
+                printText(str.str(), hallOfame);
+            });
+        }
     }
     return *this;
 }

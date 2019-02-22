@@ -1,5 +1,4 @@
 #include "GLoid.h"
-#include "game/Play.h"
 
 #include "model/WhatUC.h"
 #include "model/Particle.h"
@@ -48,31 +47,6 @@ Game & Game::loop(){
 }
 
 Step * Game::nextStep(){
-}
-
-
-Hud::~Hud(){
-
-}
-
-Play::Play(Game & g){
-
-}
-
-Play::~Play(){
-
-}
-
-Play & Play::draw(){
-
-}
-
-Play & Play::update(){
-
-}
-
-int Play::next(){
-    return STEP_PLAY;
 }
 
 struct mousecntl MockMouse = mousecntl(400, 300, false);

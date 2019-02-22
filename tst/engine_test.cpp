@@ -8,7 +8,7 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
-#include "game/Loading.h"
+//#include "game/Loading.h"
 #include "mock_sdl_opengl.h"
 
 TEST_GROUP(EngineTestGroup){

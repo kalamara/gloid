@@ -368,7 +368,7 @@ template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
     }
     return (SDL_Surface *)nullptr;
 }
-
+//TODO: clear surface?
 template<> void Engine<Game>::draw2d(
         SDL_Surface *surf,
          int x,

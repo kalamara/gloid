@@ -12,12 +12,15 @@ void Hud::printText(std::string msg, class TextBody & text, int line)
     auto ls = text2d(White,Black);
     ls.print(msg);
     auto s = _game->print2d(ls);
-    if(line == NEWLINE || line >= text.body.size()){
-        text.body.push_back(s);
-    }else{
-        auto begin = text.body.begin();
-        text.body.at(line) = s;
+    if(s != nullptr){
+        if(line == NEWLINE || line >= text.body.size()){
+            text.body.push_back(*s);
+        } else {
+            auto begin = text.body.begin();
+            text.body.at(line) = *s;
+        }
     }
+    text.timestamp = (text.lifetime > 0) ? _game->toc() : 0;
 }
 
 void Hud::clearText(){
@@ -28,27 +31,30 @@ void Hud::clearText(){
 
 void Hud::drawText(class TextBody & text){
     int line = 0;
-    for(auto surf: text.body){
-        if(!surf){
-            return;
-        }
+    if(text.timestamp != 0 && _game->toc() - text.timestamp > text.lifetime){
+        text.body.clear();
+        clearText();//TODO: clear surface instead
+        text.timestamp = 0;
+    }
+    for(auto surf : text.body){
+
         int pixels = (_game->getFontSize() * text.spacingPercent) / 100 ;
         int margin = text.margin;
 
         switch(text.alignment){
         case ALIGN_CENTER://screen center - text length /2
-            margin = ((_game->getScreen()->W) - (surf->w))/2;
+            margin = ((_game->getScreen()->W) - (surf.w))/2;
             break;
         case ALIGN_RIGHT://screen edge - text length - margin
-            margin = (_game->getScreen()->W) - (surf->w) - text.margin;
+            margin = (_game->getScreen()->W) - (surf.w) - text.margin;
             break;
         default:case ALIGN_LEFT:
             break;
         }
         if(!text.splash){
-            _game->draw2d(surf,margin, - (text.offset + line) * pixels);
+            _game->draw2d(&surf,margin, - (text.offset + line) * pixels);
         }else{
-            _game->draw2d(surf,margin, - _game->getScreen()->H/2);
+            _game->draw2d(&surf,margin, - _game->getScreen()->H/2);
         }
         line++;
     }

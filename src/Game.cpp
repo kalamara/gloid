@@ -1,5 +1,5 @@
 #include "GLoid.h"
-
+#include "Hud.h"
 #include "game/Loading.h"
 #include "game/Waiting.h"
 #include "game/Intro.h"

@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "GLoid.h"
+#include "Hud.h"
 #include "Loading.h"
 #include "model/Brick.h"
 
@@ -55,15 +56,15 @@ void Loading::loadHalloFame(){
     int l = 0;
     if(ifs.is_open()){
         std::string line;
-        while(getline(ifs,line) && l++ < 10){
+        while(getline(ifs,line) && l++ < HOF_LEN){
             game->hiscore.insert(getScore(line));
         }
         ifs.close();
     }
-    while(l++ < 10){
+    while(l++ < HOF_LEN){
         game->hiscore.insert({HISCORE,INITIALS});
     }
-    while(game->hiscore.size() > 10){
+    while(game->hiscore.size() > HOF_LEN){
         game->hiscore.erase(std::prev(game->hiscore.end()));
     }
 }
@@ -140,10 +141,7 @@ Loading & Loading::draw(){
     }
     setGame(*game);
     drawText(console);
-//auto ls = text2d(White,Black);
-//ls.print("test");
-//auto surf = game->print2d(ls);
-//game->draw2d(surf,0, - game->getScreen()->H/2);
+
     SDL_GL_SwapBuffers();
     return *this;
 }

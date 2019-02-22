@@ -28,6 +28,7 @@ class Play:
     class TextBody score;
 public:
     int phase = PLAY_GO;
+    int old_phase = PLAY_GO;
     Play(Game & g);
     ~Play();
     Play & draw();

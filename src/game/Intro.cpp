@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "GLoid.h"
+#include "Hud.h"
 #include "Intro.h"
 #define INTRO_DURATION 7000 //ms
 #define INTRO_CONSOLE 0
