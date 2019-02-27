@@ -65,8 +65,7 @@
 #include <fstream>
 #include <memory>
 #include <optional>
-//#include <functional>
-//#include <numeric>
+#include <queue>
 
 #define LOG_DEBUG   0
 #define LOG_INFO    1
@@ -77,6 +76,8 @@
 #ifndef LOGLEVEL
 #define LOGLEVEL LOG_INFO
 #endif
+
+#define MAX_SAMPLES 10
 
 // Screen struct
 typedef struct screen{
@@ -259,7 +260,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     };
     //text
     unsigned int fontSize = 22;
-
+    GLuint fontTextureId;
     //video
     const SDL_VideoInfo* desktop;
     //audio
@@ -313,6 +314,12 @@ public:
     fontopt getFont(){
             return sdlFont;
     }
+    void setFontTexture(GLuint id){
+        fontTextureId = id;
+    }
+//    GLuint fontTexture(){
+//        return fontTextureId;
+//    }
     void setFont(TTF_Font* font){
         sdlFont = {font};
     }
@@ -365,9 +372,18 @@ public:
     }
     //time
     unsigned int tic;
-    //time
+
     static unsigned int toc();
 
+    std::queue<unsigned int> samples; //milliseconds per frame over last N frames
+
+    //sum of milliseconds per frame over last N frames
+    unsigned int sumMs = 0.0f;
+
+    /* constant - time moving average algorithm
+     * push new sample and return new average
+     */
+    double movingAverage(unsigned int ms);
     //printing
     SDL_Surface * print2d(text2d & text);
 

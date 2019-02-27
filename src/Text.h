@@ -20,6 +20,7 @@ typedef enum{
 
 static constexpr SDL_Color White = {255, 255, 255, 128};
 static constexpr SDL_Color Black = {0, 0, 0, 128};
+static constexpr SDL_Color Red = {255, 0, 0, 128};
 
 class text2d{
     std::stringstream str;

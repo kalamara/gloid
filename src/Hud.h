@@ -36,6 +36,7 @@ public:
     }
     void printText(std::string msg,
                    class TextBody &text,
+                   const SDL_Color &fg = White,
                    int line = NEWLINE);
     void clearText();
     void drawText(TextBody &text);

@@ -16,8 +16,8 @@
 Game::Game(){
 
     steps.insert({STEP_LOADING, std::make_unique<Loading>(*this)});
-    steps.insert({STEP_WAITING, std::make_unique<Waiting>(*this)});
-    steps.insert({STEP_INTRO, std::make_unique<Intro>(*this)});
+//    steps.insert({STEP_WAITING, std::make_unique<Waiting>(*this)});
+//    steps.insert({STEP_INTRO, std::make_unique<Intro>(*this)});
     steps.insert({STEP_PLAY, std::make_unique<Play>(*this)});
     step = steps[STEP_LOADING].get();
 }

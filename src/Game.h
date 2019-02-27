@@ -22,6 +22,19 @@
 #define SCOREBRICK     70  // Score if you break a brick
 
 #define MINSPEED  1.0f//minimum speed on any axis = 5% of initial speed on Z
+#define MINFRAMEDURATION  10 //milliseconds per frame
+#define MAXFRAMEDURATION  100
+
+typedef enum{
+    P,       // Grey:    Player life (kanonaki)
+    B,       // Pink:    Boost to next level
+    E,       // Blue:    Enlarge
+    L,       // Red:     Lazer cannon
+    G,       // Green:   Glue
+    D,       // Magenta: Divide balls
+    S,       // Orange:  Slow
+    N_PILLS  // Number of pills
+} PILLS;
 
 class Game: public Engine<class Game>, public World{
 public:
@@ -47,7 +60,7 @@ public:
         return score > SCORELIFE;
     }
     unsigned int levelType(){
-        return level % 4;
+        return ((level - 1) % 4) + 1;
     }
     void setBonusMode(unsigned int mode){
         bonusMode = mode;
@@ -57,5 +70,10 @@ public:
         lives++;
     }
 
+    std::string getBackgroundTextureFilename(){
+        std::stringstream str;
+        str << "arka" << levelType() << "_hires";
+        return str.str();
+    }
 };
 #endif //_GAME_H

@@ -49,7 +49,7 @@ Intro & Intro::update(){
     }else if (phase == INTRO_STARTED){
         unsigned int toc = game->toc() - tic;
         auto read = readLine(toc/char_life);
-        printText(read.second, console, read.first);
+        printText(read.second, console, White, read.first);
         if(toc > INTRO_DURATION){
             phase++;
         }

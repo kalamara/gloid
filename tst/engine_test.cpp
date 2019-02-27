@@ -238,6 +238,24 @@ TEST(EngineTestGroup, sound_test){
     CHECK_EQUAL(1, game->pendingSounds());
 }
 
+//moving average test
+TEST(EngineTestGroup, average_test){
+    auto game = newGame();
+    DOUBLES_EQUAL(0.0f, game->movingAverage(0), FLOAT_PRECISION);
+    DOUBLES_EQUAL(50.0f, game->movingAverage(100), FLOAT_PRECISION);
+    DOUBLES_EQUAL(100.0f, game->movingAverage(200), FLOAT_PRECISION);
+    DOUBLES_EQUAL(100.0f, game->movingAverage(100), FLOAT_PRECISION);
+    for(int i = 0; i < 6; i++){
+        DOUBLES_EQUAL(100.0f, game->movingAverage(100), FLOAT_PRECISION);
+    }
+    //queue full, now removing first element (=0)
+    DOUBLES_EQUAL(120.0f, game->movingAverage(200), FLOAT_PRECISION);
+    //removing second element (=100)
+    DOUBLES_EQUAL(130.0f, game->movingAverage(200), FLOAT_PRECISION);
+    //removing third element (=200)
+    DOUBLES_EQUAL(130.0f, game->movingAverage(200), FLOAT_PRECISION);
+}
+
 TEST(EngineTestGroup, events_test){
     extern unsigned char MockKeyboard[SDLK_LAST];
     auto game = newGame();

@@ -22,7 +22,7 @@ Loading::~Loading(){
 int Loading::next(){
     if(phase == LOAD_DONE){
 
-        return STEP_WAITING;
+        return STEP_PLAY;//STEP_WAITING;
     }
     return STEP_LOADING;
 }
@@ -31,13 +31,14 @@ int Loading::next(){
 
 void Loading::loadTextures(){
     printText("Loading textures...", console);
-    int n_bmp = BmpFiles.size();
+    int n_bmp = BmpFiles.size() + 1;
     textureIds = (GLuint *)malloc(n_bmp*sizeof(GLuint));
     memset(textureIds,0,n_bmp*sizeof(GLuint));
     glGenTextures(n_bmp, textureIds);
     for(int i = 0; i < BmpFiles.size(); i++){
         game->loadBmp(BmpFiles[i], textureIds[i]);
     }
+    game->setFontTexture(textureIds[n_bmp - 1]);
 }
 
 void Loading::loadSounds(){

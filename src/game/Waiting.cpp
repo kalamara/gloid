@@ -42,7 +42,7 @@ Waiting & Waiting::update(){
         if(phase == WAIT_RDY){
 
             logo = game->getTexture("gloid");
-            printText("Press fire to play...", prompt, 0);
+            printText("Press fire to play...", prompt, White, 0);
         }else{
 
             std::for_each(begin(game->hiscore),

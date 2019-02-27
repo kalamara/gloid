@@ -3,13 +3,16 @@
 
 Hud::~Hud(){}
 
-void Hud::printText(std::string msg, class TextBody & text, int line)
+void Hud::printText(std::string msg,
+                    class TextBody & text,
+                    const SDL_Color &fg,
+                    int line)
 {
     if(!_game){
         return;
     }
     _game->debug(msg);
-    auto ls = text2d(White,Black);
+    auto ls = text2d(fg ,Black);
     ls.print(msg);
     auto s = _game->print2d(ls);
     if(s != nullptr){

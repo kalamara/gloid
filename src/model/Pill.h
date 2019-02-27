@@ -2,16 +2,6 @@
 #define _PILL_H_
 // Bonus pills
 
-typedef enum{
-    P,       // Grey:    Player life (kanonaki)
-    B,       // Pink:    Boost to next level
-    E,       // Blue:    Enlarge
-    L,       // Red:     Lazer cannon
-    G,       // Green:   Glue
-    D,       // Magenta: Divide balls
-    S,       // Orange:  Slow
-    N_PILLS  // Number of pills
-} PILLS;
 class Vaus;
 // Bonus pills
 class Pill: public WhatUC<Pill>{

@@ -174,7 +174,7 @@ template<> Game& Engine<Game>::withSdlGlVideo(version &v){
         }
     }else{
         desktop = SDL_GetVideoInfo();
-        sdlScreen = testVmode(desktop->current_w,desktop->current_h);
+        sdlScreen = testVmode(800,600);//desktop->current_w,desktop->current_h);
     }
     if(!sdlScreen.has_value()){
              error("Can't open an SDL Screen:",
@@ -322,6 +322,16 @@ template<> unsigned int Engine<Game>::toc(){
         return SDL_GetTicks();
 }
 
+template<> double Engine<Game>::movingAverage(unsigned int ms){
+    if(samples.size() >= MAX_SAMPLES){
+        sumMs -= samples.front();
+        samples.pop();
+    }
+    samples.push(ms);
+    sumMs += ms;
+    return (double)sumMs / (double)samples.size();
+}
+
 template<> void Engine<Game>::reshape(int width, int height)
 {
    // Reset the current viewport
@@ -392,7 +402,7 @@ template<> void Engine<Game>::draw2d(
         SDL_BlitSurface(surf, 0, s, 0);
 
         glEnable(GL_TEXTURE_2D);
-        //      glBindTexture(GL_TEXTURE_2D, TextureID[N_BMP]);//use warp ID + 1
+        glBindTexture(GL_TEXTURE_2D, fontTextureId);
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

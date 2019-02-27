@@ -140,6 +140,11 @@ SDL_Surface * TTF_RenderText_Blended
     mock().actualCall("TTF_RenderText_Blended");
     return &MockSurf;
 }
+SDL_Surface *  TTF_RenderText_Solid(TTF_Font *font,
+                                    const char *text, SDL_Color fg){
+    mock().actualCall("TTF_RenderText_Solid");
+    return &MockSurf;
+}
 
 //audio
 
@@ -389,3 +394,10 @@ void gluDisk(GLUquadric* quad, GLdouble inner, GLdouble outer, GLint slices, GLi
     mock().actualCall("gluDisk");
 }
 
+void glFrontFace( GLenum mode ){
+    mock().actualCall("glFrontFace");
+}
+
+void glColorMaterial( GLenum face, GLenum mode ){
+    mock().actualCall("glColorMaterial");
+}
