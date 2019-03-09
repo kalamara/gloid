@@ -22,6 +22,10 @@ Uint32 SDL_GetTicks(void){
                 .returnIntValue();
 }
 
+void SDL_Delay(Uint32 ms){
+    mock().actualCall("SDL_Delay");
+}
+
 void SDL_WM_SetCaption(const char *title, const char *icon){
     mock().actualCall("SDL_WM_SetCaption");
 }

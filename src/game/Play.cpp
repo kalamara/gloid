@@ -15,8 +15,10 @@ Play::Play(Game &g){
     go.lifetime = SPLASH_LIFE;
     up1.alignment = ALIGN_LEFT;
     score.alignment = ALIGN_RIGHT;
-
+    debug.alignment = ALIGN_LEFT;
+    debug.offset = 10;
     warp = game->getTexture("warp");
+
 }
 
 Play::~Play(){
@@ -103,29 +105,50 @@ Play & Play::draw(){
 
     drawText(up1);
     drawText(go);
+    drawText(debug);
+
     SDL_GL_SwapBuffers();
 
     return *this;
 }
 
 Play & Play::update(){
+    game->updateTime();
     if(phase==PLAY_GO){
         clearText();
-        phase ++;
+        phase++;
         printText("GO",go);
         game->playSound("go");
 
     }else{
 
         printText("1UP", up1, Red, 0);
-        std::stringstream scorestr;
-        scorestr << game->score;
-        printText(scorestr.str(), up1, White, 1);
+
+        std::stringstream text;
+        text << game->score;
+
+        printText(text.str(), up1, White, 1);
 
         printText("HIGH SCORE", score, Red, 0);
-        std::stringstream histr;
-        histr << SCORELIFE;
-        printText(histr.str(), score, White, 1);
+
+        text.str("");
+        text << SCORELIFE;
+
+        printText(text.str(), score, White, 1);
+
+        text.str("");
+        text << "FPS: "
+             << game->maxFps()
+             << " skipped: "
+             << game->frameskips;
+
+        printText(text.str(), debug, White, 0);
+
+        text.str("");
+        text << "ms / frame: "
+             << game->avgMs;
+
+        printText(text.str(), debug, White, 1);
     }
     return *this;
 }

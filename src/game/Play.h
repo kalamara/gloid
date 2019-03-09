@@ -34,8 +34,7 @@ class Play: public Step,  public Hud{
     std::pair<GLuint, SDL_Surface> background;
     std::pair<GLuint, SDL_Surface> warp;
     bool flipWarp = false;
-    // Minimum number of milliseconds per frame
-    double minmspf = 40.0f;
+
     //average number of milliseconds per frame over last ten frames
     double ms10 =  50.0f;
 public:

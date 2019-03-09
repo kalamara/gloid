@@ -11,8 +11,7 @@ public:
     int offset = 0;
     int margin = 0;
     int spacingPercent = 150;
-
-    std::vector<SDL_Surface> body;
+    std::vector<SDL_Surface*> body;
     bool splash = false;
     TextBody(){
 

@@ -332,6 +332,21 @@ template<> double Engine<Game>::movingAverage(unsigned int ms){
     return (double)sumMs / (double)samples.size();
 }
 
+template<> void Engine<Game>:: updateTime(){
+//measure time since tic
+    dt = toc() - tic;
+    avgMs = movingAverage(dt);
+// Enforce maximum frame rate
+    int d = MINMSPF - dt;
+    if(d >= 0){
+        SDL_Delay(d);
+    } else {
+        frameskips++;
+    }
+//after delay, save current time
+    tic = toc();
+}
+
 template<> void Engine<Game>::reshape(int width, int height)
 {
    // Reset the current viewport
@@ -370,7 +385,6 @@ template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
                                      text.foreground,
                                      text.background);
         }else{
-//FIXME: why this doesnt work?
             return  TTF_RenderText_Blended(font,
                                       text.trim().c_str(),
                                       text.foreground);

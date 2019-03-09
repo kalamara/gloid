@@ -181,6 +181,7 @@ TEST(GameTestGroup, hud_test){
     mock().checkExpectations();
     CHECK_EQUAL(1, text.body.size());
 //if same line, replace
+    mock().expectOneCall("SDL_FreeSurface");
     mock().expectOneCall("TTF_RenderText_Shaded");
     hud.printText("lawl",text, White, 0);
     mock().checkExpectations();

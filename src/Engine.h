@@ -76,8 +76,10 @@
 #ifndef LOGLEVEL
 #define LOGLEVEL LOG_INFO
 #endif
-
+//Averaging samples size
 #define MAX_SAMPLES 10
+// Minimum number of milliseconds per frame
+#define MINMSPF 40
 
 // Screen struct
 typedef struct screen{
@@ -330,8 +332,8 @@ public:
     G& withOpenGl();
     G& handleEvent(SDL_Event & e);
     void terminate(void);
+
     virtual G& loop()=0;
-    //virtual G* start(class Step * at)=0;
     virtual class Step * nextStep()=0;
 
     //variadic log
@@ -372,7 +374,8 @@ public:
     }
     //time
     unsigned int tic;
-
+    unsigned int dt;
+    unsigned int frameskips = 0;
     static unsigned int toc();
 
     std::queue<unsigned int> samples; //milliseconds per frame over last N frames
@@ -384,6 +387,15 @@ public:
      * push new sample and return new average
      */
     double movingAverage(unsigned int ms);
+
+    void updateTime();
+
+    double avgMs = (double)MINMSPF;
+
+    double maxFps(){
+
+        return 1000.0f/(double)MINMSPF;
+    }
     //printing
     SDL_Surface * print2d(text2d & text);
 
