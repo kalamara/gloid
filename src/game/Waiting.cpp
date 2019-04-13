@@ -35,16 +35,11 @@ Waiting & Waiting::update(){
     int newphase = flip(game->toc() - game->tic);
     if(newphase != phase){
         phase = newphase;
-
         clearText();
-
-
         if(phase == WAIT_RDY){
-
             logo = game->getTexture("gloid");
             printText("Press fire to play...", prompt, White, 0);
         }else{
-
             std::for_each(begin(game->hiscore),
                           end(game->hiscore),
                           [this](auto line){
@@ -66,8 +61,15 @@ void Waiting::drawLogo(){
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, logo.second.w, logo.second.h,
-                0, GL_RGB, GL_UNSIGNED_BYTE, logo.second.pixels);
+   glTexImage2D(GL_TEXTURE_2D,
+                0,
+                GL_RGB,
+                logo.second.w,
+                logo.second.h,
+                0,
+                GL_BGR,
+                GL_UNSIGNED_BYTE,
+                logo.second.pixels);
 
    glBegin(GL_QUADS);
    glTexCoord2f(ONE, ZERO);

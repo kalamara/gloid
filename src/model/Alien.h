@@ -27,13 +27,15 @@ public:
     Alien& animate(double secPerFrame);
     void die(void);
 
-    Alien(Game & g);
+     Alien(Game & g);
     ~Alien();
-private:
-     GLUquadricObj * base;
+     static Alien getAlien(Game * g);
      // Draw a solid cube
      static void solidCube(float side);
      static void solidTetrahedron(float side);
+
+private:
+     GLUquadricObj * base;
 
 };
 #endif//_ALIEN_H

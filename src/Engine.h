@@ -78,8 +78,6 @@
 #endif
 //Averaging samples size
 #define MAX_SAMPLES 10
-// Minimum number of milliseconds per frame
-#define MINMSPF 40
 
 // Screen struct
 typedef struct screen{
@@ -217,10 +215,29 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     std::ofstream logStream;
     //sdl
     struct sdlVer;
+
+    //text
+    unsigned int fontSize = 22;
+    GLuint fontTextureId;
+    //video
+    const SDL_VideoInfo* desktop;
+    //audio
+    std::vector<struct sbuffer> soundBuffers;
+    std::map<std::string, SDL_AudioCVT> sounds;
+    std::map<std::string, std::pair<GLuint, SDL_Surface>> textures;
+
+    screenopt testVmode(unsigned x, unsigned int y);
+
+protected:
+    //any of those are empty if initialization has failed
+    screenopt sdlScreen = {};
+    fontopt sdlFont = {};
+    audioopt sdlAudio = {};
+
     //mouse
     struct mousecntl mouse;
     //keyboard (only the keys we are handling)
-    std::map<unsigned char, bool> keys = {
+    std::map<int, bool> keys = {
 
         {SDLK_a,        false},
         {SDLK_b,        false},
@@ -260,34 +277,24 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
         {SDLK_KP_PLUS,  false},
         {SDLK_KP_MINUS, false},
     };
-    //text
-    unsigned int fontSize = 22;
-    GLuint fontTextureId;
-    //video
-    const SDL_VideoInfo* desktop;
-    //audio
-    std::vector<struct sbuffer> soundBuffers;
-    std::map<std::string, SDL_AudioCVT> sounds;
-    std::map<std::string, std::pair<GLuint, SDL_Surface>> textures;
-    //3d scene
-    class Point3f camera;      // Camera coordinates
-    float phi = ZERO;
-    float theta = ZERO;
-    //any of those are empty if initialization has failed
-    screenopt sdlScreen = {};
-    fontopt sdlFont = {};
-    audioopt sdlAudio = {};
 
-    screenopt testVmode(unsigned x, unsigned int y);
+
+    //3d scene
+    double phi = ZERO;
+    double theta = ZERO;
     void reshape(int width, int height);
 
 public:
+    class Point3f cameraPos = {ZERO, ZERO, 10.0f};
     struct appstatus app;
 
     Engine();
     ~Engine();
 
     const std::pair<GLuint, SDL_Surface> & getTexture(std::string name){
+        if(textures.find(name) == textures.end()){
+            error("Couldn't find texture ", name);
+        }
         return textures[name];
     }
     bool looping(){
@@ -389,12 +396,13 @@ public:
     double movingAverage(unsigned int ms);
 
     void updateTime();
-
-    double avgMs = (double)MINMSPF;
+    // Minimum number of milliseconds per frame
+    unsigned int minmsPerFrame = 40;
+    double avgMs = (double)minmsPerFrame;
 
     double maxFps(){
 
-        return 1000.0f/(double)MINMSPF;
+        return 1000.0f/(double)minmsPerFrame;
     }
     //printing
     SDL_Surface * print2d(text2d & text);

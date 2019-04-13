@@ -34,15 +34,16 @@ public:
     int score = 0;
     Point3f col;     // Pill color
     char label;
-    SDL_Surface* surf;
-    SDL_Surface* textSurf;
-    std::unique_ptr<class text2d> text;
+//    SDL_Surface* surf;
+//    SDL_Surface* textSurf;
+    //std::unique_ptr<class text2d> text;
 
     void display();
     Pill& animate(double secPerFrame);
 
     Pill(const Point3f& where, Game &g);
     ~Pill();
+    static Pill getPill(Game * g);
 private:
     GLUquadricObj * base;
     int roulette(bool hiScore);

@@ -253,9 +253,9 @@ template<> Game& Engine<Game>::withOpenGl(){
     glDepthFunc(GL_LEQUAL);
 
     //       if(Option_smooth)
-    //        glShadeModel(GL_SMOOTH);
+            glShadeModel(GL_SMOOTH);
     //   else
-    glShadeModel(GL_FLAT);
+    //glShadeModel(GL_FLAT);
 
 //    info("Set perspective calculations to most accurate");
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -332,12 +332,12 @@ template<> double Engine<Game>::movingAverage(unsigned int ms){
     return (double)sumMs / (double)samples.size();
 }
 
-template<> void Engine<Game>:: updateTime(){
+template<> void Engine<Game>::updateTime(){
 //measure time since tic
     dt = toc() - tic;
     avgMs = movingAverage(dt);
 // Enforce maximum frame rate
-    int d = MINMSPF - dt;
+    int d = minmsPerFrame - dt;
     if(d >= 0){
         SDL_Delay(d);
     } else {
@@ -347,8 +347,7 @@ template<> void Engine<Game>:: updateTime(){
     tic = toc();
 }
 
-template<> void Engine<Game>::reshape(int width, int height)
-{
+template<> void Engine<Game>::reshape(int width, int height){
    // Reset the current viewport
    glViewport(0, 0, (GLsizei)(width), (GLsizei)(height));
 
@@ -356,11 +355,11 @@ template<> void Engine<Game>::reshape(int width, int height)
    glLoadIdentity();
 
    // Calculate the aspect ratio of the window
-   gluPerspective(45.0f, (GLfloat)(width)/ (GLfloat)(height), 0.1f, 500.0f);
+   //gluPerspective(45.0f, (GLfloat)(width)/(GLfloat)(height), 0.1f, 500.0f);
 
-   camera.x = ZERO;
-   camera.y = ZERO;
-   camera.z = SCENE_AIR;  // Center of rotation = SCENE_AIR - SCENE_MAX
+   cameraPos.x = ZERO;
+   cameraPos.y = ZERO;
+   cameraPos.z = SCENE_AIR;  // Center of rotation = SCENE_AIR - SCENE_MAX
 
    phi = ZERO;
    theta = ZERO;
@@ -369,7 +368,7 @@ template<> void Engine<Game>::reshape(int width, int height)
    glLoadIdentity();
 
    // Set the perspective
-   gluLookAt(camera.x, camera.y, camera.z,
+   gluLookAt(cameraPos.x, cameraPos.y, cameraPos.z,
              ZERO, ZERO, -SCENE_MAX,
              ZERO, ONE, ZERO);
 }
@@ -384,7 +383,7 @@ template<> SDL_Surface * Engine<Game>::print2d(text2d & text){
                                      text.trim().c_str(),
                                      text.foreground,
                                      text.background);
-        }else{
+        } else {
             return  TTF_RenderText_Blended(font,
                                       text.trim().c_str(),
                                       text.foreground);
@@ -420,7 +419,13 @@ template<> void Engine<Game>::draw2d(
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     GL_RGBA,
+                     w,
+                     h,
+                     0,
+                     GL_BGRA,
                      GL_UNSIGNED_BYTE, s->pixels);
 
         glColor3f(ONE, ONE, ONE);
@@ -480,7 +485,7 @@ template<> Game& Engine<Game>::handleEvent(SDL_Event & e){
             }
             break;
 
-        case SDL_KEYDOWN:{
+        case SDL_KEYDOWN:case SDL_KEYUP:{
                    // Take a snapshot of the keyboard
             auto k = SDL_GetKeyState(nullptr);
             std::for_each(begin(keys),

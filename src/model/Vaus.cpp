@@ -8,11 +8,11 @@ Vaus::Vaus(Game &g){
    game = &g;
    rad = baseRad;
    setSize(2*baseRad, 2*baseRad, baseRad/2);
-   base = gluNewQuadric();
+
    //speedx = speedy = ZERO;
 }
 Vaus::~Vaus(){
-    gluDeleteQuadric(base);
+
 }
 
 // Make Vaus larger
@@ -36,6 +36,7 @@ Vaus& Vaus::reset(){
 }
 
 void Vaus::display(){
+    base = gluNewQuadric();
     gluQuadricDrawStyle(base, GLU_FILL);
     glPushMatrix();
     glTranslatef(place.x, place.y, ZERO);
@@ -88,6 +89,7 @@ void Vaus::display(){
         }
     }
     glPopMatrix();
+    gluDeleteQuadric(base);
 }
 
 // Make Vaus follow the mouse
@@ -97,9 +99,9 @@ Vaus& Vaus::animate(double secPerFrame){
    mousecntl_t m = game->getMouse();
    auto s = game->getScreen().value_or(screen());
    setPlace((m->X * (SCENE_MAX - SCENE_MIN - size.x))/s.W + SCENE_MIN + size.x/2,
-            (m->Y * (SCENE_MAX - SCENE_MIN - size.y))/s.H + SCENE_MAX - size.y/2,
+            -(m->Y * (SCENE_MAX - SCENE_MIN - size.y))/s.H + SCENE_MAX - size.y/2,
             0.0f);
-            
+   fire = m->leftclick;
    int bonusMode = game->bonusMode;
    switch(bonusMode)
    {

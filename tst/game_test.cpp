@@ -3,11 +3,6 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
-#include "Hud.h"
-#include "game/Loading.h"
-#include "game/Waiting.h"
-#include "game/Intro.h"
-#include "game/Play.h"
 
 #include "model/Alien.h"
 #include "model/Ball.h"
@@ -15,6 +10,14 @@
 #include "model/Particle.h"
 #include "model/Pill.h"
 #include "model/Vaus.h"
+#include "model/Shot.h"
+
+#include "Hud.h"
+#include "game/Loading.h"
+#include "game/Waiting.h"
+#include "game/Intro.h"
+#include "game/Play.h"
+
 
 // Bitmaps
 typedef enum{
@@ -70,6 +73,9 @@ std::unique_ptr<class Game> newGame(){
 
 Alien::Alien(Game & g){}
 Alien::~Alien(){}
+Alien Alien::getAlien(Game * g){
+    return Alien(*g);
+}
 
 void Alien::display(void){}
 Alien& Alien::animate(double secPerFrame){}
@@ -85,6 +91,10 @@ Brick::Brick(class Game &g,
              const Point3i& coords,
              int t){}
 Brick::~Brick(){}
+Ball Ball::getBall(Game * g){
+    return Ball(*g);
+}
+
 
 void Brick::display(void){}
 Brick& Brick::animate(double secPerFrame){}
@@ -102,6 +112,10 @@ Particle& Particle::animate(double secPerFrame){}
 
 Pill::Pill(const Point3f& where, Game &g){}
 Pill::~Pill(){}
+Pill Pill::getPill(Game * g){
+    return Pill(Point3f(0,0,0), *g);
+}
+
 
 void Pill::display(void){}
 Pill& Pill::animate(double secPerFrame){}
@@ -111,6 +125,14 @@ bool Pill::collides(float left,
               float up,
               float down){}
 
+Shot::Shot(Game &g, const Point3f& where){}
+Shot::~Shot(){}
+
+void Shot::display(void){}
+Shot& Shot::animate(double secPerFrame){}
+Shot Shot::getShot(Game * g){
+    return Shot( *g, Point3f(0,0,0));
+}
 Vaus::Vaus(class Game &g){}
 Vaus::~Vaus(){}
 
@@ -344,6 +366,15 @@ TEST(GameTestGroup, intro_test){
 
     CHECK_EQUAL(8,newLine.first);
     STRCMP_EQUAL("BY SOMEONE...", newLine.second.c_str());
+
+}
+
+
+TEST(GameTestGroup, play_test){
+    auto game = newGame();
+    mock().checkExpectations();
+    auto introStep = Play(*game);
+    CHECK_EQUAL(STEP_PLAY,introStep.type);
 
 }
 

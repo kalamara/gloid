@@ -14,22 +14,24 @@ class Point3f;
 class Alien;
 class Particle;
 class Pill;
+class Shot;
 
 class World{
-    Vaus * vaus = nullptr;
 
 public:
+    std::unique_ptr<Vaus> vaus;
     std::vector<Brick> bricks;
     std::list<Ball> balls;
     std::list<Alien> aliens;
-    std::vector<Particle> particles;
+    //std::vector<Particle> particles;
     std::list<Pill> pills;
-    Vaus * getVaus() const{
-         return vaus;
+    std::list<Shot> shots;
+    Vaus & getVaus() const{
+         return *vaus;
     }
-    void setVaus(Vaus *value){
-        vaus = value;
-    }
+//    void setVaus( value){
+//        vaus = value;
+//    }
     void divideBalls(){}
     void killVaus(){}
     Ball * getActiveBall(){return nullptr;}

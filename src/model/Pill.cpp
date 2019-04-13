@@ -6,119 +6,118 @@
 #include "Pill.h"
 
 Pill::Pill(const Point3f &where,
-           Game & g){
+           Game &g){
     game = &g;
     setSize(5.0f, 2*rad, 2*rad);
     setPlace(where.x,
              where.y,
              where.z);
 
-    base = gluNewQuadric();
     type = roulette(game->isHiScoring());
     col.x = Palette[type].b/255;
     col.y = Palette[type].g/255;
     col.z = Palette[type].r/255;
 
-    auto b = Palette[type];
-    auto f = Palette[RGB_BLACK];
+    //auto b = Palette[type];
+    //auto f = Palette[RGB_BLACK];
 
-    label = PillLabels[type];
-    auto bpp = game->getScreen()
-                    .value_or(screen())
-                    .BPP;
-    surf = SDL_CreateRGBSurface(
-                0,
-                game->getFontSize(),
-                game->getFontSize(),
-                bpp,
-                0x00ff0000,
-                0x0000ff00,
-                0x000000ff,
-                0xff000000);
+    //label = PillLabels[type];
 
-    textSurf = SDL_CreateRGBSurface(
-                0,
-                game->getFontSize(),
-                game->getFontSize(),
-                bpp,
-                0x00ff0000,
-                0x0000ff00,
-                0x000000ff,
-                0xff000000); //TODO: or maybe print2d ??
-
-    SDL_SetColorKey(
-                textSurf,
-                SDL_SRCCOLORKEY | SDL_RLEACCEL,
-                SDL_MapRGBA(textSurf->format, 0, 0, 0, 0));
-    SDL_FillRect(
-                surf,
-                nullptr,
-                SDL_MapRGBA(surf->format, b.r, b.g, b.b, 128));
-    SDL_BlitSurface(textSurf, 0, surf, 0);
 }
 
-// Deallocate SDL_Surface data
 Pill::~Pill(){
-    SDL_FreeSurface(surf);
-    SDL_FreeSurface(textSurf);
-    gluDeleteQuadric(base);
+
+
 }
 
 void Pill::display(){
 
     if(active){
+        base = gluNewQuadric();
+
+        auto bpp = game->getScreen()
+                        .value_or(screen())
+                        .BPP;
+        auto surf = SDL_CreateRGBSurface(
+                    0,
+                    game->getFontSize(),
+                    game->getFontSize(),
+                    bpp,
+                    0x00ff0000,
+                    0x0000ff00,
+                    0x000000ff,
+                    0xff000000);
+
+        text2d ltxt(Palette[RGB_BLACK], Palette[type]);
+        ltxt.print(PillLabels[type]);
+
+        auto textSurf = game->print2d(ltxt);
+
+        SDL_FillRect(
+                    surf,
+                    nullptr,
+                    SDL_MapRGBA(surf->format,
+                                Palette[type].r,
+                                Palette[type].g,
+                                Palette[type].b,
+                                128));
+        SDL_BlitSurface(textSurf, 0, surf, 0);
+
         glPushMatrix();
-        glEnable(GL_TEXTURE_2D);
-        glColor3f(col.x, col.y, col.z);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glTranslatef(place.x,place.y, place.z);
-        gluQuadricTexture(base, GL_TRUE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                     game->getFontSize(),
-                     game->getFontSize(),
-                     0, GL_RGBA, GL_UNSIGNED_BYTE,
-                     surf->pixels);
-        glPushMatrix();
-        glPushMatrix();
-        glRotatef(rotx, -ONE, ZERO, ZERO);
-        glRotatef(HALF_CIRCLE/2, ZERO, ONE, ZERO);
-        glMatrixMode(GL_TEXTURE);
-        glPushMatrix();
-        glTranslatef(len/2, ZERO, ZERO);
-        glRotatef(HALF_CIRCLE/2, ZERO, ZERO, ONE);
-        glRotatef(HALF_CIRCLE, ONE, ZERO, ZERO);
-        gluCylinder(base, rad, rad, len, 12, 12);
+            glEnable(GL_TEXTURE_2D);
+            glColor3f(col.x, col.y, col.z);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            glTranslatef(place.x,place.y, place.z);
+            gluQuadricTexture(base, GL_TRUE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                         game->getFontSize(),
+                         game->getFontSize(),
+                         0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         surf->pixels);
+            glPushMatrix();
+                glPushMatrix();
+                    glRotatef(rotx, -ONE, ZERO, ZERO);
+                    glRotatef(HALF_CIRCLE/2, ZERO, ONE, ZERO);
+                    glMatrixMode(GL_TEXTURE);
+                    glPushMatrix();
+                        glTranslatef(len/2, ZERO, ZERO);
+                        glRotatef(HALF_CIRCLE/2, ZERO, ZERO, ONE);
+                        glRotatef(HALF_CIRCLE, ONE, ZERO, ZERO);
+                        gluCylinder(base, rad, rad, len, 12, 12);
+                    glPopMatrix();
+                    glMatrixMode(GL_MODELVIEW);
+                glPopMatrix();
+                glColor3f(col.x, col.y, col.z);
+                glDisable(GL_TEXTURE_2D);
+                glPushMatrix();
+                    glTranslatef(0, ZERO, ZERO);
+                    gluSphere(base, rad, 12, 12);
+                glPopMatrix();
+                glPushMatrix();
+                    glTranslatef(len, ZERO, ZERO);
+                    gluSphere(base, rad, 12, 12);
+                glPopMatrix();
+            glPopMatrix();
         glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-        glPopMatrix();
-        glColor3f(col.x, col.y, col.z);
-        glDisable(GL_TEXTURE_2D);
-        glPushMatrix();
-        glTranslatef(0, ZERO, ZERO);
-        gluSphere(base, rad, 12, 12);
-        glPopMatrix();
-        glPushMatrix();
-        glTranslatef(len, ZERO, ZERO);
-        gluSphere(base, rad, 12, 12);
-        glPopMatrix();
-        glPopMatrix();
-        glPopMatrix();
+        gluDeleteQuadric(base);
+        SDL_FreeSurface(surf);
+        SDL_FreeSurface(textSurf);
     }
 }
 
 Pill& Pill::animate(double secPerFrame){
 
     if(active){
-        Vaus * v = game->getVaus();
-        if((place.z >= v->size.z/2 - rad)
-                && collides(v->place.x - v->rad,
-                            v->place.x + v->rad,
-                            v->place.y + v->rad,
-                            v->place.y - v->rad)) {
+        Vaus v = game->getVaus();
+        if((place.z >= v.size.z/2 - rad)
+                && collides(v.place.x - v.rad,
+                            v.place.x + v.rad,
+                            v.place.y + v.rad,
+                            v.place.y - v.rad)) {
             score += SCOREBONUS;
             active = false;
-            v->reset(); //maybe game->resetVaus();
+            v.reset(); //maybe game->resetVaus();
             game->setBonusMode(type);
 
             if(type == P){
@@ -202,4 +201,8 @@ bool Pill::collides(float left,
             return false;
         }
     }
+}
+
+Pill Pill::getPill( Game * g){
+    return Pill(Point3f(0,0,-5), *g);
 }

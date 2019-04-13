@@ -25,6 +25,8 @@
 #define MINFRAMEDURATION  10 //milliseconds per frame
 #define MAXFRAMEDURATION  100
 
+#define CAMERA_ROTATION   0.02f
+
 typedef enum{
     P,       // Grey:    Player life (kanonaki)
     B,       // Pink:    Boost to next level
@@ -75,5 +77,7 @@ public:
         str << "arka" << levelType() << "_hires";
         return str.str();
     }
+
+    void handleKeys();
 };
 #endif //_GAME_H

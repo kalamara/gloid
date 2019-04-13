@@ -28,6 +28,9 @@ public:
     Ball& launch();
     Ball& reinit(const Point3f& init);
     Ball& bounce(const Point3f& x);
+
+    static Ball getBall(Game * g);
+
 private:
      float rad;
      GLUquadricObj* base;

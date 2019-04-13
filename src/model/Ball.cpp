@@ -12,18 +12,18 @@ Ball::Ball(Game &g){
     nextspeed = Point3f();
     initspeed = Point3f(initX, initX, 2*initX);
     launchspeed = Point3f(initspeed);
-    active = false;
+    active = true;
     rad = base_rad;
     setSize(2*rad, 2*rad, 2*rad);
-    base = gluNewQuadric();
+
 }
 
 Ball::~Ball(){
-    gluDeleteQuadric(base);
+
 }
 
 void Ball::display(){
-
+    base = gluNewQuadric();
     if(active){
 
         glPushMatrix();
@@ -35,6 +35,7 @@ void Ball::display(){
         glPopMatrix();
 
     }
+    gluDeleteQuadric(base);
 }
 
 Ball& Ball::animate(double secPerFrame){
@@ -286,4 +287,8 @@ Ball& Ball::launch(){
       game->playSound("launch");//WAV_LAUNCH);
    }
    return * this;
+}
+
+Ball Ball::getBall(Game * g){
+    return Ball(*g);
 }

@@ -15,18 +15,19 @@ Alien::Alien(Game &g){
     speed = Point3f();
     game = &g;
     setSize(4*baseRad, 4*baseRad, 4*baseRad);
-    base = gluNewQuadric();
+
 }
 
 Alien::~Alien(){
-    gluDeleteQuadric(base);
+
 }
 
 void Alien::display(){
+
     type = game->levelType();
 
     if(active){
-
+        base = gluNewQuadric();
         glPushMatrix();
         glTranslatef(place.x, place.y, place.z);
 
@@ -128,6 +129,7 @@ void Alien::display(){
             break;
         }
         glPopMatrix();
+        gluDeleteQuadric(base);
     }
 }
 
@@ -140,7 +142,7 @@ Alien &Alien::animate(double secPerFrame){
     if(active){
         // If the alien flies off the screen, it dies
         if(place.z > ZERO){
-            die();
+        /*    die();
             Vaus * v = game->getVaus();
             R = baseRad + v->rad;
             Point3f distance(place.x - v->place.x,
@@ -149,12 +151,12 @@ Alien &Alien::animate(double secPerFrame){
             M = distance.res3f();//distance resultant
             if(M < R){
                 game->killVaus();
-                /*vaus->active = false;
+                vaus->active = false;
                 for(i = 0; i < VAUS_PARTICLES; i++){
                vaus->explosion[i].active = TRUE;
                vaus->explosion[i].explode(vaus->place, vaus->pal, VAUS_COLORS, vaus->particle_rad);
-            }*/
             }
+            }*/
         }else{
             //FIXME: rel = Functions::coords(&place);
             int i = 0;
@@ -310,3 +312,6 @@ void Alien::solidTetrahedron(float side)
    glEnd();
 }
 
+Alien Alien::getAlien(Game * g){
+    return Alien(*g);
+}

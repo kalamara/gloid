@@ -21,8 +21,8 @@ Loading::~Loading(){
 
 int Loading::next(){
     if(phase == LOAD_DONE){
-
-        return STEP_PLAY;//STEP_WAITING;
+        //return STEP_WAITING;
+        return STEP_PLAY;
     }
     return STEP_LOADING;
 }

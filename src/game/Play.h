@@ -25,14 +25,16 @@ typedef enum
 #define WARP_SIZE 5.0f
 
 class Play: public Step,  public Hud{
+
     class TextBody go;
     class TextBody up1;
     class TextBody score;
     class TextBody debug;
-    float lightPos[3] = {-20.0, 20.0, -10.0};
-    Point3f cameraPos = {-20.0, 20.0, -10.0};
+    float lightPos[3] = {-400.0f, 400.0f, -100.0f};
+
     std::pair<GLuint, SDL_Surface> background;
     std::pair<GLuint, SDL_Surface> warp;
+    std::pair<GLuint, SDL_Surface> life;
     bool flipWarp = false;
 
     //average number of milliseconds per frame over last ten frames
@@ -40,12 +42,14 @@ class Play: public Step,  public Hud{
 public:
     int phase = PLAY_GO;
     //int old_phase = PLAY_GO;
-    Play(Game & g);
+    Play(Game & g) ;
     ~Play();
     Play & draw();
     Play & update();
     int next();
     void displayBackground();
     void displayWarp();
+    void displayLives();
+
 };
 #endif //_GAME_H
