@@ -8,6 +8,7 @@
 #include "model/Pill.h"
 #include "model/Alien.h"
 #include "model/Shot.h"
+#include "model/Crosshair.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -348,7 +349,6 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().expectOneCall("SDL_FillRect");
     mock().expectOneCall("SDL_UpperBlit");
 
-
     mock().expectOneCall("glEnable");
     mock().expectOneCall("glTexEnvf");
     mock().expectOneCall("glDisable");
@@ -381,8 +381,6 @@ TEST(ModelTestGroup, PillIsWhatUC){
     mock().expectOneCall("Game::setBonusMode");
     p->animate(0.01f);
     CHECK(!p->active);
-
-
 }
 
 TEST(ModelTestGroup, AlienIsWhatUC){
@@ -434,6 +432,34 @@ TEST(ModelTestGroup, ShotIsWhatUC){
     s.animate(0.01f).display();
     mock().checkExpectations();
     DOUBLES_EQUAL( 0.6, s.place.z, FLOAT_PRECISION);
+}
+
+TEST(ModelTestGroup, CrosshairIsWhatUC){
+
+    auto gm = Game();
+    auto c = Crosshair(gm);
+    CHECK(c.size.eq(Point3f(1.0f, 1.0f, 0.0)));
+
+    mock().expectNCalls(1,"Engine::now");
+    mock().expectNCalls(1,"glBindTexture");
+    mock().expectNCalls(1,"glTexImage2D");
+    mock().expectNCalls(2,"glTexParameteri");
+
+    mock().expectNCalls(1,"glEnable");
+    mock().expectNCalls(1,"glDisable");
+    mock().expectNCalls(1,"glBegin");
+    mock().expectNCalls(1,"glEnd");
+
+    mock().expectNCalls(1,"glPushMatrix");
+    mock().expectNCalls(1,"glPopMatrix");
+    mock().expectNCalls(1,"glTranslatef");
+
+    mock().expectNCalls(4,"glTexCoord2f");
+    mock().expectNCalls(4,"glVertex3f");
+
+    c.animate(0.01f).display();
+
+    mock().checkExpectations();
 }
 
 

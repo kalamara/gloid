@@ -74,7 +74,6 @@ public:
     int     type;         // Type of brick: normal, silver, gold: 0, 1, 2
     // Colors imported from 3DSMax
     Point3f rgb;
-
     int  hit();
     Brick(class Game &g,
           const Point3f& color,

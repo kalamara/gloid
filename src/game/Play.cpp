@@ -77,8 +77,7 @@ Play & Play::update(){
         phase++;
         printText("GO",go);
         game->playSound("go");
-    }else{
-
+    } else {
         printText("1UP", up1, Red, 0);
 
         std::stringstream text;
@@ -116,13 +115,9 @@ int Play::next(){
     return STEP_PLAY;
 }
 
-
-
 Play & Play::draw(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
- //   glEnable (GL_TEXTURE_2D);
 
     // Reset the OpenGL viewport
     glViewport(0, 0,
@@ -156,7 +151,6 @@ Play & Play::draw(){
     if(game->bonusMode == B){
         displayWarp();
     }
-
     glTranslatef(ZERO, ZERO, -SCENE_AIR);
 
     glColor4f(ZERO, ZERO, ZERO, ONE);
@@ -166,7 +160,7 @@ Play & Play::draw(){
     glDisable(GL_BLEND);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 //display 3d models
 
@@ -180,7 +174,7 @@ Play & Play::draw(){
         p.display();
     }
     for(auto b : game->bricks){
-        b.display();
+        b.second.display();
     }
 //    for(auto s : game->shots){
 //        s.display();

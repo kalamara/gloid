@@ -20,7 +20,7 @@ class World{
 
 public:
     std::unique_ptr<Vaus> vaus;
-    std::vector<Brick> bricks;
+    std::map<Point3i, Brick> bricks;
     std::list<Ball> balls;
     std::list<Alien> aliens;
     //std::vector<Particle> particles;

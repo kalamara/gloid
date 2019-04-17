@@ -111,6 +111,84 @@ TEST(FunctionsTestGroup, chase_test){
 
 }
 
+TEST(FunctionsTestGroup, comparison_test){
+    Point3i a(1,2,3);
+    Point3i b(1,2,3);
+    CHECK(a == b);
+    CHECK(a >= b);
+    CHECK(a <= b);
+
+    b.Z = 4;
+    CHECK(b > a);
+    CHECK(b >= a);
+    CHECK(a < b);
+    CHECK(a <= b);
+    CHECK(a != b);
+
+    b.Y = 0;
+    CHECK(b < a);
+
+    a.X = -1;
+    CHECK(b > a);
+
+    const Point3i c(0,1,2);
+    const Point3i d(0,1,3);
+    CHECK(d > c)
+
+}
+
+TEST(FunctionsTestGroup, raycast_test){
+    Point3f start; //(0,0,0)
+    Point3f speed;
+    //invalid axis should give equal to start
+    Point3f collision = start.raycast(speed, 0, ONE);
+    CHECK(collision.eq(start));
+
+    //at zero speed raycast should equal start on every axis
+    collision = start.raycast(speed, AXIS_X, ONE);
+    CHECK(collision.eq(start));
+    collision = start.raycast(speed, AXIS_Y, ZERO);
+    CHECK(collision.eq(start));
+    collision = start.raycast(speed, AXIS_Z, -ONE);
+    CHECK(collision.eq(start));
+
+    //at speed(u,u,u), on any plane p, collision point is (p,p,p)
+    speed.x = ONE;
+    speed.y = ONE;
+    speed.z = ONE;
+    collision = start.raycast(speed, AXIS_X, ZERO);
+    CHECK(collision.eq(Point3f(ZERO,ZERO,ZERO)));
+    collision = start.raycast(speed, AXIS_X, ONE);
+    CHECK(collision.eq(Point3f(ONE,ONE,ONE)));
+    collision = start.raycast(speed, AXIS_Z, 2*ONE);
+    CHECK(collision.eq(Point3f(2*ONE,2*ONE,2*ONE)));
+    //at speed(u,0,0), on (x=p), collision point is (p,0,0)
+    speed.x = ONE;
+    speed.y = ZERO;
+    speed.z = ZERO;
+    collision = start.raycast(speed, AXIS_X, 2*ONE);
+    CHECK(collision.eq(Point3f(2*ONE,ZERO,ZERO)));
+    //on other planes collision is equal to start (0,0,0)
+    collision = start.raycast(speed, AXIS_Y, 2*ONE);
+    CHECK(collision.eq(start));
+    collision = start.raycast(speed, AXIS_Z, 2*ONE);
+    CHECK(collision.eq(start));
+
+    //at speed(u,u,0), on (x=p), collision point is (p,p,0)
+    speed.x = -ONE;
+    speed.y = -ONE;
+    speed.z = ZERO;
+    collision = start.raycast(speed, AXIS_X, 2*ONE);
+    CHECK(collision.eq(Point3f(-2*ONE,-2*ONE,ZERO)));
+    collision = start.raycast(speed, AXIS_Y, 2*ONE);
+    CHECK(collision.eq(Point3f(-2*ONE,-2*ONE,ZERO)));
+     //on (z=p) =>(0,0,0)
+    collision = start.raycast(speed, AXIS_Z, 2*ONE);
+    CHECK(collision.eq(start));
+
+}
+
+
 int main(int ac, char** av)
 {
     return CommandLineTestRunner::RunAllTests(ac, av);

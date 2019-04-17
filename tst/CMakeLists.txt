@@ -33,6 +33,8 @@ add_executable(model_test
     ${SUT}/model/Alien.cpp
     ${SUT}/model/Shot.h
     ${SUT}/model/Shot.cpp
+    ${SUT}/model/Crosshair.h
+    ${SUT}/model/Crosshair.cpp
     mock_sdl_opengl.h
     mock_sdl_opengl.cpp
     model_test.cpp)

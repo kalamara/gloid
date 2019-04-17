@@ -25,8 +25,6 @@ add_executable(${PROJECT_NAME}
     "Point.h"
     "Point.cpp"
     "GLoid.h"
-#    "game/Go.h"
-#    "game/Go.cpp"
     "game/Intro.h"
     "game/Intro.cpp"
     "game/Loading.h"
@@ -52,6 +50,8 @@ add_executable(${PROJECT_NAME}
     "model/Alien.cpp"
     "model/Shot.h"
     "model/Shot.cpp"
+    "model/Crosshair.h"
+    "model/Crosshair.cpp"
     "GLoid.cpp")
 
 target_link_libraries(gloid

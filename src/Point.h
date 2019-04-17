@@ -69,8 +69,23 @@ public:
     }
     // Calculate the speed components of object A chasing object B at speed U
     Point3f chase(const Point3f &other, float U);
+
+/**  @abstract find raycasting point on plane where
+ * P(axis = c) where c is this(axis) (+-) dist eg. P(x = c)
+ * sign is the same as speed component on axis, value is iqual to dist
+ *
+ * @param speed given speed vector U
+ * @param axis axis of movement
+ * @param distance of plane from start on axis of movement
+ * @return point of collision on plane
+ * */
+    Point3f raycast(const Point3f &speed, int axis, float dist);
 };
 
+/**
+ * @brief Brick coordinates (maybe should move to Brick class)
+ *
+ */
 class Point3i{
 public:
   int X = 0;
@@ -93,11 +108,42 @@ public:
   //convertor from float
   Point3i(const Point3f& other);
   //equals
-  bool eq(const Point3i& other){
+  bool eq(const Point3i& other) const{
       return X == other.X
-              && Y == other.Y
-              && Z == other.Z;
+               && Y == other.Y
+               && Z == other.Z;
   }
+  //larger
+  bool larger(const Point3i& other) const{
+      return  X > other.X
+                || (X == other.X && Y > other.Y)
+                || (X == other.X && Y == other.Y) && Z > other.Z;
+  }
+  bool operator ==(const Point3i& other) const{
+
+      return eq(other);
+  }
+  bool operator !=(const Point3i& other) const{
+
+      return !eq(other);
+  }
+  bool operator <=(const Point3i& other) const{
+
+      return !larger(other);
+  }
+  bool operator >=(const Point3i& other) const{
+
+      return eq(other) || larger(other);
+  }
+  bool operator >(const Point3i& other) const{
+
+      return larger(other);
+  }
+  bool operator <(const Point3i& other) const{
+
+      return !larger(other) && !eq(other);
+  }
+
 };
 
 #endif //_POINT_H

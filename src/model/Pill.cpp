@@ -17,12 +17,6 @@ Pill::Pill(const Point3f &where,
     col.x = Palette[type].b/255;
     col.y = Palette[type].g/255;
     col.z = Palette[type].r/255;
-
-    //auto b = Palette[type];
-    //auto f = Palette[RGB_BLACK];
-
-    //label = PillLabels[type];
-
 }
 
 Pill::~Pill(){
@@ -78,11 +72,11 @@ void Pill::display(){
             glPushMatrix();
                 glPushMatrix();
                     glRotatef(rotx, -ONE, ZERO, ZERO);
-                    glRotatef(HALF_CIRCLE/2, ZERO, ONE, ZERO);
+                    glRotatef(RIGHT_ANGLE, ZERO, ONE, ZERO);
                     glMatrixMode(GL_TEXTURE);
                     glPushMatrix();
                         glTranslatef(len/2, ZERO, ZERO);
-                        glRotatef(HALF_CIRCLE/2, ZERO, ZERO, ONE);
+                        glRotatef(RIGHT_ANGLE, ZERO, ZERO, ONE);
                         glRotatef(HALF_CIRCLE, ONE, ZERO, ZERO);
                         gluCylinder(base, rad, rad, len, 12, 12);
                     glPopMatrix();

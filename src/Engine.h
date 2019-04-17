@@ -7,6 +7,7 @@
 #define ROOT2 1.414213f
 #define ROOT3 1.732051f
 
+#define RIGHT_ANGLE 90.0f
 #define HALF_CIRCLE 180.0f
 
 #define GRAVITY	9.81f

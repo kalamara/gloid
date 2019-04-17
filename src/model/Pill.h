@@ -34,9 +34,6 @@ public:
     int score = 0;
     Point3f col;     // Pill color
     char label;
-//    SDL_Surface* surf;
-//    SDL_Surface* textSurf;
-    //std::unique_ptr<class text2d> text;
 
     void display();
     Pill& animate(double secPerFrame);

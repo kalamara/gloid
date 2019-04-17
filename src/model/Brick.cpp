@@ -109,50 +109,6 @@ Brick& Brick::animate(double secPerFrame){
     return *this;
 }
 
-Point3f Brick::computeVertex(int tog,
-                             int dir,
-                             int dim,
-                             int neg,
-                             float length,
-                             Point3f& vertex)
-{
-    float unary = length/2.0f;	//unit
-    float big = unary*1.5f;
-    switch(dim){
-    case 0:
-        vertex.z = (1-2*dir)*big;
-        if(dir==0){
-            vertex.y = (2*neg-1)*unary;
-            vertex.x = -vertex.y*(2*tog-1);
-        }else{
-            vertex.x = (2*neg-1)*unary;
-            vertex.y = -vertex.x*(2*tog-1);
-        }
-        break;
-    case 1:
-        vertex.y = (1-2*dir)*big;
-        if(dir==0){
-            vertex.x = (2*neg-1)*unary;
-            vertex.z = -vertex.x*(2*tog-1);
-        }else{
-            vertex.z = (2*neg-1)*unary;
-            vertex.x = -vertex.z*(2*tog-1);
-        }
-        break;
-    case 2:
-        vertex.x =(1-2*dir)*big;
-        if(dir==0){
-            vertex.z = (2*neg-1)*unary;
-            vertex.y = -vertex.z*(2*tog-1);
-        }else{
-            vertex.y = (2*neg-1)*unary;
-            vertex.z = -vertex.y*(2*tog-1);
-        }
-        break;
-    }
-    return vertex;
-}
-
 void Brick::solidRhombik(){
 
     for(int dim = 0; dim < 3; dim++){

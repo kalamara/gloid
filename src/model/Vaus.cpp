@@ -65,10 +65,10 @@ void Vaus::display(){
 
             if(rot){
                 glTranslatef(paparia.x * (1 - 2 * dir), paparia.y, ZERO);
-                glRotatef(HALF_CIRCLE/2, ONE, ZERO, ZERO);
+                glRotatef(RIGHT_ANGLE, ONE, ZERO, ZERO);
             }else{
                 glTranslatef(-paparia.y, paparia.x * (1 - 2 * dir), ZERO);
-                glRotatef(HALF_CIRCLE/2, ZERO, ONE, ZERO);
+                glRotatef(RIGHT_ANGLE, ZERO, ONE, ZERO);
             }
 
             gluCylinder(base, 0.625f, 0.625f, 1.25f, 12, 12);

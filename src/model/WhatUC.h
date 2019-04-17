@@ -1,5 +1,28 @@
 #ifndef _WHATUC_H_
 #define _WHATUC_H_
+
+// Colors
+typedef enum{
+   RGB_GREY,
+   RGB_PINK,
+   RGB_BLUE,
+   RGB_RED,
+   RGB_GREEN,
+   RGB_MAGENTA,
+   RGB_ORANGE,
+   RGB_YELLOW,
+   RGB_WHITE,
+   RGB_BLACK,
+   N_RGB_COLORS
+}RGB_COLORS;
+
+//axes of motion
+typedef enum {
+    AXIS_X = 0x1,
+    AXIS_Y = 0x2,
+    AXIS_Z = 0x4,
+} AXES;
+
 class Point3f;
 //base class for any visible models.
 //it's a Curiously Recurring Template Pattern:
