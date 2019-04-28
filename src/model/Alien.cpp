@@ -2,6 +2,7 @@
 
 #include "WhatUC.h"
 #include "Vaus.h"
+#include "Crosshair.h"
 #include "Ball.h"
 #include "Brick.h"
 #include "Alien.h"

@@ -2,13 +2,13 @@
 
 #include "model/WhatUC.h"
 #include "model/Particle.h"
+#include "model/Crosshair.h"
 #include "model/Ball.h"
 #include "model/Vaus.h"
 #include "model/Brick.h"
 #include "model/Pill.h"
 #include "model/Alien.h"
 #include "model/Shot.h"
-#include "model/Crosshair.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -150,12 +150,12 @@ TEST(ModelTestGroup, BallIsWhatUC){
     mock().expectNCalls(2,"glPushMatrix");
     mock().expectOneCall("glTranslatef");
     mock().expectOneCall("glColor3f");
-     mock().expectNCalls(1,"gluSphere");
+    mock().expectNCalls(1,"gluSphere");
     CHECK(b.size.eq(Point3f(1.25f, 1.25f, 1.25f)));
     CHECK(b.speed.eq(Point3f()));
     CHECK(b.nextbounce.eq(Point3f()));
     CHECK(b.nextspeed.eq(Point3f()));
-    CHECK(b.launchspeed.eq(Point3f(10.0f, 10.0f, 20.0f)));
+    CHECK(b.launchspeed.eq(Point3f(100.0f, 100.0f, 200.0f)));
     mock().expectNCalls(2,"glPopMatrix");
     //should have animate and mock display in place
     //inactive, do nothing
@@ -204,6 +204,7 @@ TEST(ModelTestGroup, BallAnimation){
     CHECK(b.speed.eq(Point3f(1.0f, 2.0f, 3.0f)));
     mock().checkExpectations();
 
+
     //if it is trapped outside level, bring it back
     //if it is trapped inside a brick, bring it back
     //if  z < 0, lose
@@ -211,14 +212,12 @@ TEST(ModelTestGroup, BallAnimation){
     //if on an alien, ricochet
     //if on vaus, bounce
     //if on wall, bounce
-    //mock().expectOneCall("gluDeleteQuadric");
+
+
 }
 
 TEST(ModelTestGroup, VausIsWhatUC){
     auto gm = Game();
-
-
-
     auto v = Vaus(gm);
 
     CHECK(v.active);
@@ -229,7 +228,6 @@ TEST(ModelTestGroup, VausIsWhatUC){
     DOUBLES_EQUAL(5.0f, v.size.x, FLOAT_PRECISION);
     DOUBLES_EQUAL(5.0f, v.size.y, FLOAT_PRECISION);
     DOUBLES_EQUAL(1.25f, v.size.z, FLOAT_PRECISION);
-
 
     mock().expectOneCall("gluQuadricDrawStyle");
     mock().expectNCalls(10,"glPushMatrix");
@@ -286,8 +284,6 @@ TEST(ModelTestGroup, VausIsWhatUC){
     DOUBLES_EQUAL(45.0f, v.place.y, FLOAT_PRECISION);
     CHECK_FALSE(v.warping);
     mock().checkExpectations();
-
-
 }
 
 TEST(ModelTestGroup, BrickIsWhatUC){
@@ -445,8 +441,8 @@ TEST(ModelTestGroup, CrosshairIsWhatUC){
     mock().expectNCalls(1,"glTexImage2D");
     mock().expectNCalls(2,"glTexParameteri");
 
-    mock().expectNCalls(1,"glEnable");
-    mock().expectNCalls(1,"glDisable");
+    mock().expectNCalls(2,"glEnable");
+    mock().expectNCalls(2,"glDisable");
     mock().expectNCalls(1,"glBegin");
     mock().expectNCalls(1,"glEnd");
 

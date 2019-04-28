@@ -112,13 +112,15 @@ TEST(FunctionsTestGroup, chase_test){
 }
 
 TEST(FunctionsTestGroup, comparison_test){
+//integer vectors are compared as digits Z Y X  by order of significance
+
     Point3i a(1,2,3);
     Point3i b(1,2,3);
     CHECK(a == b);
     CHECK(a >= b);
     CHECK(a <= b);
 
-    b.Z = 4;
+    b.X = 4;
     CHECK(b > a);
     CHECK(b >= a);
     CHECK(a < b);
@@ -128,12 +130,41 @@ TEST(FunctionsTestGroup, comparison_test){
     b.Y = 0;
     CHECK(b < a);
 
-    a.X = -1;
+    a.Z = -1;
     CHECK(b > a);
 
-    const Point3i c(0,1,2);
-    const Point3i d(0,1,3);
-    CHECK(d > c)
+    const Point3i c(2,1,0);
+    const Point3i d(3,1,0);
+    CHECK(d > c);
+}
+
+TEST(FunctionsTestGroup, distance_test){
+    Point3f z = Point3f(ZERO, ZERO, ZERO);
+    CHECK(z.dist(z) >= ZERO);
+    CHECK(z.dist(z) <= FLOAT_PRECISION);
+
+    Point3f ones = Point3f(ONE, ZERO, ZERO);
+
+    CHECK(ones.dist(ones) >= ZERO);
+    CHECK(abs(ones.dist(ones)) <= FLOAT_PRECISION);
+
+    CHECK(z.dist(ones) >= ZERO);
+    CHECK(abs(z.dist(ones) - ONE) <= FLOAT_PRECISION);
+
+    ones.y = ONE;
+    CHECK(abs(z.dist(ones) - ROOT2) <= FLOAT_PRECISION);
+
+    ones.z = ONE;
+    CHECK(abs(z.dist(ones) - ROOT3) <= FLOAT_PRECISION);
+
+    ones.z = ONE;
+    CHECK(abs(ones.dist(z) - ROOT3) <= FLOAT_PRECISION);
+
+    ones = Point3f(-ONE, -ONE, -ONE);
+    CHECK(abs(ones.dist(z) - ROOT3) <= FLOAT_PRECISION);
+
+    Point3f twos = Point3f(2.0f, 2.0f, 2.0f);
+    CHECK(abs(ones.dist(twos) - (3.0f * ROOT3)) <= FLOAT_PRECISION);
 
 }
 
@@ -159,9 +190,9 @@ TEST(FunctionsTestGroup, raycast_test){
     collision = start.raycast(speed, AXIS_X, ZERO);
     CHECK(collision.eq(Point3f(ZERO,ZERO,ZERO)));
     collision = start.raycast(speed, AXIS_X, ONE);
-    CHECK(collision.eq(Point3f(ONE,ONE,ONE)));
+    CHECK(collision.eq(Point3f(ONE,ONE,-ONE)));
     collision = start.raycast(speed, AXIS_Z, 2*ONE);
-    CHECK(collision.eq(Point3f(2*ONE,2*ONE,2*ONE)));
+    CHECK(collision.eq(Point3f(-2*ONE,-2*ONE,2*ONE)));
     //at speed(u,0,0), on (x=p), collision point is (p,0,0)
     speed.x = ONE;
     speed.y = ZERO;
@@ -185,9 +216,21 @@ TEST(FunctionsTestGroup, raycast_test){
      //on (z=p) =>(0,0,0)
     collision = start.raycast(speed, AXIS_Z, 2*ONE);
     CHECK(collision.eq(start));
-
 }
 
+
+
+TEST(FunctionsTestGroup, prefix_test){
+    Point3f speed(0,0,0);
+
+    CHECK(speed.prefix().eq(Point3i(1,1,1)));
+
+    speed.x = 1;
+    speed.y = -1;
+    speed.z = -12345;
+
+    CHECK(speed.prefix().eq(Point3i(1,-1,-1)));
+}
 
 int main(int ac, char** av)
 {

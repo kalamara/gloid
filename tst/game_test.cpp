@@ -5,6 +5,7 @@
 #include "CppUTest/CommandLineTestRunner.h"
 
 #include "model/Alien.h"
+#include "model/Crosshair.h"
 #include "model/Ball.h"
 #include "model/Brick.h"
 #include "model/Particle.h"
@@ -80,7 +81,13 @@ Alien Alien::getAlien(Game * g){
 void Alien::display(void){}
 Alien& Alien::animate(double secPerFrame){}
 
-Ball::Ball(class Game &g){}
+Crosshair::Crosshair(Game & g){}
+Crosshair::~Crosshair(){}
+
+void Crosshair::display(void){}
+Crosshair& Crosshair::animate(double secPerFrame){}
+
+Ball::Ball(class Game &g) : cross(g){}
 Ball::~Ball(){}
 
 void Ball::display(void){}

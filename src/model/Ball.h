@@ -1,10 +1,15 @@
 #ifndef _BALL_H_
 #define _BALL_H_
 class Point3f;
+class Crosshair;
 
 class Ball: public WhatUC<Ball>{
+private:
+    float rad;
+    GLUquadricObj* base;
+
     static constexpr float base_rad = 0.625f;
-    static constexpr float initX = 10.0f;
+    static constexpr float initX = 100.0f;
     static constexpr float grey = 0.2f;
     static const int slices = 12;
     static const int stacks = 12;
@@ -14,6 +19,7 @@ class Ball: public WhatUC<Ball>{
 public:
     bool launched = false;
     int nextaxis;
+    Crosshair cross;
     Point3f speed;
     Point3f nextbounce;
     Point3f nextspeed;
@@ -30,10 +36,6 @@ public:
     Ball& bounce(const Point3f& x);
 
     static Ball getBall(Game * g);
-
-private:
-     float rad;
-     GLUquadricObj* base;
 };
 
 #endif //_BALL_H_

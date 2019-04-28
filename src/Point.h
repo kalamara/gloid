@@ -79,7 +79,20 @@ public:
  * @param distance of plane from start on axis of movement
  * @return point of collision on plane
  * */
-    Point3f raycast(const Point3f &speed, int axis, float dist);
+    Point3f raycast(const Point3f &speed, int axis, float dist) const;
+
+/**
+ * @brief prefix
+ * @return unary vector with negative or positive ones
+ */
+    Point3i prefix() const;
+
+/**
+  * @brief euclidean distance form other point
+  * @param other
+  * @return distance
+  */
+    float dist(const Point3f other) const;
 };
 
 /**
@@ -113,11 +126,12 @@ public:
                && Y == other.Y
                && Z == other.Z;
   }
-  //larger
-  bool larger(const Point3i& other) const{
-      return  X > other.X
-                || (X == other.X && Y > other.Y)
-                || (X == other.X && Y == other.Y) && Z > other.Z;
+  //greater than
+  bool gt(const Point3i& other) const{
+      //Z is most important, followed by Y, X
+      return  Z > other.Z
+                || (Z == other.Z && Y > other.Y)
+                || (Z == other.Z && Y == other.Y) && X > other.X;
   }
   bool operator ==(const Point3i& other) const{
 
@@ -129,21 +143,20 @@ public:
   }
   bool operator <=(const Point3i& other) const{
 
-      return !larger(other);
+      return !gt(other);
   }
   bool operator >=(const Point3i& other) const{
 
-      return eq(other) || larger(other);
+      return eq(other) || gt(other);
   }
   bool operator >(const Point3i& other) const{
 
-      return larger(other);
+      return gt(other);
   }
   bool operator <(const Point3i& other) const{
 
-      return !larger(other) && !eq(other);
+      return !gt(other) && !eq(other);
   }
-
 };
 
 #endif //_POINT_H

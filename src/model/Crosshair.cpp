@@ -28,7 +28,7 @@ void Crosshair::display(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTranslatef(place.x, place.y, place.z);
-
+    glEnable(GL_BLEND);
     glTexImage2D(GL_TEXTURE_2D,
                  0,
                  GL_RGB,
@@ -76,7 +76,7 @@ void Crosshair::display(){
     glTexCoord2f(ZERO, ZERO);
     glVertex3f(-ONE, -ONE, ZERO);
     glEnd();
-
+    glDisable(GL_BLEND);
     glPopMatrix();
     glDisable(GL_TEXTURE_2D);
 }
@@ -85,16 +85,47 @@ Crosshair& Crosshair::animate(double secPerFrame){
     return *this;
 }
 
-Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
 //raycasting algorithm:
+Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
+
 //find limits for collision to the background
     Point3f lim;
+//direction of movement in terms of prefixes
+    Point3i dir = speed.prefix();
+    lim.x = dir.X * SCENE_MAX;
+    lim.y = dir.Y * SCENE_MAX;
+    lim.z = dir.Z > 0 ? SCENE_MIN - SCENE_MAX : 0.0f;
 //find candidate points of collision to background or bricks
-    Point3f candid[3];
+    std::map<int, Point3f> candidates; //a candidate per axis
+    std::map<int, float> distances; //each candidates' distance from start
+
+//actual axis of movement including information of motion direction
+    int kx = dir.X * AXIS_X;
+    int ky = dir.Y * AXIS_Y;
+    int kz = dir.Z * AXIS_Z;
+
+    candidates[kx] = start.raycast(speed, AXIS_X, lim.x - start.x);
+    candidates[ky] = start.raycast(speed, AXIS_Y, lim.y - start.y);
+    candidates[kz] = start.raycast(speed, AXIS_Z, -abs(lim.z - start.z));
+
     //on each axis, moving away from the start
         //for each layer of bricks
             //raycast point of collision
             //check if brick is active, otherwise move to next layer
-//compare all 3 and find the one that's closest to start
+
+    distances[kx] = candidates[kx].dist(start);
+    distances[ky] = candidates[ky].dist(start);
+    distances[kz] = candidates[kz].dist(start);
+
+    //compare all 3 and find the one that's closest to start
+    auto closest = std::min_element(begin(distances),
+                                    end(distances),
+                                    [](const std::pair<int, float>& p1,
+                                       const std::pair<int, float>& p2) {
+
+                                        return p1.second < p2.second;
+                                    });
 //set crosshair place and axis
+    axis = closest->first;
+    place.deepcopy(candidates[axis]);
 }

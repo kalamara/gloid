@@ -1,6 +1,7 @@
 #include "GLoid.h"
 
 #include "model/WhatUC.h"
+#include "model/Crosshair.h"
 #include "model/Ball.h"
 #include "model/Brick.h"
 #include "model/Vaus.h"
@@ -169,13 +170,14 @@ Play & Play::draw(){
     }
     for(auto b : game->balls){
         b.display();
+        b.cross.display();
     }
     for(auto p : game->pills){
         p.display();
     }
-    for(auto b : game->bricks){
-        b.second.display();
-    }
+//    for(auto b : game->bricks){
+//        b.second.display();
+//    }
 //    for(auto s : game->shots){
 //        s.display();
 //    }

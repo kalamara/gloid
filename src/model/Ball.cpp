@@ -1,11 +1,12 @@
 #include "GLoid.h"
 
 #include "WhatUC.h"
+#include "Crosshair.h"
 #include "Ball.h"
 #include "Brick.h"
+#include "Vaus.h"
 
-
-Ball::Ball(Game &g){
+Ball::Ball(Game &g) : cross(g){
     game = &g;
     speed = Point3f();
     nextbounce = Point3f();
@@ -15,7 +16,6 @@ Ball::Ball(Game &g){
     active = true;
     rad = base_rad;
     setSize(2*rad, 2*rad, 2*rad);
-
 }
 
 Ball::~Ball(){
@@ -36,9 +36,53 @@ void Ball::display(){
 
     }
     gluDeleteQuadric(base);
+
 }
 
 Ball& Ball::animate(double secPerFrame){
+    float U;
+    Vaus vaus = game->getVaus();
+    if(!launched){
+        U = 2*launchspeed.res3f();
+        setPlace(vaus.prevx + vaus.size.x * launchspeed.x / U,
+                 vaus.prevy + vaus.size.y * launchspeed.y / U,
+                -vaus.size.z / 2 - rad);
+
+        cross.update(place, launchspeed);
+        if(vaus.fire){
+            launch();
+        }
+    } else {
+        place.x += speed.x * secPerFrame;
+        place.y += speed.y * secPerFrame;
+        place.z -= speed.z * secPerFrame;
+
+        if(place.z < SCENE_MIN - SCENE_MAX){
+           place.z += rad;
+           speed.z = -speed.z;
+           cross.update(place, speed);
+        }
+        if(place.x > SCENE_MAX) {
+           place.x -= rad;
+           speed.x = -speed.x;
+           cross.update(place, speed);
+        }
+        if(place.x < SCENE_MIN){
+           place.x += rad;
+           speed.x = -speed.x;
+           cross.update(place, speed);
+        }
+        if(place.y > SCENE_MAX){
+           place.y -= rad;
+           speed.y = -speed.y;
+           cross.update(place, speed);
+        }
+        if(place.y < SCENE_MIN){
+           place.y += rad;
+           speed.y = -speed.y;
+           cross.update(place, speed);
+        }
+    }
  /*  float M, U, R, U2;
    point3f randspeed, bouncespeed, center;
    int found, i = 0;
@@ -284,7 +328,8 @@ Ball& Ball::launch(){
    if(!launched){
       launched = true;
       speed = speed.deepcopy(launchspeed);
-      game->playSound("launch");//WAV_LAUNCH);
+      game->playSound("launch");
+      cross.launched = true;
    }
    return * this;
 }

@@ -3,6 +3,7 @@
 
 #include "model/WhatUC.h"
 #include "model/Particle.h"
+#include "model/Crosshair.h"
 #include "model/Ball.h"
 #include "model/Vaus.h"
 #include "model/Brick.h"
