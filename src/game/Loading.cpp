@@ -3,6 +3,7 @@
 #include "GLoid.h"
 #include "Hud.h"
 #include "Loading.h"
+#include "model/Pill.h"
 #include "model/Brick.h"
 
 Loading::Loading(Game & g){
@@ -91,6 +92,7 @@ void Loading::loadLevel(){
         }
         ifs.close();
     }
+    game->info("loaded level ", game->level);
 }
 
 std::pair<int, std::string> Loading::getScore(std::string line){

@@ -5,11 +5,12 @@
 #include "model/Particle.h"
 #include "model/Crosshair.h"
 #include "model/Ball.h"
-#include "model/Vaus.h"
-#include "model/Brick.h"
-#include "model/Pill.h"
-#include "model/Alien.h"
 #include "model/Shot.h"
+#include "model/Vaus.h"
+#include "model/Pill.h"
+#include "model/Brick.h"
+#include "model/Alien.h"
+
 #include "game/Loading.h"
 #include "game/Waiting.h"
 #include "game/Intro.h"
@@ -103,4 +104,12 @@ void Game::handleKeys(){
     }
 }
 
+std::optional<Brick> Game::getBrickAt(const Point3f& where){
+    auto idx = Point3i(where);
+    if(bricks.find(idx)!= bricks.end()){
+
+        return bricks.at(idx);
+    }
+    return {};
+}
 

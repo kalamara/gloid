@@ -212,8 +212,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     static constexpr float mat_diffuse[] = {0.4, 0.4, 0.4, 1.0};
     static constexpr float mat_emission[] = {0.2f, 0.2f, 0.2f, 0.0f};
 
-    //logging
-    std::ofstream logStream;
+
     //sdl
     struct sdlVer;
 
@@ -230,6 +229,7 @@ template<class G> class Engine{ //base class: Engine, derived class: Game
     screenopt testVmode(unsigned x, unsigned int y);
 
 protected:
+    std::ofstream logStream;
     //any of those are empty if initialization has failed
     screenopt sdlScreen = {};
     fontopt sdlFont = {};
@@ -286,6 +286,8 @@ protected:
     void reshape(int width, int height);
 
 public:
+    //logging
+
     class Point3f cameraPos = {ZERO, ZERO, 10.0f};
     struct appstatus app;
 

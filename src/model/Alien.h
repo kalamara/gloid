@@ -4,6 +4,7 @@
 #define ALIEN_COLORS 3
 
 class Point3f;
+class Particle;
 
 class Alien: public WhatUC<Alien>{	
     static constexpr float baseRad = 1.0f;
@@ -21,8 +22,7 @@ public:
         {ONE, ONE, ZERO}, // Yellow
         {ONE, ZERO, ZERO},  // Red
     };
-    //particles explosion[ALIEN_PARTICLES];
-
+    std::vector<Particle> particles;
     void display(void);
     Alien& animate(double secPerFrame);
     void die(void);

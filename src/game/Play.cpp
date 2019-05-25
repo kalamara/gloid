@@ -3,14 +3,16 @@
 #include "model/WhatUC.h"
 #include "model/Crosshair.h"
 #include "model/Ball.h"
+#include "model/Pill.h"
 #include "model/Brick.h"
+#include "model/Particle.h"
+#include "model/Shot.h"
 #include "model/Vaus.h"
 #include "model/Alien.h"
-#include "model/Pill.h"
-#include "model/Shot.h"
 
 #include "Hud.h"
 #include "Play.h"
+
 #define SPLASH_LIFE 1000
 
 Play::Play(Game &g){
@@ -51,27 +53,21 @@ Play & Play::update(){
                   [seconds](Ball& b) -> Ball& {
                     b.animate(seconds);
                   });
+
+    /* move to brick
     std::transform(begin(game->pills),
                   end(game->pills),
                   begin(game->pills),
                   [seconds](Pill& p) -> Pill& {
                     p.animate(seconds);
                   });
-/*    std::transform(begin(game->shots),
-                  end(game->shots),
-                  begin(game->shots),
-                  [seconds](Shot& s) -> Shot& {
-                    s.animate(seconds);
-                  });
-    could this be a member of Vaus instead?
 */
 //handle keys
 
     if(phase==PLAY_GO){
         game->balls.push_back(Ball::getBall(game));
         game->aliens.push_back(Alien::getAlien(game));
-        game->pills.push_back(Pill::getPill(game));
-//        game->shots.push_back(Shot::getShot(game));
+
         warp = game->getTexture("warp");
         life = game->getTexture("vaus");
         clearText();
@@ -172,13 +168,15 @@ Play & Play::draw(){
         b.display();
         b.cross.display();
     }
-    for(auto p : game->pills){
-        p.display();
-    }
+// move to brick
+//    for(auto p : game->pills){
+//        p.display();
+//    }
 //    for(auto b : game->bricks){
 //        b.second.display();
 //    }
-//    for(auto s : game->shots){
+
+// move to vaus    for(auto s : game->shots){
 //        s.display();
 //    }
     game->getVaus().display();

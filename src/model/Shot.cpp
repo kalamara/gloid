@@ -1,10 +1,12 @@
 #include "GLoid.h"
 
 #include "WhatUC.h"
+#include "Pill.h"
 #include "Brick.h"
+#include "Particle.h"
 #include "Alien.h"
-#include "Vaus.h"
 #include "Shot.h"
+#include "Vaus.h"
 
 Shot::Shot(Game &game, const Point3f &where){
    setSize(0.3f, 0.3f, 1.2f);
@@ -63,7 +65,7 @@ Shot& Shot::animate(double secPerFrame){
 
     if(active){
         // Check for collision with brick
-        Brick * brick = gameplay->getBrickAt(place);
+        auto brick = gameplay->getBrickAt(place);
         if(brick){
             score = brick->hit();//Brick[rel.X][rel.Y][rel.Z].hit();
         }

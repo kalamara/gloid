@@ -11,6 +11,7 @@ class Vaus;
 class Brick;
 class Ball;
 class Point3f;
+class Point3i;
 class Alien;
 class Particle;
 class Pill;
@@ -23,18 +24,13 @@ public:
     std::map<Point3i, Brick> bricks;
     std::list<Ball> balls;
     std::list<Alien> aliens;
-    //std::vector<Particle> particles;
-    std::list<Pill> pills;
-    std::list<Shot> shots;
+
     Vaus & getVaus() const{
          return *vaus;
     }
 //    void setVaus( value){
 //        vaus = value;
 //    }
-    void divideBalls(){}
-    void killVaus(){}
-    Ball * getActiveBall(){return nullptr;}
-    Brick * getBrickAt(Point3f& where){return nullptr;}
+
 };
 #endif // WORLD_H

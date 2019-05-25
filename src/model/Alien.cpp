@@ -1,9 +1,12 @@
 #include "GLoid.h"
 
 #include "WhatUC.h"
+#include "Particle.h"
+#include "Shot.h"
 #include "Vaus.h"
 #include "Crosshair.h"
 #include "Ball.h"
+#include "Pill.h"
 #include "Brick.h"
 #include "Alien.h"
 
@@ -167,7 +170,7 @@ Alien &Alien::animate(double secPerFrame){
                 alienspeed = place.chase(ball->place,ballspeed);
             }
             speed = speed.deepcopy(alienspeed);
-            Brick * brick = game->getBrickAt(place);
+            auto brick = game->getBrickAt(place);
             if(brick){
                 speed.x = -speed.x;
                 speed.y = -speed.y;

@@ -1,12 +1,13 @@
 #include "GLoid.h"
 
 #include "WhatUC.h"
+#include "Pill.h"
 #include "Brick.h"
 
 Brick::Brick(Game &g,
              const Point3f &color,
              const Point3i &coords,
-             int t){
+             int t) : pill(Point3f(coords), g){
     active = true; //FALSE;
     type = t;
     Point3f gold = GOLD;
@@ -30,9 +31,6 @@ Brick::Brick(Game &g,
     setSize(side, side, depth);
     Point3f where = Point3f(coords);
     setPlace(where.x, where.y, where.z);
-}
-
-Brick::~Brick(){
 }
 
 // Brick was hit by ball or shot
@@ -151,6 +149,8 @@ void Brick::solidRhombik(){
     }
     glEnd();					// Done Drawing Strips
 }
+
+/***********************************Brick parser ******************************/
 
 std::optional<Point3f>  Brick::getElement(std::string line, std::string header){
 

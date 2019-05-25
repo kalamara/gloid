@@ -4,11 +4,11 @@
 #include "model/Particle.h"
 #include "model/Crosshair.h"
 #include "model/Ball.h"
-#include "model/Vaus.h"
-#include "model/Brick.h"
-#include "model/Pill.h"
-#include "model/Alien.h"
 #include "model/Shot.h"
+#include "model/Vaus.h"
+#include "model/Pill.h"
+#include "model/Brick.h"
+#include "model/Alien.h"
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -48,6 +48,10 @@ Game & Game::loop(){
 }
 
 Step * Game::nextStep(){
+}
+
+std::optional<Brick> Game::getBrickAt(const Point3f& where){
+    return {};
 }
 
 struct mousecntl MockMouse = mousecntl(400, 300, false);
@@ -291,6 +295,8 @@ TEST(ModelTestGroup, BrickIsWhatUC){
     Point3i coords = {1,2,3};
     int t = BRIK_NORMAL;
     auto gm = Game();
+    mock().expectOneCall("rand")
+            .andReturnValue(1500);
 
     auto b = Brick(gm, red, coords, t);
     mock().checkExpectations();
@@ -331,9 +337,11 @@ TEST(ModelTestGroup, PillIsWhatUC){
     auto p = make_unique<Pill>(start_pos, gm);
     //rand returned 1500 < RAND_MAX/20
     //and low scoring game => type should be L
-    CHECK(p->active)
+    CHECK(!p->active)
     CHECK(p->type==L);
     mock().checkExpectations();
+    p->active = true;
+
     mock().expectOneCall("Engine::getScreen");
 
     mock().expectNCalls(1, "SDL_CreateRGBSurface")
@@ -507,19 +515,33 @@ TEST(ModelTestGroup, parsing_test){
 
     std::stringstream iss(input);
 
+    mock().expectOneCall("rand")
+                    .andReturnValue(1500);
+
     got = Brick::getBrick(iss, &game);
+
+    mock().checkExpectations();
+
     CHECK(got.has_value());
     CHECK(got.value().place.eq(Point3i(0,4,6)));
     CHECK(got.value().rgb.eq(Point3f(SILVER)));
     CHECK(got.value().type == BRIK_SILVER);
 
+    mock().expectOneCall("rand")
+                    .andReturnValue(1500);
     got = Brick::getBrick(iss, &game);
+    mock().checkExpectations();
+
     CHECK(got.has_value());
     CHECK(got.value().place.eq(Point3i(1,0,6)));
     CHECK(got.value().rgb.eq(Point3f(GOLD)));
     CHECK(got.value().type == BRIK_GOLDEN);
 
+    mock().expectOneCall("rand")
+                    .andReturnValue(1500);
     got = Brick::getBrick(iss, &game);
+
+    mock().checkExpectations();
     CHECK(got.has_value());
     CHECK(got.value().place.eq(Point3i(1,0,6)));
     CHECK(got.value().rgb.eq(Point3f(0.1,0,0)));

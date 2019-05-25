@@ -4,14 +4,14 @@
 #include "CppUTestExt/MockSupport.h"
 #include "CppUTest/CommandLineTestRunner.h"
 
-#include "model/Alien.h"
 #include "model/Crosshair.h"
 #include "model/Ball.h"
+#include "model/Pill.h"
 #include "model/Brick.h"
 #include "model/Particle.h"
-#include "model/Pill.h"
-#include "model/Vaus.h"
+#include "model/Alien.h"
 #include "model/Shot.h"
+#include "model/Vaus.h"
 
 #include "Hud.h"
 #include "game/Loading.h"
@@ -96,8 +96,8 @@ Ball& Ball::animate(double secPerFrame){}
 Brick::Brick(class Game &g,
              const Point3f& color,
              const Point3i& coords,
-             int t){}
-Brick::~Brick(){}
+             int t) : pill(Point3f(coords), g){}
+
 Ball Ball::getBall(Game * g){
     return Ball(*g);
 }
@@ -118,7 +118,7 @@ void Particle::display(void){}
 Particle& Particle::animate(double secPerFrame){}
 
 Pill::Pill(const Point3f& where, Game &g){}
-Pill::~Pill(){}
+
 Pill Pill::getPill(Game * g){
     return Pill(Point3f(0,0,0), *g);
 }
@@ -264,6 +264,7 @@ TEST(GameTestGroup, loading_test){
     STRCMP_EQUAL("AAA",std::prev(game->hiscore.end())->second.c_str());
     mock().checkExpectations();
     CHECK_EQUAL(LOAD_LEVEL, loadStep->phase);
+    mock().expectNCalls(1,"SDL_GetTicks");
 #if(LOGLEVEL < LOG_DEBUG + 1)  //one additional call to getticks from logging
     mock().expectNCalls(1,"SDL_GetTicks");
 #endif
@@ -337,7 +338,6 @@ TEST(GameTestGroup, level_test){
 
     game->level = 5;
     STRCMP_EQUAL("arka1_hires", game->getBackgroundTextureFilename().c_str());
-
 }
 
 TEST(GameTestGroup, intro_test){
@@ -373,16 +373,35 @@ TEST(GameTestGroup, intro_test){
 
     CHECK_EQUAL(8,newLine.first);
     STRCMP_EQUAL("BY SOMEONE...", newLine.second.c_str());
-
 }
 
+
+TEST(GameTestGroup, world_test){
+    auto game = newGame();
+    mock().checkExpectations();
+    Point3f red = {ONE, ZERO, ZERO};
+    Point3f loc = {1,2,3};
+    auto brik = Brick();//*game, red, loc, BRIK_NORMAL);
+    brik.rgb.deepcopy(red);
+
+    auto b = game->getBrickAt(Point3f(1,2,3));
+    CHECK(!b.has_value());
+
+    std::pair<Point3f, Brick> item = {loc, brik};
+    game->bricks.insert(item);
+    b = game->getBrickAt(Point3f(1,2,4000));
+    CHECK(!b.has_value());
+
+    b = game->getBrickAt(Point3f(1,2,3));
+    CHECK(b.has_value());
+    CHECK(b->rgb.eq(red));
+}
 
 TEST(GameTestGroup, play_test){
     auto game = newGame();
     mock().checkExpectations();
     auto introStep = Play(*game);
     CHECK_EQUAL(STEP_PLAY,introStep.type);
-
 }
 
 int main(int ac, char** av){

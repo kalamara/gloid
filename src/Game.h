@@ -50,7 +50,7 @@ public:
     std::map<int, std::unique_ptr<class Step>> steps;
     unsigned int level = 1;
     std::multimap<int, std::string, std::greater<int>> hiscore;
-
+/************** Engine ********************************************************/
     int queryStep(){
             return step->type;
     }
@@ -79,5 +79,10 @@ public:
     }
 
     void handleKeys();
+/************** World *********************************************************/
+    void divideBalls(){}
+    void killVaus(){}
+    Ball * getActiveBall(){return nullptr;}
+    std::optional<Brick> getBrickAt(const Point3f& where);
 };
 #endif //_GAME_H

@@ -3,7 +3,10 @@
 #include "WhatUC.h"
 #include "Crosshair.h"
 #include "Ball.h"
+#include "Pill.h"
 #include "Brick.h"
+#include "Particle.h"
+#include "Shot.h"
 #include "Vaus.h"
 
 Ball::Ball(Game &g) : cross(g){
@@ -40,7 +43,7 @@ void Ball::display(){
 }
 
 Ball& Ball::animate(double secPerFrame){
-    float U;
+    float U = ZERO;
     Vaus vaus = game->getVaus();
     if(!launched){
         U = 2*launchspeed.res3f();

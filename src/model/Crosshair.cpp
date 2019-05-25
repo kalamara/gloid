@@ -91,7 +91,7 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
 //find limits for collision to the background
     Point3f lim;
 //direction of movement in terms of prefixes
-    Point3i dir = speed.prefix();
+    Point3i dir = speed.signs();
     lim.x = dir.X * SCENE_MAX;
     lim.y = dir.Y * SCENE_MAX;
     lim.z = dir.Z > 0 ? SCENE_MIN - SCENE_MAX : 0.0f;

@@ -15,6 +15,7 @@ typedef enum{
 #define N_FACES 6
 #define N_PATHS 18
 #define N_FACEPATHS 14
+class Pill;
 
 class Brick: public WhatUC<Brick>{
     static constexpr float side = 3.3f;
@@ -70,17 +71,22 @@ class Brick: public WhatUC<Brick>{
     class Game * game;
 public:
     Uint32  hit_effect = 0;   // What happens when the brick is hit
-    int     hit_counter;  // How many times has the brick been hit?
-    int     type;         // Type of brick: normal, silver, gold: 0, 1, 2
+    int     hit_counter = 0;  // How many times has the brick been hit?
+    int     type = BRIK_NORMAL;         // Type of brick: normal, silver, gold: 0, 1, 2
     // Colors imported from 3DSMax
-    Point3f rgb;
+    Pill pill;
+
+    Point3f rgb = {0,0,0};
     int  hit();
+
+    Brick(){}
+
     Brick(class Game &g,
           const Point3f& color,
           const Point3i& coords,
           int t);
 
-   ~Brick();
+    ~Brick(){}
 
     void display();
     Brick& animate(double secPerFrame);
@@ -94,12 +100,6 @@ private:
 //https://en.wikipedia.org/wiki/Rhombicuboctahedron
     void solidRhombik();
 
-    static Point3f computeVertex(int tog,
-                       int dir,
-                       int dim,
-                       int neg,
-                       float length,
-                       Point3f &vertex);
 };
 
 #endif// _BRICK_H

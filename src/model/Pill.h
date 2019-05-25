@@ -39,7 +39,8 @@ public:
     Pill& animate(double secPerFrame);
 
     Pill(const Point3f& where, Game &g);
-    ~Pill();
+    Pill(){}
+    ~Pill(){}
     static Pill getPill(Game * g);
 private:
     GLUquadricObj * base;

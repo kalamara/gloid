@@ -223,13 +223,13 @@ TEST(FunctionsTestGroup, raycast_test){
 TEST(FunctionsTestGroup, prefix_test){
     Point3f speed(0,0,0);
 
-    CHECK(speed.prefix().eq(Point3i(1,1,1)));
+    CHECK(speed.signs().eq(Point3i(1,1,1)));
 
     speed.x = 1;
     speed.y = -1;
     speed.z = -12345;
 
-    CHECK(speed.prefix().eq(Point3i(1,-1,-1)));
+    CHECK(speed.signs().eq(Point3i(1,-1,-1)));
 }
 
 int main(int ac, char** av)

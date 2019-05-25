@@ -1,5 +1,7 @@
 #ifndef _VAUS_H
 #define _VAUS_H
+class Shot;
+class Particle;
 
 class Vaus: public WhatUC<Vaus>{
    static constexpr float  baseRad = 2.5f;
@@ -13,11 +15,12 @@ public:
    bool warping = false;
    bool fire = false;
    float rad;
-   //float speedx;
-   //float speedy;
+
    float prevx;
    float prevy;
-//   particles explosion[VAUS_PARTICLES];
+
+   std::list<Shot> shots;
+   std::vector<Particle> particles;
    Vaus(Game &g);
    ~Vaus();
 

@@ -67,10 +67,15 @@ public:
     float res3f(){
         return sqrt(x*x + y*y + z*z);
     }
-    // Calculate the speed components of object A chasing object B at speed U
+/**
+ * @brief Calculate the speed components of object A chasing object B at speed U
+ * @param object B
+ * @param speed normal U
+ * @return speed vector
+ */
     Point3f chase(const Point3f &other, float U);
-
-/**  @abstract find raycasting point on plane where
+/**
+ * @brief find raycasting point on plane where
  * P(axis = c) where c is this(axis) (+-) dist eg. P(x = c)
  * sign is the same as speed component on axis, value is iqual to dist
  *
@@ -82,13 +87,13 @@ public:
     Point3f raycast(const Point3f &speed, int axis, float dist) const;
 
 /**
- * @brief prefix
- * @return unary vector with negative or positive ones
+ * @brief direction information in terms of negative or positive sign
+ * @return unary vector with negative or positive units
  */
-    Point3i prefix() const;
+    Point3i signs() const;
 
 /**
-  * @brief euclidean distance form other point
+  * @brief euclidean distance from other point
   * @param other
   * @return distance
   */

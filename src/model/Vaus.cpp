@@ -1,6 +1,8 @@
 #include "GLoid.h"
 
 #include "WhatUC.h"
+#include "Particle.h"
+#include "Shot.h"
 #include "Vaus.h"
 #include "Pill.h"
 

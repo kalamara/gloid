@@ -1,6 +1,8 @@
 #include "GLoid.h"
 
 #include "WhatUC.h"
+#include "Particle.h"
+#include "Shot.h"
 #include "Vaus.h"
 
 #include "Pill.h"
@@ -14,14 +16,10 @@ Pill::Pill(const Point3f &where,
              where.z);
 
     type = roulette(game->isHiScoring());
+    active = false;
     col.x = Palette[type].b/255;
     col.y = Palette[type].g/255;
     col.z = Palette[type].r/255;
-}
-
-Pill::~Pill(){
-
-
 }
 
 void Pill::display(){
@@ -47,8 +45,7 @@ void Pill::display(){
 
         auto textSurf = game->print2d(ltxt);
 
-        SDL_FillRect(
-                    surf,
+        SDL_FillRect(surf,
                     nullptr,
                     SDL_MapRGBA(surf->format,
                                 Palette[type].r,
