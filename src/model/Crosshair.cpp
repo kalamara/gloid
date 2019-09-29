@@ -2,6 +2,9 @@
 
 #include "WhatUC.h"
 #include "Crosshair.h"
+#include "Pill.h"
+#include "Brick.h"
+
 
 Crosshair::Crosshair(class Game &g){
     game = &g;
@@ -90,7 +93,7 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
 
 //find limits for collision to the background
     Point3f lim;
-//direction of movement in terms of prefixes
+//direction of movement in terms of positive/negative sign
     Point3i dir = speed.signs();
     lim.x = dir.X * SCENE_MAX;
     lim.y = dir.Y * SCENE_MAX;
@@ -109,9 +112,38 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
     candidates[kz] = start.raycast(speed, AXIS_Z, -abs(lim.z - start.z));
 
     //on each axis, moving away from the start
-        //for each layer of bricks
-            //raycast point of collision
-            //check if brick is active, otherwise move to next layer
+    for(int i = 0; i < INTX; i++){//for each layer of bricks
+        //raycast point of collision
+        auto found = game->getBrickAt(start.raycast(speed,
+                                                    AXIS_X,
+                                                    FROMBRICK_X(i)));
+        if(found){//check if brick is active, otherwise move to next layer
+            candidates[kx] = found.value().place;
+            break;
+        }
+    }
+
+    for(int i = 0; i < INTY; i++){//for each layer of bricks
+        //raycast point of collision
+        auto found = game->getBrickAt(start.raycast(speed,
+                                                    AXIS_Y,
+                                                    FROMBRICK_Y(i)));
+        if(found){//check if brick is active, otherwise move to next layer
+            candidates[ky] = found.value().place;
+            break;
+        }
+    }
+
+    for(int i = 0; i < INTZ; i++){//for each layer of bricks
+        //raycast point of collision
+        auto found = game->getBrickAt(start.raycast(speed,
+                                                    AXIS_Z,
+                                                    FROMBRICK_Z(i)));
+        if(found){//check if brick is active, otherwise move to next layer
+            candidates[kz] = found.value().place;
+            break;
+        }
+    }
 
     distances[kx] = candidates[kx].dist(start);
     distances[ky] = candidates[ky].dist(start);

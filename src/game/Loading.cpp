@@ -84,7 +84,7 @@ void Loading::loadLevel(){
             auto b = Brick::getBrick(ifs, game);
             if(b){
                 std::pair<Point3i, Brick> item = {
-                    Point3i(b.value().place),
+                    Brick::toBrick(b.value().place),
                     b.value()
                 };
                 game->bricks.insert(item);

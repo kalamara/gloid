@@ -96,7 +96,7 @@ Ball& Ball::animate(double secPerFrame){}
 Brick::Brick(class Game &g,
              const Point3f& color,
              const Point3i& coords,
-             int t) : pill(Point3f(coords), g){}
+             int t) : pill(Brick::fromBrick(coords), g){}
 
 Ball Ball::getBall(Game * g){
     return Ball(*g);
@@ -380,19 +380,19 @@ TEST(GameTestGroup, world_test){
     auto game = newGame();
     mock().checkExpectations();
     Point3f red = {ONE, ZERO, ZERO};
-    Point3f loc = {1,2,3};
+    Point3i loc = {1,2,3};
     auto brik = Brick();//*game, red, loc, BRIK_NORMAL);
     brik.rgb.deepcopy(red);
 
-    auto b = game->getBrickAt(Point3f(1,2,3));
+    auto b = game->getBrickAt(Brick::fromBrick(Point3i(1,2,3)));
     CHECK(!b.has_value());
 
-    std::pair<Point3f, Brick> item = {loc, brik};
+    std::pair<Point3i, Brick> item = {loc, brik};
     game->bricks.insert(item);
-    b = game->getBrickAt(Point3f(1,2,4000));
+    b = game->getBrickAt(Brick::fromBrick(Point3i(1,2,4000)));
     CHECK(!b.has_value());
 
-    b = game->getBrickAt(Point3f(1,2,3));
+    b = game->getBrickAt(Brick::fromBrick(Point3i(1,2,3)));
     CHECK(b.has_value());
     CHECK(b->rgb.eq(red));
 }

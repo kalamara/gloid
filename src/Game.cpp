@@ -105,7 +105,7 @@ void Game::handleKeys(){
 }
 
 std::optional<Brick> Game::getBrickAt(const Point3f& where){
-    auto idx = Point3i(where);
+    auto idx = Brick::toBrick(where);
     if(bricks.find(idx)!= bricks.end()){
 
         return bricks.at(idx);

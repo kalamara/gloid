@@ -7,7 +7,7 @@
 Brick::Brick(Game &g,
              const Point3f &color,
              const Point3i &coords,
-             int t) : pill(Point3f(coords), g){
+             int t) : pill(Brick::fromBrick(coords), g){
     active = true; //FALSE;
     type = t;
     Point3f gold = GOLD;
@@ -29,7 +29,7 @@ Brick::Brick(Game &g,
         break;
     }
     setSize(side, side, depth);
-    Point3f where = Point3f(coords);
+    Point3f where = Brick::fromBrick(coords);
     setPlace(where.x, where.y, where.z);
 }
 
@@ -221,4 +221,6 @@ std::optional<Brick> Brick::getBrick(std::istream & ifs, Game * game){
     }
     return {};
 }
+
+
 

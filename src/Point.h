@@ -6,7 +6,7 @@
 #define FLOAT_PRECISION 0.000001f
 
 #include <math.h>
-
+class Point3i;
 // 3 dimensional vectors
 class Point3f {
 public:
@@ -47,8 +47,7 @@ public:
         y = other.y;
         z = other.z;
     }
-    //convertor from integers
-    Point3f(const class Point3i& other);
+
     //equals
     bool eq(const Point3f other){
         return abs(x - other.x) <= FLOAT_PRECISION
@@ -101,7 +100,7 @@ public:
 };
 
 /**
- * @brief Brick coordinates (maybe should move to Brick class)
+ * @brief int coordinates
  *
  */
 class Point3i{
@@ -123,8 +122,7 @@ public:
       Y = other.Y;
       Z = other.Z;
   }
-  //convertor from float
-  Point3i(const Point3f& other);
+
   //equals
   bool eq(const Point3i& other) const{
       return X == other.X

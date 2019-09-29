@@ -523,7 +523,7 @@ TEST(ModelTestGroup, parsing_test){
     mock().checkExpectations();
 
     CHECK(got.has_value());
-    CHECK(got.value().place.eq(Point3i(0,4,6)));
+    CHECK(got.value().place.eq(Brick::fromBrick(Point3i(0,4,6))));
     CHECK(got.value().rgb.eq(Point3f(SILVER)));
     CHECK(got.value().type == BRIK_SILVER);
 
@@ -533,7 +533,7 @@ TEST(ModelTestGroup, parsing_test){
     mock().checkExpectations();
 
     CHECK(got.has_value());
-    CHECK(got.value().place.eq(Point3i(1,0,6)));
+    CHECK(got.value().place.eq(Brick::fromBrick(Point3i(1,0,6))));
     CHECK(got.value().rgb.eq(Point3f(GOLD)));
     CHECK(got.value().type == BRIK_GOLDEN);
 
@@ -543,9 +543,44 @@ TEST(ModelTestGroup, parsing_test){
 
     mock().checkExpectations();
     CHECK(got.has_value());
-    CHECK(got.value().place.eq(Point3i(1,0,6)));
+    CHECK(got.value().place.eq(Brick::fromBrick(Point3i(1,0,6))));
     CHECK(got.value().rgb.eq(Point3f(0.1,0,0)));
     CHECK(got.value().type == BRIK_NORMAL);
+}
+
+//coordinates conversions
+TEST(ModelTestGroup, coords_test){
+            Point3i i = Point3i();
+            Point3f p = Brick::fromBrick(i);
+            //5x - 15
+            DOUBLES_EQUAL(-10.0f, p.x, FLOAT_PRECISION);
+            DOUBLES_EQUAL(-5.0f, p.y, FLOAT_PRECISION);
+            //-2.5x -1.25
+            DOUBLES_EQUAL(-8.75f, p.z, FLOAT_PRECISION);
+        //0,0,0 should be the center of the brick in (0,0,0)
+        //    => (-15, -15, -1.25)
+        // (half brick up left and half brick away from player)
+            p = Brick::fromBrick(Point3i(0,0,0));
+            DOUBLES_EQUAL(-15.0f, p.x, FLOAT_PRECISION);
+            DOUBLES_EQUAL(-15.0f, p.y, FLOAT_PRECISION);
+            DOUBLES_EQUAL(-1.25f, p.z, FLOAT_PRECISION);
+
+            Point3i i2 = Brick::toBrick(p);
+            CHECK_EQUAL(0, i2.X);
+            CHECK_EQUAL(0, i2.Y);
+            CHECK_EQUAL(0, i2.Z);
+
+            Point3f p2 = p2.deepcopy(p);
+            p = Brick::fromBrick(Brick::toBrick(p2));
+
+            CHECK(p.eq(p2));
+
+            p = Brick::fromBrick(Point3i(6,6,12));
+            DOUBLES_EQUAL(15.0f, p.x, FLOAT_PRECISION);
+            DOUBLES_EQUAL(15.0f, p.y, FLOAT_PRECISION);
+            DOUBLES_EQUAL(-31.25f, p.z, FLOAT_PRECISION);
+
+            //CHECK(p.eq(Point3f(Point3i(p))));
 }
 
 int main(int ac, char** av)

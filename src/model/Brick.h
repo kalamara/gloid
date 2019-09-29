@@ -4,6 +4,14 @@
 #define SILVER      {0.31f, 0.31f, 0.31f}
 #define GOLD        {0.37f, 0.41f, 0.0f}
 
+#define FROMBRICK_X(X) (5.0f*(X) + SCENE_MIN + 2.5f)
+#define FROMBRICK_Y(Y) (5.0f*(Y) + SCENE_MIN + 2.5f)
+#define FROMBRICK_Z(Z) (-2.5f*(Z) - 1.25)
+
+#define TOBRICK_X(X) (int)(round(0.2*(X)) + 3)
+#define TOBRICK_Y(Y) (int)(round(0.2*(Y)) + 3)
+#define TOBRICK_Z(Z) (int)(round(0.4*(Z)) + 0.5)
+
 typedef enum{
     BRIK_NORMAL,
     BRIK_SILVER,
@@ -18,7 +26,7 @@ typedef enum{
 class Pill;
 
 class Brick: public WhatUC<Brick>{
-    static constexpr float side = 3.3f;
+
     static constexpr float depth = 1.6f;
     static constexpr float opacity = 0.7f; //when brick is hit
     static const int duration = 200; //hit effect
@@ -70,6 +78,7 @@ class Brick: public WhatUC<Brick>{
     unsigned char facepath[N_FACEPATHS] = {0,4,1,5};
     class Game * game;
 public:
+    static constexpr float side = 3.3f;
     Uint32  hit_effect = 0;   // What happens when the brick is hit
     int     hit_counter = 0;  // How many times has the brick been hit?
     int     type = BRIK_NORMAL;         // Type of brick: normal, silver, gold: 0, 1, 2
@@ -90,7 +99,21 @@ public:
 
     void display();
     Brick& animate(double secPerFrame);
+    static Point3f fromBrick(const Point3i& other){
+        float x = FROMBRICK_X(other.X);
+        float y = FROMBRICK_Y(other.Y);
+        float z = FROMBRICK_Z(other.Z);
 
+        return Point3f(x,y,z);
+    }
+
+    static Point3i toBrick(const Point3f& other){
+        int X = TOBRICK_X(other.x);
+        int Y = TOBRICK_Y(other.y);
+        int Z = TOBRICK_Z(other.z);
+
+        return Point3i(X, Y, Z);
+    }
     static std::optional<Point3f> getElement(std::string line, std::string header);
     static std::optional<Point3i> getPos(std::string line);
     static std::optional<Point3f> getColor(std::string line);

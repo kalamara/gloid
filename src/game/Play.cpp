@@ -172,9 +172,9 @@ Play & Play::draw(){
 //    for(auto p : game->pills){
 //        p.display();
 //    }
-//    for(auto b : game->bricks){
-//        b.second.display();
-//    }
+    for(auto b : game->bricks){
+        b.second.display();
+    }
 
 // move to vaus    for(auto s : game->shots){
 //        s.display();

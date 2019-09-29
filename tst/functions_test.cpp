@@ -62,36 +62,7 @@ TEST(FunctionsTestGroup, ctor_dtor_test){
     CHECK(i2.Y == 2);
     CHECK(i2.Z == 3);
 
-    p = Point3f(i);
-    //5x - 15
-    DOUBLES_EQUAL(-10.0f, p.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(-5.0f, p.y, FLOAT_PRECISION);
-    //-2.5x -1.25
-    DOUBLES_EQUAL(-8.75f, p.z, FLOAT_PRECISION);
-//0,0,0 should be the center of the brick in (0,0,0)
-//    => (-15, -15, -1.25)
-// (half brick up left and half brick away from player)
-    p = Point3f(Point3i(0,0,0));
-    DOUBLES_EQUAL(-15.0f, p.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(-15.0f, p.y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(-1.25f, p.z, FLOAT_PRECISION);
 
-    i2 = Point3i(p);
-    CHECK_EQUAL(0, i2.X);
-    CHECK_EQUAL(0, i2.Y);
-    CHECK_EQUAL(0, i2.Z);
-
-    p2 = p2.deepcopy(p);
-    p = Point3f(Point3i(p2));
-
-    CHECK(p.eq(p2));
-
-    p = Point3f(Point3i(6,6,12));
-    DOUBLES_EQUAL(15.0f, p.x, FLOAT_PRECISION);
-    DOUBLES_EQUAL(15.0f, p.y, FLOAT_PRECISION);
-    DOUBLES_EQUAL(-31.25f, p.z, FLOAT_PRECISION);
-
-    //CHECK(p.eq(Point3f(Point3i(p))));
 }
 
 TEST(FunctionsTestGroup, chase_test){
