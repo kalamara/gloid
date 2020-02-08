@@ -27,8 +27,7 @@ class Pill;
 
 class Brick: public WhatUC<Brick>{
 
-    static constexpr float depth = 1.6f;
-    static constexpr float opacity = 0.7f; //when brick is hit
+    static constexpr float opacity = 0.1f;// when brick is hit
     static const int duration = 200; //hit effect
     static constexpr float unary = 0.5f;
     static constexpr float big = 0.75f;
@@ -79,6 +78,7 @@ class Brick: public WhatUC<Brick>{
     class Game * game;
 public:
     static constexpr float side = 3.3f;
+    static constexpr float depth = 1.6f;
     Uint32  hit_effect = 0;   // What happens when the brick is hit
     int     hit_counter = 0;  // How many times has the brick been hit?
     int     type = BRIK_NORMAL;         // Type of brick: normal, silver, gold: 0, 1, 2

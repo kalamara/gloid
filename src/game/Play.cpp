@@ -164,17 +164,20 @@ Play & Play::draw(){
     for(auto a : game->aliens){
         a.display();
     }
+    for(auto b : game->bricks){
+        b.second.display();
+    }
     for(auto b : game->balls){
         b.display();
         b.cross.display();
     }
+
+
 // move to brick
 //    for(auto p : game->pills){
 //        p.display();
 //    }
-    for(auto b : game->bricks){
-        b.second.display();
-    }
+
 
 // move to vaus    for(auto s : game->shots){
 //        s.display();

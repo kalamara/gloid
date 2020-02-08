@@ -112,13 +112,15 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
     candidates[kz] = start.raycast(speed, AXIS_Z, -abs(lim.z - start.z));
 
     //on each axis, moving away from the start
-    for(int i = 0; i < INTX; i++){//for each layer of bricks
+   for(int i = 0; i < INTX; i++){//for each layer of bricks-
         //raycast point of collision
         auto found = game->getBrickAt(start.raycast(speed,
                                                     AXIS_X,
                                                     FROMBRICK_X(i)));
         if(found){//check if brick is active, otherwise move to next layer
-            candidates[kx] = found.value().place;
+            candidates[kx] = start.raycast(speed,
+                                          AXIS_X,
+                                          found.value().place.x - Brick::side/2 + 1);
             break;
         }
     }
@@ -129,7 +131,9 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
                                                     AXIS_Y,
                                                     FROMBRICK_Y(i)));
         if(found){//check if brick is active, otherwise move to next layer
-            candidates[ky] = found.value().place;
+            candidates[ky] = start.raycast(speed,
+                                          AXIS_Y,
+                                          found.value().place.y - Brick::side/2 + 1);
             break;
         }
     }
@@ -140,7 +144,9 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
                                                     AXIS_Z,
                                                     FROMBRICK_Z(i)));
         if(found){//check if brick is active, otherwise move to next layer
-            candidates[kz] = found.value().place;
+            candidates[kz] = start.raycast(speed,
+                                           AXIS_Z,
+                                           found.value().place.z + Brick::depth + 1);
             break;
         }
     }
