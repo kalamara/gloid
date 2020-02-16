@@ -45,7 +45,7 @@ void Ball::display(){
 Ball& Ball::animate(double secPerFrame){
     float U = ZERO;
     Vaus vaus = game->getVaus();
-    if(!launched){
+    if(!launched){// Hasn't been launched yet
         U = 2*launchspeed.res3f();
         setPlace(vaus.prevx + vaus.size.x * launchspeed.x / U,
                  vaus.prevy + vaus.size.y * launchspeed.y / U,

@@ -95,7 +95,7 @@ void Brick::display(){
         }else{
             hit_effect = 0;
             glColor4f(rgb.x, rgb.y, rgb.z, opacity);
-        }
+       }
         solidRhombik();
         glPopMatrix();
         glDisable(GL_BLEND);
@@ -170,7 +170,7 @@ std::optional<Point3f>  Brick::getElement(std::string line, std::string header){
         y = std::stof(ystr);
         z = std::stof(zstr);
     }catch(...){
-        //std::cout << "exception:" << line << std::endl;
+        std::cout << "exception:" << line << std::endl;
         return {};
     }
     auto p = std::make_unique<Point3f>(x,y,z);

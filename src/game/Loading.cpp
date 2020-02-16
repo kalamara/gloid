@@ -77,7 +77,7 @@ void Loading::loadLevel(){
     printText(msg.str(), console);
     std::ifstream ifs;
     std::stringstream path;
-    path << "levels/level" << game->level << ".ase";
+    path << "levels/level" << game->level << ".txt";
     ifs.open(path.str(),  std::ifstream::in);
     if(ifs.is_open()){
         while(ifs.peek() != EOF){

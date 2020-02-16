@@ -112,43 +112,51 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
     candidates[kz] = start.raycast(speed, AXIS_Z, -abs(lim.z - start.z));
 
     //on each axis, moving away from the start
-   for(int i = 0; i < INTX; i++){//for each layer of bricks-
+    for(int i = 0; i < INTX; i++){//for each layer of bricks-
         //raycast point of collision
-        auto found = game->getBrickAt(start.raycast(speed,
-                                                    AXIS_X,
-                                                    FROMBRICK_X(i)));
+        auto collision = start.raycast(speed,
+                                      AXIS_X,
+                                      FROMBRICK_X(i) - Brick::side/2);
+        auto found = game->getBrickAt(Point3f(
+                                         collision.x + Brick::side/2,
+                                         collision.y ,
+                                         collision.z));
         if(found){//check if brick is active, otherwise move to next layer
-            candidates[kx] = start.raycast(speed,
-                                          AXIS_X,
-                                          found.value().place.x - Brick::side/2 + 1);
+            candidates[kx] = collision;
             break;
         }
     }
 
     for(int i = 0; i < INTY; i++){//for each layer of bricks
         //raycast point of collision
-        auto found = game->getBrickAt(start.raycast(speed,
-                                                    AXIS_Y,
-                                                    FROMBRICK_Y(i)));
+        auto collision = start.raycast(speed,
+                                       AXIS_Y,
+                                       FROMBRICK_Y(i) - Brick::side/2);
+
+        auto found = game->getBrickAt(Point3f(
+                                          collision.x,
+                                          collision.y + Brick::side/2,
+                                          collision.z));
         if(found){//check if brick is active, otherwise move to next layer
-            candidates[ky] = start.raycast(speed,
-                                          AXIS_Y,
-                                          found.value().place.y - Brick::side/2 + 1);
+            candidates[ky] = collision;
             break;
         }
     }
 
     for(int i = 0; i < INTZ; i++){//for each layer of bricks
         //raycast point of collision
-        auto found = game->getBrickAt(start.raycast(speed,
-                                                    AXIS_Z,
-                                                    FROMBRICK_Z(i)));
-        if(found){//check if brick is active, otherwise move to next layer
-            candidates[kz] = start.raycast(speed,
-                                           AXIS_Z,
-                                           found.value().place.z + Brick::depth + 1);
+        auto collision = start.raycast(speed,
+                                       AXIS_Z,
+                                       FROMBRICK_Z(i) + Brick::depth + 1);
+
+        auto found = game->getBrickAt(Point3f(
+                                        collision.x,
+                                        collision.y,
+                                        collision.z - Brick::depth));
+        if(found){
+            candidates[kz] = collision;
             break;
-        }
+       }
     }
 
     distances[kx] = candidates[kx].dist(start);
