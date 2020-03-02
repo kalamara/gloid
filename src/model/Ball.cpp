@@ -63,28 +63,24 @@ Ball& Ball::animate(double secPerFrame){
         if(place.z < SCENE_MIN - SCENE_MAX){
            place.z += rad;
            speed.z = -speed.z;
-           cross.update(place, speed);
         }
         if(place.x > SCENE_MAX) {
            place.x -= rad;
            speed.x = -speed.x;
-           cross.update(place, speed);
         }
         if(place.x < SCENE_MIN){
            place.x += rad;
            speed.x = -speed.x;
-           cross.update(place, speed);
         }
         if(place.y > SCENE_MAX){
            place.y -= rad;
            speed.y = -speed.y;
-           cross.update(place, speed);
         }
         if(place.y < SCENE_MIN){
            place.y += rad;
            speed.y = -speed.y;
-           cross.update(place, speed);
         }
+        cross.update(place, speed);
     }
  /*  float M, U, R, U2;
    point3f randspeed, bouncespeed, center;
@@ -339,4 +335,33 @@ Ball& Ball::launch(){
 
 Ball Ball::getBall(Game * g){
     return Ball(*g);
+}
+
+bool Ball::collides(const Point3f pl,  Point3f sz){
+    if(place.dist(pl) < base_rad + sz.res3f()){
+        return true;
+    }
+    return false;
+}
+
+Ball& Ball::bounce(int axis){
+    switch(cross.axis){
+    case AXIS_X:
+
+        break;
+    case -AXIS_X:
+        break;
+    case AXIS_Y:
+        break;
+    case -AXIS_Y:
+        break;
+    case AXIS_Z:
+
+        break;
+    case -AXIS_Z:
+        break;
+    default:
+        break;
+    }
+    return * this;
 }

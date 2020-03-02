@@ -15,8 +15,6 @@ public:
     void display();
     Crosshair& animate(double secPerFrame);
 
-//    static Crosshair getCrosshair(Game * g);
-
 /**
  * Estimate point and direction of next expected collision
  */

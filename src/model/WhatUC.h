@@ -18,10 +18,10 @@ typedef enum{
 
 //axes of motion
 typedef enum {
-    AXIS_X = 0x1,
-    AXIS_Y = 0x2,
-    AXIS_Z = 0x4,
-} AXES;
+    AXIS_X = 0x1,//left to right
+    AXIS_Y = 0x2,//up to down
+    AXIS_Z = 0x4,//front to back
+} AXES;//minus sign inverts motion direction
 
 class Point3f;
 //base class for any visible models.
@@ -31,6 +31,7 @@ public:
    bool active = true;
    Point3f place;
    Point3f size;
+   Point3f speed;
 
    WhatUC(){
       place = Point3f();
@@ -49,6 +50,7 @@ public:
         size.z = Z;
         return *dynamic_cast<T*>(this);
    }
+
    ~WhatUC(){}
    //pure virtual but also we want to be able to have each sublasses'
    //implementation of animate to return self so we can implement
@@ -56,11 +58,16 @@ public:
    virtual void display()=0;
    virtual T& animate(double secPerFrame)=0;
    //if object collides with a rectangle
-   virtual bool collides(float left,
-                         float right,
-                         float up,
-                         float down){
-       return false;
+
+   /**
+    * @brief if it collides with
+    * @param other model object
+    * @return true otherwise false
+    */
+   virtual bool collides(const WhatUC<class O> & other){
+       return (abs(place.x - other.place.x) < size.x/2 + other.size.x/2)
+            ||(abs(place.y - other.place.y) < size.y/2 + other.size.y/2)
+            ||(abs(place.z - other.place.z) < size.z/2 + other.size.z/2);
    }
 };
 #endif //_WHATUC_H_

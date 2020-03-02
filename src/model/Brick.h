@@ -3,14 +3,16 @@
 
 #define SILVER      {0.31f, 0.31f, 0.31f}
 #define GOLD        {0.37f, 0.41f, 0.0f}
-
+//f = 5x - 15  => x = 0.2f + 3
 #define FROMBRICK_X(X) (5.0f*(X) + SCENE_MIN + 2.5f)
 #define FROMBRICK_Y(Y) (5.0f*(Y) + SCENE_MIN + 2.5f)
+//f = -2.5x -1.25 =>x = -0.4f - 0.5
 #define FROMBRICK_Z(Z) (-2.5f*(Z) - 1.25)
 
 #define TOBRICK_X(X) (int)(round(0.2*(X)) + 3)
 #define TOBRICK_Y(Y) (int)(round(0.2*(Y)) + 3)
-#define TOBRICK_Z(Z) (int)(round(0.4*(Z)) + 0.5)
+
+#define TOBRICK_Z(Z) (int)(-round(0.4*(Z)) - 0.5)
 
 typedef enum{
     BRIK_NORMAL,

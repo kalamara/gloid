@@ -8,7 +8,7 @@ class Particle: public WhatUC<Particle>{
     static constexpr float rot_max = 0.2f * HALF_CIRCLE; //per frame
 public:
     float side;
-    Point3f speed;
+ //   Point3f speed;
     Point3f rotation;
     Point3f rotspeed;
     Point3f rgb;

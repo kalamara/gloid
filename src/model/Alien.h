@@ -16,7 +16,7 @@ class Alien: public WhatUC<Alien>{
 public:
     int type = 0;
     float roty = ZERO;
-    Point3f speed;
+//    Point3f speed;
     Point3f pal[ALIEN_COLORS] = {
         {ONE, ONE, ONE}, // White
         {ONE, ONE, ZERO}, // Yellow

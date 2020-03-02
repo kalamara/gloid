@@ -169,6 +169,20 @@ TEST(ModelTestGroup, BallIsWhatUC){
 
 }
 
+TEST(ModelTestGroup, BallCollision){
+    //ball vs. crosshairs
+    auto gm = Game();
+    auto b = Ball(gm);
+    auto c = b.cross;
+//collide on (0,0,0)
+    CHECK(b.collides(c.place, c.size));
+
+    //small displacement on z should not collide
+    b.place.z += b.base_rad + ROOT2 + 2*FLOAT_PRECISION;
+    CHECK(!b.collides(c.place, c.size));
+
+}
+
 TEST(ModelTestGroup, BallAnimation){
    // mock().expectOneCall("gluNewQuadric");
     auto gm = Game();
@@ -550,12 +564,12 @@ TEST(ModelTestGroup, parsing_test){
 
 //coordinates conversions
 TEST(ModelTestGroup, coords_test){
-            Point3i i = Point3i();
+            Point3i i = Point3i(1,2,3);
             Point3f p = Brick::fromBrick(i);
-            //5x - 15
+            //f = 5x - 15  => x = 0.2f + 3
             DOUBLES_EQUAL(-10.0f, p.x, FLOAT_PRECISION);
             DOUBLES_EQUAL(-5.0f, p.y, FLOAT_PRECISION);
-            //-2.5x -1.25
+            //f = -2.5x -1.25 =>x = -0.4f - 0.5
             DOUBLES_EQUAL(-8.75f, p.z, FLOAT_PRECISION);
         //0,0,0 should be the center of the brick in (0,0,0)
         //    => (-15, -15, -1.25)
@@ -570,7 +584,8 @@ TEST(ModelTestGroup, coords_test){
             CHECK_EQUAL(0, i2.Y);
             CHECK_EQUAL(0, i2.Z);
 
-            Point3f p2 = p2.deepcopy(p);
+            Point3f p2;
+            p2.deepcopy(p);
             p = Brick::fromBrick(Brick::toBrick(p2));
 
             CHECK(p.eq(p2));
