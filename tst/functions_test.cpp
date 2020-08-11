@@ -140,8 +140,8 @@ TEST(FunctionsTestGroup, distance_test){
 }
 
 TEST(FunctionsTestGroup, raycast_test){
-    Point3f start; //(0,0,0)
-    Point3f speed;
+    auto start = Point3f(0,0,0);
+    auto speed = Point3f(0,0,0);
     //invalid axis should give equal to start
     Point3f collision = start.raycast(speed, 0, ONE);
     CHECK(collision.eq(start));
@@ -189,8 +189,6 @@ TEST(FunctionsTestGroup, raycast_test){
     CHECK(collision.eq(start));
 }
 
-
-
 TEST(FunctionsTestGroup, prefix_test){
     Point3f speed(0,0,0);
 
@@ -201,6 +199,48 @@ TEST(FunctionsTestGroup, prefix_test){
     speed.z = -12345;
 
     CHECK(speed.signs().eq(Point3i(1,-1,-1)));
+}
+
+TEST(FunctionsTestGroup, scale_test){
+
+    CHECK(Point3f(0,0,0).scale3f(Point3f(0,0,0))
+          .eq(Point3f(0,0,0)));
+
+    CHECK(Point3f(1,2,3).scale3f(Point3f(0,0,0))
+          .eq(Point3f(1,2,3)));
+
+    CHECK(Point3f(1,1,0).scale3f(Point3f(0,0,-1))
+          .eq(Point3f(1,1,0)));
+
+    CHECK(Point3f(1,2,3).scale3f(Point3f(1,1,1))
+          .eq(Point3f(1,2,3)));
+
+    CHECK(Point3f(1,2,3).scale3f(Point3f(2,2,2))
+          .eq(Point3f(1,2,3)));
+
+    CHECK(Point3f(1,2,3).scale3f(Point3f(2,-2,2))
+          .eq(Point3f(1,-2,3)));
+
+    CHECK(Point3f(1,2,2).scale3f(Point3f(3,0,0))
+          .eq(Point3f(3,0,0)));
+}
+
+TEST(FunctionsTestGroup, projection_test){
+    //zeroes should give zeroes
+    DOUBLES_EQUAL(ZERO,Point3f(0,0,0).proj3f(Point3f(0,0,0)), FLOAT_PRECISION);
+    DOUBLES_EQUAL(ZERO,Point3f(0,0,0).proj3f(Point3f(1,2,3)), FLOAT_PRECISION);
+    DOUBLES_EQUAL(ZERO,Point3f(1,2,3).proj3f(Point3f(0,0,0)), FLOAT_PRECISION);
+    //orthogonals should give zeroes
+    DOUBLES_EQUAL(ZERO,Point3f(1,0,0).proj3f(Point3f(0,1,0)), FLOAT_PRECISION);
+    DOUBLES_EQUAL(ZERO,Point3f(0,1,0).proj3f(Point3f(0,0,1)), FLOAT_PRECISION);
+    DOUBLES_EQUAL(ZERO,Point3f(0,0,1).proj3f(Point3f(1,0,0)), FLOAT_PRECISION);
+    //projection of parallels should equal ratio of norms
+    DOUBLES_EQUAL(0.5,Point3f(1,2,3).proj3f(Point3f(2,4,6)), FLOAT_PRECISION);
+    DOUBLES_EQUAL(ONE,Point3f(0,1,0).proj3f(Point3f(0,1,0)), FLOAT_PRECISION);
+    //projection of opposites should equal minus ratio of norms
+    DOUBLES_EQUAL(-0.5,Point3f(-1,-2,-3).proj3f(Point3f(2,4,6)), FLOAT_PRECISION);
+    DOUBLES_EQUAL(-ONE,Point3f(0,-1,0).proj3f(Point3f(0,1,0)), FLOAT_PRECISION);
+
 }
 
 int main(int ac, char** av)

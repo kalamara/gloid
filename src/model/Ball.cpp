@@ -345,20 +345,18 @@ bool Ball::collides(const Point3f pl,  Point3f sz){
 }
 
 Ball& Ball::bounce(int axis){
-    switch(cross.axis){
+    switch(axis){
     case AXIS_X:
-
-        break;
     case -AXIS_X:
+        speed.x = -speed.x;
         break;
     case AXIS_Y:
-        break;
     case -AXIS_Y:
+        speed.y = -speed.y;
         break;
     case AXIS_Z:
-
-        break;
     case -AXIS_Z:
+        speed.z = -speed.z;
         break;
     default:
         break;

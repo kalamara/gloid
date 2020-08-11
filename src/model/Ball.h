@@ -43,8 +43,8 @@ public:
 
     /**
      * @brief bounce on an abstract model of a sphere that is scaled by (X,Y,Z)
-     * @param  other object place
-     * @param  other object size (X,Y,Z)
+     * @param  sphere center
+     * @param  scale (X,Y,Z)
      * @return ball with updated speed
      */
     Ball& bounce(const Point3f place, const Point3f size);

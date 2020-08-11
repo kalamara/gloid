@@ -183,6 +183,24 @@ TEST(ModelTestGroup, BallCollision){
 
 }
 
+TEST(ModelTestGroup, BallBouncing){
+    auto gm = Game();
+    auto b = Ball(gm);
+
+    b.speed.deepcopy(Point3f(1.0f, 2.0f, 3.0f));
+    //bounce on pependicular planes
+    b.bounce(AXIS_X);
+    DOUBLES_EQUAL(-1.0f, b.speed.x, FLOAT_PRECISION);
+    b.bounce(-AXIS_Y);
+    DOUBLES_EQUAL(-2.0f, b.speed.y, FLOAT_PRECISION);
+    b.bounce(AXIS_Z);
+    DOUBLES_EQUAL(-3.0f, b.speed.z, FLOAT_PRECISION);
+
+    //bounce on spherical model
+
+
+}
+
 TEST(ModelTestGroup, BallAnimation){
    // mock().expectOneCall("gluNewQuadric");
     auto gm = Game();

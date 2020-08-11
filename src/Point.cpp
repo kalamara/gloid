@@ -1,6 +1,41 @@
 #include "GLoid.h"
 #include "Point.h"
 
+Point3f Point3f::norm3f(const float norm){
+    if(norm <= FLOAT_PRECISION){
+
+        return *this;
+    }
+    float n = res3f();
+    if(n <= FLOAT_PRECISION){
+
+        return *this;
+    }
+    return mul3f(norm / n);
+}
+
+Point3f Point3f::scale3f(const Point3f& scale){
+     Point3f r(x * scale.x,
+               y * scale.y,
+               z * scale.z);
+
+     if(r.res3f() <= FLOAT_PRECISION){
+
+         return *this;
+     }
+     deepcopy(r.norm3f(res3f()));
+
+     return *this;
+}
+
+float Point3f::proj3f(const Point3f& other) const {
+    float denom = other.inner3f(other);
+    if(denom <= FLOAT_PRECISION){
+
+        return ZERO;
+    }
+    return inner3f(other) / denom;
+}
 
 /**<3<3<3<3<3<3<3******<3<3<3<3<3<3<3<*/
 
@@ -32,6 +67,8 @@ Point3f Point3f::raycast(const Point3f &speed, int axis, float dist) const{
         if(abs(speed.x)>FLOAT_PRECISION){
             collision.y = y + (speed.y * (collision.x - x))/speed.x;
             collision.z = z - (speed.z * (collision.x - x))/speed.x;
+        } else {
+            collision.deepcopy(*this);
         }
         break;
 
@@ -39,6 +76,8 @@ Point3f Point3f::raycast(const Point3f &speed, int axis, float dist) const{
         if(abs(speed.y)>FLOAT_PRECISION){
             collision.x = x + (speed.x * (collision.y - y))/speed.y;
             collision.z = z - (speed.z * (collision.y - y))/speed.y;
+        } else {
+            collision.deepcopy(*this);
         }
         break;
 
@@ -46,6 +85,8 @@ Point3f Point3f::raycast(const Point3f &speed, int axis, float dist) const{
         if(abs(speed.z)>FLOAT_PRECISION){
             collision.x = x - (speed.x * (collision.z - z))/speed.z;
             collision.y = y - (speed.y * (collision.z - z))/speed.z;
+        } else {
+            collision.deepcopy(*this);
         }
         break;
 
