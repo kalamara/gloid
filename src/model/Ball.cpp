@@ -60,25 +60,25 @@ Ball& Ball::animate(double secPerFrame){
         place.y += speed.y * secPerFrame;
         place.z -= speed.z * secPerFrame;
 
-        if(place.z < SCENE_MIN - SCENE_MAX){
+        if(place.z < SCENE_MIN - SCENE_MAX) {
            place.z += rad;
-           speed.z = -speed.z;
+           bounce(AXIS_Z);
         }
         if(place.x > SCENE_MAX) {
            place.x -= rad;
-           speed.x = -speed.x;
+           bounce(AXIS_X);
         }
         if(place.x < SCENE_MIN){
            place.x += rad;
-           speed.x = -speed.x;
+           bounce(AXIS_X);
         }
         if(place.y > SCENE_MAX){
            place.y -= rad;
-           speed.y = -speed.y;
+           bounce(AXIS_Y);
         }
         if(place.y < SCENE_MIN){
            place.y += rad;
-           speed.y = -speed.y;
+           bounce(AXIS_Y);
         }
         cross.update(place, speed);
     }
@@ -361,5 +361,36 @@ Ball& Ball::bounce(int axis){
     default:
         break;
     }
+    return * this;
+}
+
+Ball& Ball::bounce(const Point3f pl, const Point3f sz){
+    if(abs(sz.x)<FLOAT_PRECISION){
+
+        return bounce(AXIS_X);
+    }
+    if(abs(sz.y)<FLOAT_PRECISION){
+
+        return bounce(AXIS_Y);
+    }
+    if(abs(sz.z)<FLOAT_PRECISION){
+
+        return bounce(AXIS_Z);
+    }
+    //initial speed norm
+    auto n = speed.res3f();
+    //find distance
+    auto dst = Point3f(place).sub3f(pl);
+    //calculate speed projection on distance
+    auto l = speed.proj3f(dst);
+    auto prj = Point3f(dst).mul3f(l);
+
+    //vertical component to projection
+    auto vrc = Point3f(speed).sub3f(prj);
+
+    //scale and subtract from initial speed
+    speed = vrc.sub3f(prj);
+    speed.norm3f(n);
+    speed.scale3f( Point3f(ONE / sz.x, ONE / sz.y, ONE / sz.z));
     return * this;
 }

@@ -47,7 +47,7 @@ public:
      * @param  scale (X,Y,Z)
      * @return ball with updated speed
      */
-    Ball& bounce(const Point3f place, const Point3f size);
+    Ball& bounce(const Point3f pl, const Point3f sz);
 
     /**
      * @brief ricochet randomly

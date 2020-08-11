@@ -188,7 +188,7 @@ TEST(ModelTestGroup, BallBouncing){
     auto b = Ball(gm);
 
     b.speed.deepcopy(Point3f(1.0f, 2.0f, 3.0f));
-    //bounce on pependicular planes
+    //bounce on perpendicular planes
     b.bounce(AXIS_X);
     DOUBLES_EQUAL(-1.0f, b.speed.x, FLOAT_PRECISION);
     b.bounce(-AXIS_Y);
@@ -197,7 +197,38 @@ TEST(ModelTestGroup, BallBouncing){
     DOUBLES_EQUAL(-3.0f, b.speed.z, FLOAT_PRECISION);
 
     //bounce on spherical model
+    //degenerates
+    b.speed.deepcopy(Point3f(0.0f, 0.0f, 0.0f));
+    b.bounce(Point3f(ZERO, ZERO, ZERO), Point3f(ZERO, ZERO, ZERO));
+    CHECK(b.speed.eq(Point3f()));
 
+    //bounce on a sphere on axis X
+    b.speed.x = ONE;
+    b.bounce(Point3f(ONE, ZERO, ZERO), Point3f(ONE, ONE, ONE));
+    DOUBLES_EQUAL(-ONE, b.speed.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(ZERO, b.speed.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(ZERO, b.speed.z, FLOAT_PRECISION);
+
+    //speed on axis x, bounce on a sphere on axis Y => no bounce
+    b.bounce(Point3f(ZERO, ONE, ZERO), Point3f(ONE, ONE, ONE));
+    DOUBLES_EQUAL(-ONE, b.speed.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL(ZERO, b.speed.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(ZERO, b.speed.z, FLOAT_PRECISION);
+
+    //speed on Z, Y, bounce on a sphere on axis Z => get the resultant
+    b.speed.deepcopy(Point3f(ZERO, ONE, ONE));
+    b.bounce(Point3f(ZERO, ZERO, ONE), Point3f(ONE, ONE, ONE));
+    DOUBLES_EQUAL(ZERO, b.speed.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL( ONE, b.speed.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(-ONE, b.speed.z, FLOAT_PRECISION);
+
+    //same conditions but the sphere is scaled by 3/4 on Y
+    b.speed.deepcopy(Point3f(ZERO, ROOT2, ROOT2));
+    b.bounce(Point3f(ZERO, ZERO, ONE), Point3f(ONE, 4.0f, 3.0f));
+    DOUBLES_EQUAL(ZERO, b.speed.x, FLOAT_PRECISION);
+    DOUBLES_EQUAL( 1.2f, b.speed.y, FLOAT_PRECISION);
+    DOUBLES_EQUAL(-1.6f, b.speed.z, FLOAT_PRECISION);
+    //random ricochet
 
 }
 

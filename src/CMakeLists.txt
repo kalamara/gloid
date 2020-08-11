@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(gloid)
 
-find_library(SDL sdl)
+find_library(SDL SDL)
 find_library(SDL_TTF SDL_ttf)
 find_library(GL GL)
 find_library(GLU GLU)
