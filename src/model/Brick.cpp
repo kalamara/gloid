@@ -117,10 +117,11 @@ void Brick::solidRhombik(){
                        face[i].z);		// Normal Facing
         }
         glBegin(GL_TRIANGLE_STRIP);			// Start Drawing Strips
-        for(int j = 0; j < N_PATHS; j++){//front, left, back, right faces
-            glNormal3f(face[facepath[j%4]].x,
-                       face[facepath[j%4]].y,
-                       face[facepath[j%4]].z);		// Normal Facing
+        for(uint8_t j = 0; j < N_PATHS; j++){//front, left, back, right faces
+            uint8_t jj = j & 3; //j mod 4
+            glNormal3f(face[facepath[jj]].x,
+                       face[facepath[jj]].y,
+                       face[facepath[jj]].z);		// Normal Facing
             glVertex3f(vertice[path[j]].x,
                        vertice[path[j]].y,
                        vertice[path[j]].z);
