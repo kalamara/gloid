@@ -224,11 +224,30 @@ TEST(ModelTestGroup, BallBouncing){
 
     //same conditions but the sphere is scaled by 3/4 on Y
     b.speed.deepcopy(Point3f(ZERO, ROOT2, ROOT2));
+    // (v2)^2 + (v2)^2 = 4
+    // y^2 + z^2 = 4
+    // z = y * 4/3
+    // => ... y = 6/5, z = 8/5
     b.bounce(Point3f(ZERO, ZERO, ONE), Point3f(ONE, 4.0f, 3.0f));
     DOUBLES_EQUAL(ZERO, b.speed.x, FLOAT_PRECISION);
     DOUBLES_EQUAL( 1.2f, b.speed.y, FLOAT_PRECISION);
     DOUBLES_EQUAL(-1.6f, b.speed.z, FLOAT_PRECISION);
+
     //random ricochet
+
+    //degenerate: if speed is too small, reset initial speed
+    mock().expectNCalls(3,"rand").andReturnValue(RAND_MAX / 2);
+    b.bounce();
+    mock().checkExpectations();
+    CHECK(b.speed.eq(b.initspeed));
+
+    //the norm remains the same
+    auto n = b.speed.res3f();
+    mock().expectNCalls(3,"rand").andReturnValue(0); //gives huge values but they are normalised
+    b.bounce();
+    mock().checkExpectations();
+
+    DOUBLES_EQUAL(n,  b.speed.res3f(), FLOAT_PRECISION);
 
 }
 

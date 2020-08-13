@@ -1,6 +1,26 @@
 #include "GLoid.h"
 #include "Point.h"
 
+//construct random point with base magnitude
+Point3f::Point3f(float base){
+
+    float tempx = rand() - RAND_MAX / 2;
+    float tempy = rand() - RAND_MAX / 2;
+    float tempz = rand() - RAND_MAX / 2;
+
+    float M = Point3f(tempx, tempy, tempz).res3f();
+
+    if(M > 0){
+        x = (base / M) * tempx;
+        y = (base / M) * tempy;
+        z = (base / M) * tempz;
+    } else {
+        x = ZERO;
+        y = ZERO;
+        z = ZERO;
+    }
+}
+
 Point3f Point3f::norm3f(const float norm){
     if(norm <= FLOAT_PRECISION){
 

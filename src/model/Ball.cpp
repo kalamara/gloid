@@ -392,5 +392,14 @@ Ball& Ball::bounce(const Point3f pl, const Point3f sz){
     speed = vrc.sub3f(prj);
     speed.norm3f(n);
     speed.scale3f( Point3f(ONE / sz.x, ONE / sz.y, ONE / sz.z));
+
+    return * this;
+}
+
+Ball& Ball::bounce(){
+    speed = Point3f(speed.res3f());
+    if(speed.res3f() <3 * MINSPEED){
+        speed = initspeed;
+    }
     return * this;
 }
