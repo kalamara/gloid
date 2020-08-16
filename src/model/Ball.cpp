@@ -59,6 +59,11 @@ Ball& Ball::animate(double secPerFrame){
         place.x += speed.x * secPerFrame;
         place.y += speed.y * secPerFrame;
         place.z -= speed.z * secPerFrame;
+        auto brik = game->getBrickAt(place);
+        if(brik){
+            bounce(cross.axis);
+            brik.value().hit();
+        }
 
         if(place.z < SCENE_MIN - SCENE_MAX) {
            place.z += rad;

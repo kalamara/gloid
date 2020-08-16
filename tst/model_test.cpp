@@ -56,6 +56,7 @@ std::optional<Brick> Game::getBrickAt(const Point3f& where){
 
 struct mousecntl MockMouse = mousecntl(400, 300, false);
 struct screen MockScreen = screen(800, 600, 32, nullptr);
+unsigned int MockTime = 100000;
 
 template <> mousecntl_t Engine<Game>::getMouse() {
     mock().actualCall("Engine::getMouse");
@@ -69,6 +70,7 @@ template <> screenopt Engine<Game>::getScreen(){
 
 template <> bool Engine<Game>::playSound(const std::string & sound) {
     mock().actualCall("Engine::playSound");
+    return true;
     //  .withParameter("sound", WAV_LAUNCH);
 }
 
@@ -78,7 +80,8 @@ template <> SDL_Surface * Engine<Game>::print2d(text2d & text) {
 }
 
 template <> unsigned int Engine<Game>::toc() {
-    mock().actualCall("Engine::now");
+    mock().actualCall("Engine::toc");
+    return MockTime;
 }
 
 TEST(ModelTestGroup, ParticleIsWhatUC){
@@ -404,6 +407,52 @@ TEST(ModelTestGroup, BrickIsWhatUC){
     mock().checkExpectations();
 }
 
+TEST(ModelTestGroup, BrickHit){
+    auto gm = Game();
+    gm.brickCount = 3;
+    mock().expectOneCall("rand")
+            .andReturnValue(1500);
+    auto r = Brick(gm, RED, {1,2,3}, BRIK_NORMAL);
+    mock().checkExpectations();
+
+    //normal brick is destroyed with one hit and increases score by SCOREBRICK
+    r.hit();
+    CHECK(!r.active);
+    CHECK(r.pill.active);
+    CHECK_EQUAL( SCOREBRICK, gm.score);
+    CHECK_EQUAL(gm.brickCount, 2);
+
+    //silver brick takes two hits to break and hit effect is active between the two
+    mock().expectOneCall("rand")
+            .andReturnValue(1500);
+    auto s = Brick(gm, SILVER, {2,2,3}, BRIK_SILVER);
+    mock().expectNCalls(1,"Engine::toc");
+    s.hit();
+    CHECK(s.active);
+    CHECK_EQUAL(1, s.hit_counter);
+    CHECK_EQUAL(MockTime, s.hit_effect);
+
+    s.hit();
+    CHECK(!s.active);
+    CHECK(s.pill.active);
+    CHECK_EQUAL( 2*SCOREBRICK, gm.score);
+    CHECK_EQUAL(gm.brickCount, 1);
+    mock().checkExpectations();
+
+    //golden brick does not break, only hit effect plays
+    mock().expectOneCall("rand")
+            .andReturnValue(1500);
+    auto g = Brick(gm, GOLD, {3,2,3}, BRIK_GOLDEN);
+    mock().expectNCalls(1,"Engine::toc");
+    g.hit();
+    CHECK(g.active);
+    CHECK_EQUAL(0, g.hit_counter);
+    CHECK_EQUAL(MockTime, g.hit_effect);
+    CHECK_EQUAL(gm.brickCount, 1);
+    mock().checkExpectations();
+
+}
+
 TEST(ModelTestGroup, PillIsWhatUC){
     extern struct SDL_Surface MockSurf;
 
@@ -526,7 +575,7 @@ TEST(ModelTestGroup, CrosshairIsWhatUC){
     auto c = Crosshair(gm);
     CHECK(c.size.eq(Point3f(1.0f, 1.0f, 0.0)));
 
-    mock().expectNCalls(1,"Engine::now");
+    mock().expectNCalls(1,"Engine::toc");
     mock().expectNCalls(1,"glBindTexture");
     mock().expectNCalls(1,"glTexImage2D");
     mock().expectNCalls(2,"glTexParameteri");

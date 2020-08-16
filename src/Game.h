@@ -27,22 +27,13 @@
 
 #define CAMERA_ROTATION   0.02f
 
-typedef enum{
-    P,       // Grey:    Player life (kanonaki)
-    B,       // Pink:    Boost to next level
-    E,       // Blue:    Enlarge
-    L,       // Red:     Lazer cannon
-    G,       // Green:   Glue
-    D,       // Magenta: Divide balls
-    S,       // Orange:  Slow
-    N_PILLS  // Number of pills
-} PILLS;
 
 class Game: public Engine<class Game>, public World{
 public:
     Game();
     ~Game();
 
+    unsigned int brickCount = 0;
     unsigned int bonusMode = 0;
     unsigned int lives = LIVES;
     unsigned int score = 0;

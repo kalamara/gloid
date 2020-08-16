@@ -24,7 +24,7 @@ Pill::Pill(const Point3f &where,
 
 void Pill::display(){
 
-    if(active){
+    if(active && VALID_PILL(type)){
         base = gluNewQuadric();
 
         auto bpp = game->getScreen()
@@ -99,7 +99,7 @@ void Pill::display(){
 
 Pill& Pill::animate(double secPerFrame){
 
-    if(active){
+    if(active  && VALID_PILL(type)){
         Vaus v = game->getVaus();
         if((place.z >= v.size.z/2 - rad)
                 && collides(v.place.x - v.rad,

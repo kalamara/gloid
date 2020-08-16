@@ -88,7 +88,7 @@ public:
     Pill pill;
 
     Point3f rgb = {0,0,0};
-    int  hit();
+    void  hit();
 
     Brick(){}
 

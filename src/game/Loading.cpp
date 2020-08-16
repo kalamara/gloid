@@ -88,10 +88,14 @@ void Loading::loadLevel(){
                     b.value()
                 };
                 game->bricks.insert(item);
+                if(b.value().type != BRIK_GOLDEN){
+                    game->brickCount++;
+                }
             }
         }
         ifs.close();
     }
+
     game->info("loaded level ", game->level);
 }
 

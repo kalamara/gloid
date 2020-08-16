@@ -8,7 +8,8 @@ Brick::Brick(Game &g,
              const Point3f &color,
              const Point3i &coords,
              int t) : pill(Brick::fromBrick(coords), g){
-    active = true; //FALSE;
+    game = &g;
+    active = true;
     type = t;
     Point3f gold = GOLD;
     Point3f silver = SILVER;
@@ -34,47 +35,21 @@ Brick::Brick(Game &g,
 }
 
 // Brick was hit by ball or shot
-int Brick::hit(){
-
-    extern unsigned int Brick_count;
-    int score = 0;/*
-   int X;
-   int Y;
-   int Z;
-   double tic;
-
-   X = (int)((place.x - SCENE_MIN - 2.5f)/5);
-   Y = (int)((place.y - SCENE_MIN - 2.5f)/5);
-   Z = (int)((place.z + 1.25f)/2.5f);
-
-   tic = SDL_GetTicks();
-
-   if(active)
-   {
-      if(hit_counter != 1)
-         hit_effect = tic;
-
-      // Not a gold brick
-      if(hit_counter > 0)
-      {
-         hit_counter--;
-         if(hit_counter == 0)
-         {
-            score = SCOREBRICK;
-            active = FALSE;
-            Brick_count--;
-
-            // Randomly determine bonus pill
-            Pill[X][Y][Z].init();
-
-            if(Pill[X][Y][Z].type > -1)
-               Pill[X][Y][Z].active = TRUE;
-
-            Pill[X][Y][Z].setplace(place.x,place.y,place.z);
-         }
-      }
-   }*/
-    return score;
+void Brick::hit(){
+    if(active){
+        if(hit_counter != 1){
+           hit_effect = Engine<Game>::toc();
+        }
+        if(hit_counter > 0){
+            hit_counter--;
+            if(hit_counter == 0) {
+               game->score += SCOREBRICK;
+               active = false;
+               game->brickCount--;
+               pill.active = true;
+            };
+        }
+    }
 }
 
 // Display bricks
@@ -109,9 +84,9 @@ Brick& Brick::animate(double secPerFrame){
 
 void Brick::solidRhombik(){
 
-    for(int dim = 0; dim < 3; dim++){
-        for(int dir = 0; dir < 2;dir++){
-            int i = 2*dim + dir;
+    for(uint8_t dim = 0; dim < 3; dim++){
+        for(uint8_t dir = 0; dir < 2;dir++){
+            uint8_t i = 2*dim + dir;
             glNormal3f(face[i].x,
                        face[i].y,
                        face[i].z);		// Normal Facing
@@ -131,7 +106,7 @@ void Brick::solidRhombik(){
     // Top Face
     glBegin(GL_TRIANGLE_STRIP);			// Start Drawing Strips
     glNormal3f(ZERO, ONE, ZERO);		// Normal Facing Up
-    for(int j = 0; j < N_PATHS+1; j++){
+    for(uint8_t j = 0; j < N_PATHS+1; j++){
         glVertex3f(vertice[toppath[j]].x,
                    vertice[toppath[j]].y,
                    vertice[toppath[j]].z);
@@ -143,7 +118,7 @@ void Brick::solidRhombik(){
     // Bottom Face
     glNormal3f(ZERO, -ONE, ZERO);		// Normal Facing Down
 
-    for(int j = 0; j < N_PATHS+1; j++){
+    for(uint8_t j = 0; j < N_PATHS+1; j++){
         glVertex3f(vertice[botpath[j]].x,
                    vertice[botpath[j]].y,
                    vertice[botpath[j]].z);

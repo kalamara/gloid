@@ -60,14 +60,12 @@ void Shot::display(){
 
 // Animate laser shots
 Shot& Shot::animate(double secPerFrame){
-    int i;
-    int score = 0;
 
     if(active){
         // Check for collision with brick
         auto brick = gameplay->getBrickAt(place);
         if(brick){
-            score = brick->hit();//Brick[rel.X][rel.Y][rel.Z].hit();
+            brick->hit();
         }
         if((place.z <= SCENE_MIN - SCENE_MAX + size.z/2) || (score > 0)){
             active = false;
