@@ -25,7 +25,7 @@ public:
     std::vector<Particle> particles;
     void display(void);
     Alien& animate(double secPerFrame);
-    void die(void);
+    Alien &die(void);
 
      Alien(Game & g);
     ~Alien();

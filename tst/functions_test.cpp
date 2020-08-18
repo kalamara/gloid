@@ -161,9 +161,9 @@ TEST(FunctionsTestGroup, raycast_test){
     collision = start.raycast(speed, AXIS_X, ZERO);
     CHECK(collision.eq(Point3f(ZERO,ZERO,ZERO)));
     collision = start.raycast(speed, AXIS_X, ONE);
-    CHECK(collision.eq(Point3f(ONE,ONE,-ONE)));
+    CHECK(collision.eq(Point3f(ONE,ONE,ONE)));
     collision = start.raycast(speed, AXIS_Z, 2*ONE);
-    CHECK(collision.eq(Point3f(-2*ONE,-2*ONE,2*ONE)));
+    CHECK(collision.eq(Point3f(2*ONE,2*ONE,2*ONE)));
     //at speed(u,0,0), on (x=p), collision point is (p,0,0)
     speed.x = ONE;
     speed.y = ZERO;

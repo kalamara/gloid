@@ -88,7 +88,7 @@ public:
     Pill pill;
 
     Point3f rgb = {0,0,0};
-    void  hit();
+    Brick& hit();
 
     Brick(){}
 
@@ -109,10 +109,22 @@ public:
         return Point3f(x,y,z);
     }
 
-    static Point3i toBrick(const Point3f& other){
-        int X = TOBRICK_X(other.x);
-        int Y = TOBRICK_Y(other.y);
-        int Z = TOBRICK_Z(other.z);
+    static Point3i toBrick(const Point3f& where, int axis = NO_AXIS){
+        Point3f w = Point3f(where);
+        switch(axis){
+            case AXIS_X:
+                w.x += Brick::side/2;
+                break;
+            case AXIS_Y:
+                w.y += Brick::side/2;
+                break;
+            case AXIS_Z:
+                w.z -= Brick::depth;
+            break;
+        }
+        int X = TOBRICK_X(w.x);
+        int Y = TOBRICK_Y(w.y);
+        int Z = TOBRICK_Z(w.z);
 
         return Point3i(X, Y, Z);
     }

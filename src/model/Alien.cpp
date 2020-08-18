@@ -218,7 +218,7 @@ Alien &Alien::animate(double secPerFrame){
 }
 
 // Aliens blow up when they die
-void Alien::die()
+Alien& Alien::die()
 {
     int j;
     active = false;
@@ -230,6 +230,8 @@ void Alien::die()
 
     //}
     game->playSound("alien");//WAV_ALIEN);
+
+    return *this;
 }
 
 void Alien::solidCube(float side){

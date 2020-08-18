@@ -56,12 +56,12 @@ void Vaus::display(){
     glColor4f(0.3f, 0.3f, 0.3f, 0.3f);//black
     glTranslatef(ZERO, ZERO, ZERO);
     glScalef(ONE, ONE, 0.25f);
-    gluSphere(base, baseRad, 48, 12);
+    gluSphere(base, rad, 48, 12);
     glDisable(GL_BLEND);
     glPopMatrix();
 
-    for(int dir = 0; dir < 2; dir++){
-        for(int rot = 0; rot < 2; rot++){
+    for(uint8_t dir = 0; dir < 2; dir++){
+        for(uint8_t rot = 0; rot < 2; rot++){
             glPushMatrix();
             glColor3f(1.0f, ZERO, ZERO);
 
@@ -77,8 +77,8 @@ void Vaus::display(){
             glPopMatrix();
 
             glPushMatrix();
-            glTranslatef((1 - dir) * baseRad * (1 - 2 * rot),
-                         dir * baseRad * (1 - 2 * rot), ZERO);
+            glTranslatef((1 - dir) * rad * (1 - 2 * rot),
+                         dir * rad * (1 - 2 * rot), ZERO);
 
             // If the fire button is down, light up the laser canons
             if(fire){

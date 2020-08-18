@@ -18,6 +18,7 @@ typedef enum{
 
 //axes of motion
 typedef enum {
+    NO_AXIS = 0,
     AXIS_X = 0x1,//left to right
     AXIS_Y = 0x2,//up to down
     AXIS_Z = 0x4,//front to back

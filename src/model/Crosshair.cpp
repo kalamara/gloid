@@ -1,14 +1,15 @@
 #include "GLoid.h"
 
 #include "WhatUC.h"
-#include "Crosshair.h"
 #include "Pill.h"
 #include "Brick.h"
 
+#include "Crosshair.h"
 
 Crosshair::Crosshair(class Game &g){
     game = &g;
     setSize(ONE, ONE, ZERO);
+    target = {};
 }
 
 Crosshair::~Crosshair(){
@@ -90,14 +91,14 @@ Crosshair& Crosshair::animate(double secPerFrame){
 
 //raycasting algorithm:
 Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
-
+    target = {};
 //find limits for collision to the background
     Point3f lim;
 //direction of movement in terms of positive/negative sign
     Point3i dir = speed.signs();
     lim.x = dir.X * SCENE_MAX;
     lim.y = dir.Y * SCENE_MAX;
-    lim.z = dir.Z > 0 ? SCENE_MIN - SCENE_MAX : 0.0f;
+    lim.z = dir.Z < 0 ? SCENE_MIN - SCENE_MAX : 0.0f;
 //find candidate points of collision to background or bricks
     std::map<int, Point3f> candidates; //a candidate per axis
     std::map<int, float> distances; //each candidates' distance from start
@@ -107,20 +108,17 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
     int ky = dir.Y * AXIS_Y;
     int kz = dir.Z * AXIS_Z;
 
-    candidates[kx] = start.raycast(speed, AXIS_X, lim.x - start.x);
-    candidates[ky] = start.raycast(speed, AXIS_Y, lim.y - start.y);
-    candidates[kz] = start.raycast(speed, AXIS_Z, -abs(lim.z - start.z));
+    candidates[kx] = start.raycast(speed, AXIS_X, abs(lim.x - start.x));
+    candidates[ky] = start.raycast(speed, AXIS_Y, abs(lim.y - start.y));
+    candidates[kz] = start.raycast(speed, AXIS_Z, abs(lim.z - start.z));
 
     //on each axis, moving away from the start
     for(int i = 0; i < INTX; i++){//for each layer of bricks-
         //raycast point of collision
         auto collision = start.raycast(speed,
                                       AXIS_X,
-                                      FROMBRICK_X(i) - Brick::side/2);
-        auto found = game->getBrickAt(Point3f(
-                                         collision.x + Brick::side/2,
-                                         collision.y ,
-                                         collision.z));
+                                      abs(FROMBRICK_X(i) - Brick::side/2));
+        auto found = game->getBrickAt(collision, AXIS_X);
         if(found){//check if brick is active, otherwise move to next layer
             candidates[kx] = collision;
             break;
@@ -131,12 +129,9 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
         //raycast point of collision
         auto collision = start.raycast(speed,
                                        AXIS_Y,
-                                       FROMBRICK_Y(i) - Brick::side/2);
+                                       abs(FROMBRICK_Y(i) - Brick::side/2));
 
-        auto found = game->getBrickAt(Point3f(
-                                          collision.x,
-                                          collision.y + Brick::side/2,
-                                          collision.z));
+        auto found = game->getBrickAt(collision, AXIS_Y);
         if(found){//check if brick is active, otherwise move to next layer
             candidates[ky] = collision;
             break;
@@ -147,12 +142,9 @@ Crosshair& Crosshair::update(const Point3f& start, const Point3f& speed){
         //raycast point of collision
         auto collision = start.raycast(speed,
                                        AXIS_Z,
-                                       FROMBRICK_Z(i) + Brick::depth + 1);
+                                       abs(FROMBRICK_Z(i) + Brick::depth + 1));
 
-        auto found = game->getBrickAt(Point3f(
-                                        collision.x,
-                                        collision.y,
-                                        collision.z - Brick::depth));
+        auto found = game->getBrickAt(collision, AXIS_Z);
         if(found){
             candidates[kz] = collision;
             break;

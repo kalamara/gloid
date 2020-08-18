@@ -3,6 +3,8 @@
 #include "WhatUC.h"
 #include "Pill.h"
 #include "Brick.h"
+#include "Crosshair.h"
+#include "Ball.h"
 
 Brick::Brick(Game &g,
              const Point3f &color,
@@ -35,7 +37,7 @@ Brick::Brick(Game &g,
 }
 
 // Brick was hit by ball or shot
-void Brick::hit(){
+Brick& Brick::hit(){
     if(active){
         if(hit_counter != 1){
            hit_effect = Engine<Game>::toc();
@@ -50,6 +52,7 @@ void Brick::hit(){
             };
         }
     }
+    return *this;
 }
 
 // Display bricks
@@ -75,10 +78,16 @@ void Brick::display(){
         glPopMatrix();
         glDisable(GL_BLEND);
         glPopMatrix();
+    } else {
+        pill.display();
     }
 }
 
 Brick& Brick::animate(double secPerFrame){
+
+    if(!active){
+        pill = pill.animate(secPerFrame);
+    }
     return *this;
 }
 

@@ -8,14 +8,13 @@ private:
     float rad;
     GLUquadricObj* base;
 
-
-    static constexpr float initX = 100.0f;
+    static constexpr float initX = 30.0f;//100.0f;
     static constexpr float grey = 0.2f;
     static const int slices = 12;
     static const int stacks = 12;
 
     class Game * game;
-
+    //bool bouncing = false;
 public:
     static constexpr float base_rad = 0.625f;
     bool launched = false;
@@ -34,6 +33,12 @@ public:
     Ball& animate(double secPerFrame);
     Ball& launch();
     Ball& reinit(const Point3f& init);
+
+    /**
+     * @brief keep it in the box
+     * @return
+     */
+    Ball& restrain();
     /**
      * @brief bounce on a plane
      * @param axis

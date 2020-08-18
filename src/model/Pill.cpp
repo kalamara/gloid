@@ -99,7 +99,7 @@ void Pill::display(){
 
 Pill& Pill::animate(double secPerFrame){
 
-    if(active  && VALID_PILL(type)){
+    if(active && VALID_PILL(type)){
         Vaus v = game->getVaus();
         if((place.z >= v.size.z/2 - rad)
                 && collides(v.place.x - v.rad,

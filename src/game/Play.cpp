@@ -53,15 +53,9 @@ Play & Play::update(){
                   [seconds](Ball& b) -> Ball& {
                     b.animate(seconds);
                   });
-
-    /* move to brick
-    std::transform(begin(game->pills),
-                  end(game->pills),
-                  begin(game->pills),
-                  [seconds](Pill& p) -> Pill& {
-                    p.animate(seconds);
-                  });
-*/
+    for(auto b : game->bricks){
+        game->bricks[b.first] = b.second.animate(seconds);
+    }
 //handle keys
 
     if(phase==PLAY_GO){
@@ -172,14 +166,7 @@ Play & Play::draw(){
         b.cross.display();
     }
 
-
-// move to brick
-//    for(auto p : game->pills){
-//        p.display();
-//    }
-
-
-// move to vaus    for(auto s : game->shots){
+// move to vaus?    for(auto s : game->shots){
 //        s.display();
 //    }
     game->getVaus().display();

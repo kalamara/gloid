@@ -8,7 +8,7 @@ class Crosshair: public WhatUC<Crosshair>{
 public:
     bool launched = false;
     int axis = AXIS_Z;
-
+    Brick * target;
     Crosshair(class Game &g);
     ~Crosshair();
 

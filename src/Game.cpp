@@ -104,10 +104,10 @@ void Game::handleKeys(){
     }
 }
 
-std::optional<Brick> Game::getBrickAt(const Point3f& where){
-    auto idx = Brick::toBrick(where);
-    if(bricks.find(idx)!= bricks.end()){
+std::optional<Brick> Game::getBrickAt(const Point3f& where, int axis){
 
+    auto idx = Brick::toBrick(where, axis);
+    if(bricks.find(idx)!= bricks.end() && bricks.find(idx)->second.active){
         return bricks.at(idx);
     }
     return {};

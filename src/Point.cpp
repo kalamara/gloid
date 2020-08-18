@@ -86,7 +86,7 @@ Point3f Point3f::raycast(const Point3f &speed, int axis, float dist) const{
         case AXIS_X:
         if(abs(speed.x)>FLOAT_PRECISION){
             collision.y = y + (speed.y * (collision.x - x))/speed.x;
-            collision.z = z - (speed.z * (collision.x - x))/speed.x;
+            collision.z = z + (speed.z * (collision.x - x))/speed.x;
         } else {
             collision.deepcopy(*this);
         }
@@ -95,7 +95,7 @@ Point3f Point3f::raycast(const Point3f &speed, int axis, float dist) const{
         case AXIS_Y:
         if(abs(speed.y)>FLOAT_PRECISION){
             collision.x = x + (speed.x * (collision.y - y))/speed.y;
-            collision.z = z - (speed.z * (collision.y - y))/speed.y;
+            collision.z = z + (speed.z * (collision.y - y))/speed.y;
         } else {
             collision.deepcopy(*this);
         }
@@ -103,8 +103,8 @@ Point3f Point3f::raycast(const Point3f &speed, int axis, float dist) const{
 
         case AXIS_Z:
         if(abs(speed.z)>FLOAT_PRECISION){
-            collision.x = x - (speed.x * (collision.z - z))/speed.z;
-            collision.y = y - (speed.y * (collision.z - z))/speed.z;
+            collision.x = x + (speed.x * (collision.z - z))/speed.z;
+            collision.y = y + (speed.y * (collision.z - z))/speed.z;
         } else {
             collision.deepcopy(*this);
         }

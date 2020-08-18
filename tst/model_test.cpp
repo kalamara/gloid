@@ -50,7 +50,7 @@ Game & Game::loop(){
 Step * Game::nextStep(){
 }
 
-std::optional<Brick> Game::getBrickAt(const Point3f& where){
+std::optional<Brick> Game::getBrickAt(const Point3f& where, int axis){
     return {};
 }
 
@@ -162,14 +162,13 @@ TEST(ModelTestGroup, BallIsWhatUC){
     CHECK(b.speed.eq(Point3f()));
     CHECK(b.nextbounce.eq(Point3f()));
     CHECK(b.nextspeed.eq(Point3f()));
-    CHECK(b.launchspeed.eq(Point3f(100.0f, 100.0f, 200.0f)));
+
     mock().expectNCalls(2,"glPopMatrix");
     //should have animate and mock display in place
     //inactive, do nothing
     mock().expectOneCall("gluNewQuadric");
     mock().expectOneCall("gluDeleteQuadric");
     b.animate(0.01f).display();
-
 }
 
 TEST(ModelTestGroup, BallCollision){
@@ -177,12 +176,22 @@ TEST(ModelTestGroup, BallCollision){
     auto gm = Game();
     auto b = Ball(gm);
     auto c = b.cross;
-//collide on (0,0,0)
-    CHECK(b.collides(c.place, c.size));
-
-    //small displacement on z should not collide
-    b.place.z += b.base_rad + ROOT2 + 2*FLOAT_PRECISION;
+//degenerate: zero speed, does not collide
+    b.speed = Point3f(ZERO, ZERO, ZERO);
     CHECK(!b.collides(c.place, c.size));
+
+//degenerate: does not collide on itself
+    b.speed = Point3f(ONE, ZERO, ZERO);
+    CHECK(!b.collides(c.place, c.size));
+
+    //collide when approaching
+    CHECK(b.collides(Point3f(ONE, ZERO, ZERO), Point3f(ONE, ONE, ONE)))
+
+    //don't collide when diverting
+    CHECK(!b.collides(Point3f(-ONE, ZERO, ZERO), Point3f(ONE, ONE, ONE)))
+
+    //don't collide when not close enough
+    CHECK(!b.collides(Point3f(b.base_rad + FLOAT_PRECISION, ZERO, ZERO), Point3f(ZERO, ZERO, ZERO)))
 
 }
 

@@ -74,6 +74,6 @@ public:
     void divideBalls(){}
     void killVaus(){}
     Ball * getActiveBall(){return nullptr;}
-    std::optional<Brick> getBrickAt(const Point3f& where);
+    std::optional<Brick> getBrickAt(const Point3f& where, int axis = 0);
 };
 #endif //_GAME_H
