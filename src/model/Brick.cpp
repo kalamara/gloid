@@ -31,6 +31,9 @@ Brick::Brick(Game &g,
         rgb = Point3f(color);
         break;
     }
+
+
+
     setSize(side, side, depth);
     Point3f where = Brick::fromBrick(coords);
     setPlace(where.x, where.y, where.z);

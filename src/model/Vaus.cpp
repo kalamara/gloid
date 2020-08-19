@@ -9,9 +9,7 @@
 Vaus::Vaus(Game &g){
    game = &g;
    rad = baseRad;
-   setSize(2*baseRad, 2*baseRad, baseRad/2);
-
-   //speedx = speedy = ZERO;
+   setSize(2*rad, 2*rad, rad/2);
 }
 Vaus::~Vaus(){
 
@@ -21,7 +19,9 @@ Vaus::~Vaus(){
 Vaus& Vaus::enlarge(){
    if(large == false){
       large = true;
-      game->playSound("enlarge");//WAV_ENLARGE);
+      rad = 2*baseRad;
+      setSize(2*rad, 2*rad, rad/2);
+      game->playSound("enlarge");
    }
    return *this;
 }
@@ -33,6 +33,8 @@ Vaus& Vaus::reset(){
    warping = false;
    place.x = ZERO;
    place.y = ZERO;
+   rad = baseRad;
+   setSize(2*rad, 2*rad, rad/2);
 
    return *this;
 }
@@ -44,11 +46,6 @@ void Vaus::display(){
     glTranslatef(place.x, place.y, ZERO);
     glRotatef(45.0f, ZERO, ZERO, ONE);
 
-    if(large){
-        rad =  2*baseRad;
-    }else{
-        rad = baseRad;
-    }
     Point3f paparia(rad - 0.5f, 0.625f, ZERO);
 
     glPushMatrix();

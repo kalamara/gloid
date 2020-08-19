@@ -33,6 +33,7 @@ class Brick: public WhatUC<Brick>{
     static const int duration = 200; //hit effect
     static constexpr float unary = 0.5f;
     static constexpr float big = 0.75f;
+    static constexpr float nomsz = (SCENE_MAX - SCENE_MIN)/(INTX + 1);
     Point3f vertice[N_VERTICES] = {
         // Front Face
         {-unary, -unary,  big},
@@ -81,6 +82,9 @@ class Brick: public WhatUC<Brick>{
 public:
     static constexpr float side = 3.3f;
     static constexpr float depth = 1.6f;
+
+
+    //the piece of the grid that is occupied by the brick. use for collision
     Uint32  hit_effect = 0;   // What happens when the brick is hit
     int     hit_counter = 0;  // How many times has the brick been hit?
     int     type = BRIK_NORMAL;         // Type of brick: normal, silver, gold: 0, 1, 2
@@ -132,6 +136,10 @@ public:
     static std::optional<Point3i> getPos(std::string line);
     static std::optional<Point3f> getColor(std::string line);
     static std::optional<Brick> getBrick(std::istream & ifs, Game * game);
+
+    static Point3f nominalSize() {
+        return Point3f(nomsz, nomsz, nomsz*side/depth);
+    }
 
 private:
 //https://en.wikipedia.org/wiki/Rhombicuboctahedron

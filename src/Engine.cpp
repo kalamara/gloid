@@ -174,7 +174,8 @@ template<> Game& Engine<Game>::withSdlGlVideo(version &v){
         }
     }else{
         desktop = SDL_GetVideoInfo();
-        sdlScreen = testVmode(800,600);//desktop->current_w,desktop->current_h);
+        sdlScreen = testVmode(800,600);
+                //testVmode(desktop->current_w,desktop->current_h);
     }
     if(!sdlScreen.has_value()){
              error("Can't open an SDL Screen:",

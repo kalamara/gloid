@@ -13,10 +13,7 @@
 Ball::Ball(Game &g) : cross(g){
     game = &g;
     speed = Point3f();
-    nextbounce = Point3f();
-    nextspeed = Point3f();
-    initspeed = Point3f(-initX, -initX, -2.0f * initX);
-    launchspeed = Point3f(initspeed);
+    launchspeed = Point3f(-initX, -initX, -2.0f * initX);
     active = true;
     rad = base_rad;
     setSize(2*rad, 2*rad, 2*rad);
@@ -91,10 +88,10 @@ Ball& Ball::animate(double secPerFrame){
             launch();
         }
     } else {
-        //keep it in the box!
+        //if it hits a brick...
         auto brick = game->getBrickAt(cross.place, cross.axis);
 
-        if(brick && collides(brick.value().place, brick.value().size) ){
+        if(brick && collides(brick.value().place, Brick::nominalSize()) ){
             bounce(cross.axis);
             auto b = brick.value().hit();
             game->bricks[Brick::toBrick(cross.place, cross.axis)] = b;
@@ -108,29 +105,35 @@ Ball& Ball::animate(double secPerFrame){
         }*/
         // If it hits the Vaus
         if(collides(game->vaus->place, game->vaus->size)){
-            bounce(AXIS_Z);
+            if(game->vaus->fire){
+                bounce(game->vaus->place, game->vaus->size);
+            } else {
+                bounce(AXIS_Z);
+            }
         }
-        // If the ball flies off the screen, it is lost
+
         // Set the ball speed
         place.x += speed.x * secPerFrame;
         place.y += speed.y * secPerFrame;
         place.z += speed.z * secPerFrame;
-
+        //keep it in the box
         restrain();
+
+        if(place.z > 0){        // If the ball flies off the screen, it is lost
+            reinit();
+        }
         cross.update(place, speed);
     }
     return *this;
 }
 
-Ball& Ball::reinit(const Point3f &init){
+Ball& Ball::reinit(){//const Point3f &init){
     if(!active){
           active = true;
     }
     launched = false;
+    cross.launched = false;
     speed = Point3f();
-    nextbounce = Point3f();
-    launchspeed = launchspeed.deepcopy(init);
-    nextspeed = nextspeed.deepcopy(launchspeed);
 
     return *this;
 }
@@ -152,9 +155,11 @@ Ball Ball::getBall(Game * g){
 
 bool Ball::collides(const Point3f pl,  Point3f sz){
     auto diff = Point3f(pl).sub3f(place);
-
+//projection of distance vector on speed is positive => it is approaching
     if(diff.proj3f(speed) > FLOAT_PRECISION
-    && diff.res3f() < base_rad + sz.res3f()){
+    && abs(diff.x) < base_rad + sz.x/2
+    && abs(diff.y) < base_rad + sz.y/2
+    && abs(diff.z) < base_rad + sz.z/2){
         return true;
     }
     return false;
@@ -217,9 +222,9 @@ Ball& Ball::bounce(const Point3f pl, const Point3f sz){
 
 Ball& Ball::bounce(){
 
-        speed = Point3f(speed.res3f());
+    speed = Point3f(speed.res3f());
         if(speed.res3f() <3 * MINSPEED){
-            speed = initspeed;
+            speed = launchspeed;
         }
 
     return * this;
